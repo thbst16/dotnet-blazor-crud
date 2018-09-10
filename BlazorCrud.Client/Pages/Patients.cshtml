@@ -1,0 +1,62 @@
+﻿@page "/patient"
+@page "/patient/list"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+<h1>Patient Data</h1>
+<p>This component demonstrates fetching patient data from the server.</p>
+
+<p>
+    <a href="/patient/new">Add New Patient</a>
+</p>
+
+@if (patientList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Primary Care Provier</th>
+                <th>State</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var patient in patientList)
+            {
+                <tr>
+                    <td>@patient.Id</td>
+                    <td>@patient.Name</td>
+                    <td>@patient.Gender</td>
+                    <td>@patient.PrimaryCareProvider</td>
+                    <td>@patient.State</td>
+                    <td>
+                        <a href='/patient/edit/@patient.Id'>Edit</a>  |
+                        <a href='/patient/delete/@patient.Id'>Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@functions {
+Patient[] patientList;
+protected override async Task OnInitAsync()
+{
+    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    {
+        patientList = await Http.GetJsonAsync<Patient[]>("http://localhost:10002/api/patient");
+    }
+    else
+    {
+        patientList = await Http.GetJsonAsync<Patient[]>("http://becksapi.azurewebsites.net/api/patient");
+    }
+}
+}

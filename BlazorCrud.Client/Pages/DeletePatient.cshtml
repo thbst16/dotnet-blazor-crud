@@ -1,0 +1,68 @@
+﻿@page "/patient/delete/{Id}"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+<h1>Delete</h1>
+<h3>Are you sure you want to delete the patient with id : @Id</h3>
+
+<br />
+<div class="col-md-4">
+    <table class="table">
+        <tr>
+            <td>Name</td>
+            <td>@patient.Name</td>
+        </tr>
+        <tr>
+            <td>Gender</td>
+            <td>@patient.Gender</td>
+        </tr>
+        <tr>
+            <td>Primary Care Provider</td>
+            <td>@patient.PrimaryCareProvider</td>
+        </tr>
+        <tr>
+            <td>State</td>
+            <td>@patient.State</td>
+        </tr>
+    </table>
+    <div class="form-group">
+        <button type="button" class="btn btn-default" onclick="@(async () => await RemovePatient())">Delete</button>
+        <button class="btn" onclick="@cancel">Cancel</button>
+    </div>
+</div>
+
+@functions {
+    [Parameter]
+    string Id { get; set; }
+
+    Patient patient = new Patient();
+
+    protected override async Task OnInitAsync()
+    {
+        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+        {
+            patient = await Http.GetJsonAsync<Patient>("http://localhost:10002/api/patient/" + Convert.ToInt32(Id));
+        }
+        else
+        {
+            patient = await Http.GetJsonAsync<Patient>("http://becksapi.azurewebsites.net/api/patient/" + Convert.ToInt32(Id));
+        }
+    }
+
+    protected async Task RemovePatient()
+    {
+        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+        {
+            await Http.DeleteAsync("http://localhost:10002/api/patient/" + Convert.ToInt32(Id));
+        }
+        else
+        {
+            await Http.DeleteAsync("http://becksapi.azurewebsites.net/api/patient/" + Convert.ToInt32(Id));
+        }
+        UriHelper.NavigateTo("/patient");
+    }
+    void cancel()
+    {
+        UriHelper.NavigateTo("/patient");
+    }
+}

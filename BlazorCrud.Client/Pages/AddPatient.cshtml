@@ -1,0 +1,59 @@
+﻿@page "/patient/new"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+<h1>Create</h1>
+<h3>Patient</h3>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form>
+            <div class="form-group">
+                <label for="Name" class="control-label">Name</label>
+                <input for="Name" class="form-control" bind="@patient.Name" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label">Gender</label>
+                <select asp-for="Gender" class="form-control" bind="@patient.Gender">
+                    <option value="">-- Select Gender --</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="PrimaryCareProvider" class="control-label">Primary Care Provider</label>
+                <input asp-for="PrimaryCareProvider" class="form-control" bind="@patient.PrimaryCareProvider" />
+            </div>
+            <div class="form-group">
+                <label asp-for="State" class="control-label">State</label>
+                <input asp-for="State" class="form-control" bind="@patient.State" />
+            </div>
+            <div class="form-group">
+                <button type="button" class="btn btn-default" onclick="@(async () => await CreatePatient())">Save</button>
+                <button class="btn" onclick="@cancel">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@functions {
+    Patient patient = new Patient();
+
+    protected async Task CreatePatient()
+    {
+        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+        {
+            await Http.SendJsonAsync(HttpMethod.Post, "http://localhost:10002/api/patient", patient);
+        }
+        else
+        {
+            await Http.SendJsonAsync(HttpMethod.Post, "http://becksapi.azurewebsites.net/api/patient/", patient);
+        }
+        UriHelper.NavigateTo("/patient");
+    }
+    void cancel()
+    {
+        UriHelper.NavigateTo("/patient");
+    }
+}
