@@ -15,20 +15,6 @@ namespace BlazorCrud.Server.Controllers
         public PatientController(PatientContext context)
         {
             _context = context;
-
-            if (_context.Patients.Count() ==0)
-            {
-                // Create a new Patient object if collection is empty,
-                // which means you can't delete all Patients.
-                _context.Patients.Add(new Patient
-                {
-                    Name = "Thomas Beck",
-                    Gender = "Male",
-                    PrimaryCareProvider = "Baton Rouge General",
-                    State = "LA"
-                });
-                _context.SaveChanges();
-            }
         }
 
         [HttpGet]

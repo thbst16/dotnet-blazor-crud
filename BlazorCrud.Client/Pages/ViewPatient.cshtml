@@ -1,0 +1,59 @@
+﻿@page "/patient/view/{Id}"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+<h1>View</h1>
+<h3>Patient</h3>
+
+<br />
+<div class="col-md-4">
+    <table class="table">
+        <tr>
+            <td>Id</td>
+            <td>@patient.Id</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>@patient.Name</td>
+        </tr>
+        <tr>
+            <td>Gender</td>
+            <td>@patient.Gender</td>
+        </tr>
+        <tr>
+            <td>Primary Care Provider</td>
+            <td>@patient.PrimaryCareProvider</td>
+        </tr>
+        <tr>
+            <td>State</td>
+            <td>@patient.State</td>
+        </tr>
+    </table>
+    <div class="form-group">
+        <button class="btn" onclick="@back">Back</button>
+    </div>
+</div>
+
+@functions {
+[Parameter]
+string Id { get; set; }
+
+Patient patient = new Patient();
+
+protected override async Task OnInitAsync()
+{
+    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    {
+        patient = await Http.GetJsonAsync<Patient>("http://localhost:10002/api/patient/" + Convert.ToInt32(Id));
+    }
+    else
+    {
+        patient = await Http.GetJsonAsync<Patient>("http://becksapi.azurewebsites.net/api/patient/" + Convert.ToInt32(Id));
+    }
+}
+
+void back()
+{
+    UriHelper.NavigateTo("/patient");
+}
+}
