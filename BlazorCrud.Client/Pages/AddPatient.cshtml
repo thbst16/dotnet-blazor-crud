@@ -50,10 +50,10 @@
         {
             await Http.SendJsonAsync(HttpMethod.Post, "http://becksapi.azurewebsites.net/api/patient/", patient);
         }
-        UriHelper.NavigateTo("/patient");
+        UriHelper.NavigateTo("/patient/list/1");
     }
     void cancel()
     {
-        UriHelper.NavigateTo("/patient");
+        UriHelper.NavigateTo("/patient/list/1");
     }
 }

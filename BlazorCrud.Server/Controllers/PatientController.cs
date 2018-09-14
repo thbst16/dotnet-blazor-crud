@@ -1,7 +1,6 @@
-﻿using BlazorCrud.Server.DataAccess;
+﻿using BlazorCrud.Shared.Data;
 using BlazorCrud.Shared;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace BlazorCrud.Server.Controllers
@@ -18,9 +17,12 @@ namespace BlazorCrud.Server.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Patient>> GetAll()
+        public PagedResult<Patient> GetAll([FromQuery]int page)
         {
-            return _context.Patients.ToList();
+            int pageSize = 5;
+            return _context.Patients
+                .OrderBy(p => p.Id)
+                .GetPaged(page, pageSize);
         }
 
         [HttpGet("{id}", Name = "GetPatient")]

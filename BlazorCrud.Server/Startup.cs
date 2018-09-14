@@ -1,4 +1,4 @@
-﻿using BlazorCrud.Server.DataAccess;
+﻿using BlazorCrud.Shared.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -45,9 +45,7 @@ namespace BlazorCrud.Server
             {
                 app.UseHsts();
             }
-
             app.UseCors("blazor");
-
             app.UseMvc();
         }
     }

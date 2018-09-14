@@ -1,7 +1,7 @@
-﻿@page "/patient"
-@page "/patient/list"
+﻿@page "/patient/list/{Page}"
 @inject HttpClient Http
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@using BlazorCrud.Shared.Data
 
 <h1>Patient Data</h1>
 <p>This component demonstrates fetching patient data from the server.</p>
@@ -10,7 +10,7 @@
     <a href="/patient/new">Add New Patient</a>
 </p>
 
-@if (patientList == null)
+@if (Patients == null)
 {
     <p><em>Loading...</em></p>
 }
@@ -28,7 +28,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var patient in patientList)
+            @foreach (var patient in Patients.Results)
             {
                 <tr>
                     <td>@patient.Id</td>
@@ -45,19 +45,28 @@ else
             }
         </tbody>
     </table>
-}
+    <Pager Result=@Patients PageChanged=@PagerPageChanged />
+} 
 
 @functions {
-Patient[] patientList;
-protected override async Task OnInitAsync()
-{
-    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    [Parameter]
+    protected string Page { get; set; } = "1";
+
+    protected PagedResult<Patient> Patients;
+
+    protected override async Task OnParametersSetAsync()
     {
-        patientList = await Http.GetJsonAsync<Patient[]>("http://localhost:10002/api/patient");
+        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+        {
+            Patients = await Http.GetJsonAsync<PagedResult<Patient>>("http://localhost:10002/api/patient/?page=" + Page);
+        }
+        else
+        {
+            Patients = await Http.GetJsonAsync<PagedResult<Patient>>("http://becksapi.azurewebsites.net/api/patient?page=" + Page);
+        }
     }
-    else
+    protected void PagerPageChanged(int page)
     {
-        patientList = await Http.GetJsonAsync<Patient[]>("http://becksapi.azurewebsites.net/api/patient");
+        UriHelper.NavigateTo("/patient/list/" + page);
     }
-}
 }

@@ -59,10 +59,10 @@
         {
             await Http.DeleteAsync("http://becksapi.azurewebsites.net/api/patient/" + Convert.ToInt32(Id));
         }
-        UriHelper.NavigateTo("/patient");
+        UriHelper.NavigateTo("/patient/list/1");
     }
     void cancel()
     {
-        UriHelper.NavigateTo("/patient");
+        UriHelper.NavigateTo("/patient/list/1");
     }
 }

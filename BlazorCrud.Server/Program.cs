@@ -1,4 +1,4 @@
-﻿using BlazorCrud.Server.DataAccess;
+﻿using BlazorCrud.Shared.Data;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +28,6 @@ namespace BlazorCrud.Server
                     logger.LogError(ex, "An error occurred creating the DB.");
                 }
             }
-
             host.Run();
         }
 

@@ -1,7 +1,7 @@
 ﻿using BlazorCrud.Shared;
 using Microsoft.EntityFrameworkCore;
 
-namespace BlazorCrud.Server.DataAccess
+namespace BlazorCrud.Shared.Data
 {
     public class PatientContext : DbContext
     {
