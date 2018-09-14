@@ -1,0 +1,63 @@
+﻿@page "/patient/new"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+<h1>Create</h1>
+<h3>Patient</h3>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <ValidatedForm Model="@patient" OnSubmit="@CreatePatient">
+             <div class="form-group">
+                 <label for="Name" class="control-label">Name</label>
+                 <input for="Name" class="form-control" bind="@patient.Name" />
+                 <ClientValidationError FieldName="Name" Model="patient" />
+             </div>
+             <div class="form-group">
+                 <label asp-for="Gender" class="control-label">Gender</label>
+                 <select asp-for="Gender" class="form-control" bind="@patient.Gender">
+                     <option value="">-- Select Gender --</option>
+                     <option value="Male">Male</option>
+                     <option value="Female">Female</option>
+                 </select>
+                 <ClientValidationError FieldName="Gender" Model="patient" />
+             </div>
+             <div class="form-group">
+                 <label asp-for="PrimaryCareProvider" class="control-label">Primary Care Provider</label>
+                 <input asp-for="PrimaryCareProvider" class="form-control" bind="@patient.PrimaryCareProvider" />
+                 <ClientValidationError FieldName="PrimaryCareProvider" Model="patient" />
+             </div>
+             <div class="form-group">
+                 <label asp-for="State" class="control-label">State</label>
+                 <input asp-for="State" class="form-control" bind="@patient.State" />
+                 <ClientValidationError FieldName="State" Model="patient" />
+             </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">Save</button>
+                <button class="btn" onclick="@cancel">Cancel</button>
+            </div>
+        </ValidatedForm>
+    </div>
+</div>
+
+@functions {
+    Patient patient = new Patient();
+
+    protected async Task CreatePatient(UIEventArgs ev)
+    {
+        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+        {
+            await Http.SendJsonAsync(HttpMethod.Post, "http://localhost:10002/api/patient", patient);
+        }
+        else
+        {
+            await Http.SendJsonAsync(HttpMethod.Post, "http://becksapi.azurewebsites.net/api/patient/", patient);
+        }
+        UriHelper.NavigateTo("/patient/list/1");
+    }
+    void cancel()
+    {
+        UriHelper.NavigateTo("/patient/list/1");
+    }
+}

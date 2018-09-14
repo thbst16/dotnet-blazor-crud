@@ -1,0 +1,26 @@
+﻿@using BlazorCrud.Client.Shared
+@inject IModelValidator ModelValidator
+
+<form method="@method" onsubmit="@OnSubmitWithValidate">
+    @ChildContent
+</form>
+@functions {
+[Parameter]
+private RenderFragment ChildContent { get; set; }
+
+[Parameter]
+private Func<UIEventArgs, Task> OnSubmit { get; set; }
+
+[Parameter]
+private string method { get; set; } = "POST";
+
+[Parameter]
+private object Model { get; set; }
+
+private async Task OnSubmitWithValidate(UIEventArgs eventArgs)
+{
+    Console.WriteLine("OnSubmitWithValidate");
+    if (ModelValidator.Validate(Model))
+        await OnSubmit(eventArgs);
+}
+}

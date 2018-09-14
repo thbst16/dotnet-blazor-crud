@@ -39,44 +39,64 @@ namespace BlazorCrud.Server.Controllers
         [HttpPost]
         public IActionResult Create(Patient patient)
         {
-            _context.Patients.Add(patient);
-            _context.SaveChanges();
-
-            return CreatedAtRoute("GetPatient", new { id = patient.Id }, patient);
+            if (ModelState.IsValid)
+            {
+                _context.Patients.Add(patient);
+                _context.SaveChanges();
+                return CreatedAtRoute("GetPatient", new { id = patient.Id }, patient);
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpPut("{id}")]
         public IActionResult Update(int id, Patient patient)
         {
-            var pat = _context.Patients.Find(id);
-            if (pat == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                var pat = _context.Patients.Find(id);
+                if (pat == null)
+                {
+                    return NotFound();
+                }
+
+                // This is where you need AutoMapper
+                pat.Name = patient.Name;
+                pat.Gender = patient.Gender;
+                pat.PrimaryCareProvider = patient.PrimaryCareProvider;
+                pat.State = patient.State;
+
+                _context.Patients.Update(pat);
+                _context.SaveChanges();
+                return NoContent();
             }
-
-            // This is where you need AutoMapper
-            pat.Name = patient.Name;
-            pat.Gender = patient.Gender;
-            pat.PrimaryCareProvider = patient.PrimaryCareProvider;
-            pat.State = patient.State;
-
-            _context.Patients.Update(pat);
-            _context.SaveChanges();
-            return NoContent();
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var patient = _context.Patients.Find(id);
-            if (patient == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
-            }
+                var patient = _context.Patients.Find(id);
+                if (patient == null)
+                {
+                    return NotFound();
+                }
 
-            _context.Patients.Remove(patient);
-            _context.SaveChanges();
-            return NoContent();
+                _context.Patients.Remove(patient);
+                _context.SaveChanges();
+                return NoContent();
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
     }
 }

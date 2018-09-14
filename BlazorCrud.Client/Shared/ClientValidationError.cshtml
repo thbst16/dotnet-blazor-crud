@@ -1,0 +1,36 @@
+﻿@implements IDisposable
+@inject IModelValidator modelValidator;
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <span class="small form-text text-danger">@errorMessage</span>
+
+}
+@functions{
+    [Parameter]
+    string FieldName { get; set; }
+    [Parameter]
+    object Model { get; set; }
+
+    protected string errorMessage;
+    protected override void OnInit()
+    {
+        modelValidator.OnValidationDone += HandleError;
+        base.OnInit();
+    }
+
+    protected void HandleError(object sender, ValidationErrorEventArgs args)
+    {
+        if (args.Instance != Model)
+            return;
+        errorMessage = null;
+        var error = args.Errors?.FirstOrDefault(e => e.MemberNames.Any(m => m == FieldName));
+        if (error == null)
+            return;
+        errorMessage = error.ErrorMessage;
+
+    }
+    public void Dispose()
+    {
+        modelValidator.OnValidationDone -= HandleError;
+    }
+}
