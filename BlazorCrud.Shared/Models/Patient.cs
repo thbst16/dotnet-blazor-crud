@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BlazorCrud.Shared
+namespace BlazorCrud.Shared.Models
 {
     public class Patient
     {

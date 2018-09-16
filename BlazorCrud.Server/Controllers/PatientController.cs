@@ -1,7 +1,8 @@
 ﻿using BlazorCrud.Shared.Data;
-using BlazorCrud.Shared;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using BlazorCrud.Shared.Models;
 
 namespace BlazorCrud.Server.Controllers
 {
@@ -37,6 +38,7 @@ namespace BlazorCrud.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IActionResult Create(Patient patient)
         {
             if (ModelState.IsValid)
@@ -52,6 +54,7 @@ namespace BlazorCrud.Server.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult Update(int id, Patient patient)
         {
             if (ModelState.IsValid)
@@ -79,6 +82,7 @@ namespace BlazorCrud.Server.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult Delete(int id)
         {
             if (ModelState.IsValid)

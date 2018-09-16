@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlazorCrud.Shared.Data
 {
-    public class PatientContext : DbContext
+    public class UserContext : DbContext
     {
-        public PatientContext(DbContextOptions<PatientContext> options)
+        public UserContext(DbContextOptions<UserContext> options)
             : base(options)
         {
         }
 
-        public DbSet<Patient> Patients { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }

@@ -1,15 +1,15 @@
-﻿using BlazorCrud.Shared;
+﻿using BlazorCrud.Shared.Models;
 using System.Linq;
 
 namespace BlazorCrud.Shared.Data
 {
-    public class PatientInitializer
+    public class DataInitializer
     {
-        public static void Initialize(PatientContext context)
+        public static void Initialize(PatientContext patientContext, UserContext userContext)
         {
-            if (context.Patients.Count() == 0)
+            if (patientContext.Patients.Count() == 0)
             {
-                // Create a new Patient object if collection is empty, which means you can't delete all Patients.
+                // Create new patients only if the collection is empty.
                 var patients = new Patient[]{
                         new Patient { Name = "Thomas Beck", Gender = "Male", PrimaryCareProvider = "Baton Rouge General", State = "LA" },
                         new Patient { Name = "Anna Beck", Gender = "Female", PrimaryCareProvider = "Barbarossa Services", State = "MI" },
@@ -29,9 +29,24 @@ namespace BlazorCrud.Shared.Data
                 };
                 foreach (Patient p in patients)
                 {
-                    context.Patients.Add(p);
+                    patientContext.Patients.Add(p);
                 }
-                context.SaveChanges();
+                patientContext.SaveChanges();
+            }
+
+            if (userContext.Users.Count() == 0)
+            {
+                // Create new users only if the collection is empty.
+                var users = new User[]
+                {
+                    new User {Username="admin@beckshome.com", Password="Password123", FirstName="Thomas", LastName="Beck", Email="admin@beckshome.com"},
+                    new User {Username="user@beckshome.com", Password="Password123", FirstName="Anna", LastName="Beck", Email="user@beckshome.com"}
+                };
+                foreach (User u in users)
+                {
+                    userContext.Users.Add(u);
+                }
+                userContext.SaveChanges();
             }
         }
     }
