@@ -1,6 +1,7 @@
 ﻿@page "/patient/edit/{Id}"
 @inject HttpClient Http
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject LocalStorage Storage
 
 <h1>Edit</h1>
 <h3>Patient</h3>
@@ -63,10 +64,14 @@
     {
         if (UriHelper.GetBaseUri() == "http://localhost:10001/")
         {
+            var token = Storage["JWT-Token"];
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await Http.SendJsonAsync(HttpMethod.Put, "http://localhost:10002/api/patient/" + Convert.ToInt32(Id), patient);
         }
         else
         {
+            var token = Storage["JWT-Token"];
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await Http.SendJsonAsync(HttpMethod.Put, "http://becksapi.azurewebsites.net/api/patient/" + Convert.ToInt32(Id), patient);
         }
         UriHelper.NavigateTo("/patient/list/1");

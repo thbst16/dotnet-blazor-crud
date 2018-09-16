@@ -50,14 +50,12 @@
         if (UriHelper.GetBaseUri() == "http://localhost:10001/")
         {
             var token = Storage["JWT-Token"];
-            Console.WriteLine("Token Stored: " + token);
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await Http.SendJsonAsync(HttpMethod.Post, "http://localhost:10002/api/patient", patient);
         }
         else
         {
             var token = Storage["JWT-Token"];
-            Console.WriteLine("Token Stored: " + token);
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await Http.SendJsonAsync(HttpMethod.Post, "http://becksapi.azurewebsites.net/api/patient/", patient);
         }

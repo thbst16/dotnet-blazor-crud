@@ -1,0 +1,14 @@
+﻿@page "/user/logout"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject LocalStorage Storage
+
+@functions {
+
+    protected override async Task OnInitAsync()
+    {
+        Storage["JWT-Token"] = String.Empty;
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", String.Empty);
+        UriHelper.NavigateTo("/");
+    }
+}

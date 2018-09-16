@@ -17,7 +17,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Password" class="control-label">Password</label>
-                <input asp-for="Password" class="form-control" bind="@login.Password" />
+                <input asp-for="Password" class="form-control" type="password" bind="@login.Password" />
                 <ClientValidationError FieldName="Password" Model="login" />
             </div>
             <div class="form-group">
@@ -37,13 +37,11 @@
         {
             var response = await Http.PostJsonAsync<JwtToken>("http://localhost:10002/api/user/logon", login);
             Storage["JWT-Token"] = response.token;
-            Console.WriteLine(response.token);
         }
         else
         {
             var response = await Http.PostJsonAsync<JwtToken>("http://becksapi.azurewebsites.net/api/user/logon", login);
             Storage["JWT-Token"] = response.token;
-            Console.WriteLine(response.token);
         }
         UriHelper.NavigateTo("/");
     }
