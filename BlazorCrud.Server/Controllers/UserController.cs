@@ -28,7 +28,7 @@ namespace BlazorCrud.Server.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("logon")]
-        public IActionResult LogOn([FromBody]LoginModel login)
+        public IActionResult LogOn([FromBody]Login login)
         {
             IActionResult response = Unauthorized();
             var user = _context.Users
@@ -63,11 +63,5 @@ namespace BlazorCrud.Server.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-    }
-
-    public class LoginModel
-    {
-        public string Username { get; set; }
-        public string Password { get; set; }
     }
 }
