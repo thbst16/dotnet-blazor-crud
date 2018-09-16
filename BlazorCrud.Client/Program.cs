@@ -1,4 +1,5 @@
 ﻿using BlazorCrud.Client.Services;
+using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
 using Microsoft.AspNetCore.Blazor.Browser.Rendering;
 using Microsoft.AspNetCore.Blazor.Browser.Services;
 using Microsoft.AspNetCore.Blazor.Hosting;
@@ -13,6 +14,7 @@ namespace BlazorCrud.Client
             var serviceProvider = new BrowserServiceProvider(configure =>
             {
                 configure.Add(ServiceDescriptor.Singleton<IModelValidator, ModelValidator>());
+                configure.AddStorage();
             });
 
             new BrowserRenderer(serviceProvider).AddComponent<App>("app");

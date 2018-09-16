@@ -1,6 +1,7 @@
 ﻿@page "/user/login"
 @inject HttpClient Http
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject LocalStorage Storage
 
 <h1>Login</h1>
 <h3>User</h3>
@@ -34,13 +35,15 @@
     {
         if (UriHelper.GetBaseUri() == "http://localhost:10001/")
         {
-            var response = await Http.PostJsonAsync<object>("http://becksapi.azurewebsites.net/api/user/logon", login);
-            // Http.SendJsonAsync(HttpMethod.Post, "http://localhost:10002/api/user/logon", login);
-            Console.WriteLine(response);
+            var response = await Http.PostJsonAsync<JwtToken>("http://localhost:10002/api/user/logon", login);
+            Storage["JWT-Token"] = response.token;
+            Console.WriteLine(response.token);
         }
         else
         {
-            await Http.SendJsonAsync(HttpMethod.Post, "http://becksapi.azurewebsites.net/api/user/logon", login);
+            var response = await Http.PostJsonAsync<JwtToken>("http://becksapi.azurewebsites.net/api/user/logon", login);
+            Storage["JWT-Token"] = response.token;
+            Console.WriteLine(response.token);
         }
         UriHelper.NavigateTo("/");
     }
