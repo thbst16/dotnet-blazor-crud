@@ -5,7 +5,7 @@
 
 @functions {
 
-    protected override async Task OnInitAsync()
+    protected override void OnInit()
     {
         Storage["JWT-Token"] = String.Empty;
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", String.Empty);

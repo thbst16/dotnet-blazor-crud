@@ -2,13 +2,17 @@
 @inject HttpClient Http
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 @using BlazorCrud.Shared.Data
+@inject LocalStorage Storage
 
 <h1>Patient Data</h1>
 <p>This component demonstrates fetching patient data from the server.</p>
 
-<p>
-    <a href="/patient/new">Add New Patient</a>
-</p>
+@if (isLoggedOn())
+{
+    <p>
+        <a href="/patient/new">Add New Patient</a>
+    </p>
+}
 
 @if (Patients == null)
 {
@@ -37,9 +41,12 @@ else
                     <td>@patient.PrimaryCareProvider</td>
                     <td>@patient.State</td>
                     <td>
-                        <a href='/patient/edit/@patient.Id'>Edit</a>  |
-                        <a href='/patient/view/@patient.Id'>View</a>  |
-                        <a href='/patient/delete/@patient.Id'>Delete</a>
+                        <a href='/patient/view/@patient.Id'>View</a>
+                        @if (isLoggedOn())
+                        {
+                        <span> | </span><a href='/patient/edit/@patient.Id'>Edit</a>
+                        <span> | </span><a href='/patient/delete/@patient.Id'>Delete</a>
+                        }
                     </td>
                 </tr>
             }
@@ -68,5 +75,10 @@ else
     protected void PagerPageChanged(int page)
     {
         UriHelper.NavigateTo("/patient/list/" + page);
+    }
+
+    protected bool isLoggedOn()
+    {
+        return Storage["JWT-Token"] != String.Empty;
     }
 }

@@ -19,7 +19,6 @@ private object Model { get; set; }
 
 private async Task OnSubmitWithValidate(UIEventArgs eventArgs)
 {
-    Console.WriteLine("OnSubmitWithValidate");
     if (ModelValidator.Validate(Model))
         await OnSubmit(eventArgs);
 }
