@@ -27,7 +27,8 @@ namespace BlazorCrud.Server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<PatientContext>(opt => opt.UseInMemoryDatabase("BlazorDb"));
+            services.AddDbContext<PatientContext>(opt => opt.UseInMemoryDatabase("PatientDb"));
+            services.AddDbContext<OrganizationContext>(opt => opt.UseInMemoryDatabase("OrganizationDb"));
             services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("UserDb"));
 
             services.AddCors(options =>

@@ -1,0 +1,72 @@
+﻿@page "/organization/new"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject LocalStorage Storage
+
+<h1>Create</h1>
+<h3>Organization</h3>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <ValidatedForm Model="@organization" OnSubmit="@CreateOrganization">
+            <div class="form-group">
+                <label for="Name" class="control-label">Name</label>
+                <input for="Name" class="form-control" bind="@organization.Name" />
+                <ClientValidationError FieldName="Name" Model="organization" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Gender" class="control-label">Type</label>
+                <select asp-for="Gender" class="form-control" bind="@organization.Type">
+                    <option value="">-- Select Type --</option>
+                    <option value="Healthcare Provider">Healthcare Provider</option>
+                    <option value="Hospital Department">Hospital Department</option>
+                    <option value="Organizational Team">Organizational Team</option>
+                    <option value="Government">Government</option>
+                    <option value="Insurance Company">Insurance Company</option>
+                    <option value="Educational Institute">Educational Institute</option>
+                    <option value="Religous Institution">Religous Institution</option>
+                    <option value="Clinical Research Sponsor">Clinical Research Sponsor</option>
+                    <option value="Community Group">Community Group</option>
+                    <option value="Non-Healthcare Business or Corporation">Non-Healthcare Business or Coporation</option>
+                    <option value="Other">Other</option>
+                </select>
+                <ClientValidationError FieldName="Type" Model="organization" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Active" class="control-label">Active</label>
+                <input asp-for="Active" class="form-control" type="checkbox" bind="@organization.IsActive" />
+                <ClientValidationError FieldName="Active" Model="organization" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default">Save</button>
+                <button class="btn" onclick="@cancel">Cancel</button>
+            </div>
+        </ValidatedForm>
+    </div>
+</div>
+
+@functions {
+Organization organization = new Organization();
+
+protected async Task CreateOrganization(UIEventArgs ev)
+{
+    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.SendJsonAsync(HttpMethod.Post, "http://localhost:10002/api/organization", organization);
+    }
+    else
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.SendJsonAsync(HttpMethod.Post, "http://becksapi.azurewebsites.net/api/organization/", organization);
+    }
+    UriHelper.NavigateTo("/organization/list/1");
+}
+void cancel()
+{
+    UriHelper.NavigateTo("/organization/list/1");
+}
+}

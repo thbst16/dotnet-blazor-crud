@@ -1,0 +1,82 @@
+﻿@page "/organization/list/{Page}"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@using BlazorCrud.Shared.Data
+@inject LocalStorage Storage
+
+<h1>Organization Data</h1>
+<p>This component demonstrates fetching organization data from the server.</p>
+
+@if (isLoggedOn())
+{
+    <p>
+        <a href="/organization/new">Add New Organization</a>
+    </p>
+}
+
+@if (Organizations == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Active</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var organization in Organizations.Results)
+            {
+                <tr>
+                    <td>@organization.Id</td>
+                    <td>@organization.Name</td>
+                    <td>@organization.Type</td>
+                    <td>@organization.IsActive</td>
+                    <td>
+                        <a href='/organization/view/@organization.Id'>View</a>
+                        @if (isLoggedOn())
+                        {
+                            <span> | </span><a href='/organization/edit/@organization.Id'>Edit</a>
+                            <span> | </span><a href='/organization/delete/@organization.Id'>Delete</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <Pager Result=@Organizations PageChanged=@PagerPageChanged />
+}
+
+@functions {
+[Parameter]
+protected string Page { get; set; } = "1";
+
+protected PagedResult<Organization> Organizations;
+
+protected override async Task OnParametersSetAsync()
+{
+    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    {
+        Organizations = await Http.GetJsonAsync<PagedResult<Organization>>("http://localhost:10002/api/organization/?page=" + Page);
+    }
+    else
+    {
+        Organizations = await Http.GetJsonAsync<PagedResult<Organization>>("http://becksapi.azurewebsites.net/api/organization/?page=" + Page);
+    }
+}
+protected void PagerPageChanged(int page)
+{
+    UriHelper.NavigateTo("/organization/list/" + page);
+}
+
+protected bool isLoggedOn()
+{
+    return Storage["JWT-Token"] != String.Empty;
+}
+}

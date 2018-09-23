@@ -1,0 +1,55 @@
+﻿@page "/organization/view/{Id}"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+<h1>View</h1>
+<h3>Organization</h3>
+
+<br />
+<div class="col-md-4">
+    <table class="table">
+        <tr>
+            <td>Id</td>
+            <td>@organization.Id</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>@organization.Name</td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td>@organization.Type</td>
+        </tr>
+        <tr>
+            <td>Active</td>
+            <td>@organization.IsActive</td>
+        </tr>
+    </table>
+    <div class="form-group">
+        <button class="btn" onclick="@back">Back</button>
+    </div>
+</div>
+
+@functions {
+[Parameter]
+string Id { get; set; }
+
+Organization organization = new Organization();
+
+protected override async Task OnInitAsync()
+{
+    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    {
+        organization = await Http.GetJsonAsync<Organization>("http://localhost:10002/api/organization/" + Convert.ToInt32(Id));
+    }
+    else
+    {
+        organization = await Http.GetJsonAsync<Organization>("http://becksapi.azurewebsites.net/api/organization/" + Convert.ToInt32(Id));
+    }
+}
+
+void back()
+{
+    UriHelper.NavigateTo("/organization/list/1");
+}
+}
