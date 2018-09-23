@@ -9,9 +9,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorCrud.Server", "Blazor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorCrud.Shared", "BlazorCrud.Shared\BlazorCrud.Shared.csproj", "{BCC01270-CB74-467F-9A8E-F62709A47977}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".circleci", ".circleci", "{EAAF5047-3E07-42CF-9E8C-D0789C9FA2A7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{832DD3B9-A126-484B-9BD1-9EB145718933}"
 	ProjectSection(SolutionItems) = preProject
-		config.yml = config.yml
+		.circleci\config.yml = .circleci\config.yml
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global
