@@ -7,5 +7,5 @@ Blazor CRUD is a demo application built with the [Blazor](https://blazor.net) fr
 * [Blazor CRUD REST API](http://becksapi.azurewebsites.net) - A REST API for CRUD with non-read API calls secured with JWT. The API includes a call to authenticate users and receive a JWT bearer token.
 
 Blazor CRUD uses the following DevOps environment and tools to support a CI / CD process:
-* [GitHub Source Code](https://github.com/thbst16/BlazorCrud) - All source code is stored in the GitHub repository, which is where you currently find yourself.
-* [CircleCI](https://circleci.com/gh/thbst16/BlazorCrud) - CircleCI is used for continunous integration and continuous delivery (CI/CD). In it's current format, CircleCI is being used exclusively as a build server. Current project build status can also be followed using the CircleCI badge on this page.
+* [GitHub Source Code Repository](https://github.com/thbst16/BlazorCrud) - All source code is stored in the GitHub repository, which is where you currently find yourself.
+* [CircleCI for CI/CD](https://circleci.com/gh/thbst16/BlazorCrud) - CircleCI is used for continunous integration and continuous delivery (CI/CD). In it's current format, CircleCI is being used exclusively as a build server. Current project build status can also be followed using the CircleCI badge on this page.
