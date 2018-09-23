@@ -25,6 +25,9 @@ namespace BlazorCrud.Server.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Allows a user to authenticate and receive a JWT token for API calls.
+        /// </summary>
         [AllowAnonymous]
         [HttpPost]
         [Route("logon")]

@@ -7,6 +7,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Swagger;
+using System;
+using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace BlazorCrud.Server
@@ -51,6 +55,21 @@ namespace BlazorCrud.Server
                 });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info
+                {
+                    Title = "Blazor CRUD API",
+                    Version = "v1",
+                    Description = "CRUD API Services that act as the backend to the Blazor CRUD website"
+                });
+
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +83,15 @@ namespace BlazorCrud.Server
             {
                 app.UseHsts();
             }
+
+            // Enable Swagger with the JSON endpoint
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blazore CRUD API v1");
+                c.RoutePrefix = string.Empty;
+            });
+
             app.UseCors("blazor");
             app.UseAuthentication();
             app.UseMvc();

@@ -17,6 +17,9 @@ namespace BlazorCrud.Server.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Returns a list of paginated patients with a default page size of 5.
+        /// </summary>
         [HttpGet]
         public PagedResult<Patient> GetAll([FromQuery]int page)
         {
@@ -26,6 +29,9 @@ namespace BlazorCrud.Server.Controllers
                 .GetPaged(page, pageSize);
         }
 
+        /// <summary>
+        /// Gets a specific patient by Id.
+        /// </summary>
         [HttpGet("{id}", Name = "GetPatient")]
         public ActionResult<Patient> GetById(int id)
         {
@@ -37,6 +43,9 @@ namespace BlazorCrud.Server.Controllers
             return item;
         }
 
+        /// <summary>
+        /// Creates a patient.
+        /// </summary>
         [HttpPost]
         [Authorize]
         public IActionResult Create(Patient patient)
@@ -53,6 +62,9 @@ namespace BlazorCrud.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates a patient with a specific Id.
+        /// </summary>
         [HttpPut("{id}")]
         [Authorize]
         public IActionResult Update(int id, Patient patient)
@@ -81,6 +93,9 @@ namespace BlazorCrud.Server.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes a specific patient by Id.
+        /// </summary>
         [HttpDelete("{id}")]
         [Authorize]
         public IActionResult Delete(int id)
