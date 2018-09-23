@@ -1,4 +1,5 @@
-﻿using BlazorCrud.Shared.Data;
+﻿using AutoMapper;
+using BlazorCrud.Shared.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,6 +31,8 @@ namespace BlazorCrud.Server
             services.AddDbContext<PatientContext>(opt => opt.UseInMemoryDatabase("PatientDb"));
             services.AddDbContext<OrganizationContext>(opt => opt.UseInMemoryDatabase("OrganizationDb"));
             services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("UserDb"));
+
+            services.AddAutoMapper();
 
             services.AddCors(options =>
             {

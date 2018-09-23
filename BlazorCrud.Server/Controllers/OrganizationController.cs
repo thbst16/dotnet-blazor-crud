@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using BlazorCrud.Shared.Models;
+using AutoMapper;
 
 namespace BlazorCrud.Server.Controllers
 {
@@ -11,10 +12,12 @@ namespace BlazorCrud.Server.Controllers
     public class OrganizationController : ControllerBase
     {
         private readonly OrganizationContext _context;
+        private readonly IMapper _mapper;
 
-        public OrganizationController(OrganizationContext context)
+        public OrganizationController(OrganizationContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -77,11 +80,7 @@ namespace BlazorCrud.Server.Controllers
                     return NotFound();
                 }
 
-                // This is where you need AutoMapper
-                org.Name = organization.Name;
-                org.Type = organization.Type;
-                org.IsActive = organization.IsActive;
-
+                _mapper.Map(organization, org);
                 _context.Organizations.Update(org);
                 _context.SaveChanges();
                 return NoContent();

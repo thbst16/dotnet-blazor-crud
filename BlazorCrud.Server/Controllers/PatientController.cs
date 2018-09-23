@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using BlazorCrud.Shared.Models;
+using AutoMapper;
 
 namespace BlazorCrud.Server.Controllers
 {
@@ -11,10 +12,12 @@ namespace BlazorCrud.Server.Controllers
     public class PatientController : ControllerBase
     {
         private readonly PatientContext _context;
+        private readonly IMapper _mapper;
 
-        public PatientController(PatientContext context)
+        public PatientController(PatientContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -77,12 +80,7 @@ namespace BlazorCrud.Server.Controllers
                     return NotFound();
                 }
 
-                // This is where you need AutoMapper
-                pat.Name = patient.Name;
-                pat.Gender = patient.Gender;
-                pat.PrimaryCareProvider = patient.PrimaryCareProvider;
-                pat.State = patient.State;
-
+                _mapper.Map(patient, pat);
                 _context.Patients.Update(pat);
                 _context.SaveChanges();
                 return NoContent();
