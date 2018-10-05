@@ -59,10 +59,10 @@
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await Http.SendJsonAsync(HttpMethod.Post, "http://becksapi.azurewebsites.net/api/patient/", patient);
         }
-        UriHelper.NavigateTo("/patient/list/1");
+        UriHelper.NavigateTo("/patient/modified");
     }
     void cancel()
     {
-        UriHelper.NavigateTo("/patient/list/1");
+        UriHelper.NavigateTo("/patient/cancelled");
     }
 }

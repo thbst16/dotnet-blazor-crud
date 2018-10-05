@@ -7,6 +7,7 @@
 <h3>User</h3>
 
 <hr />
+
 <div class="row">
     <div class="col-md-4">
         <ValidatedForm Model="@login" OnSubmit="@LogonUser">
@@ -45,6 +46,7 @@
         }
         UriHelper.NavigateTo("/");
     }
+
     void cancel()
     {
         UriHelper.NavigateTo("/");

@@ -4,26 +4,26 @@
 
 <Navbar IsExpand="true" IsDark="true" Color="Color.Dark" IsFixedTop="true">
     <NavbarBrand Href="#">Blazor CRUD</NavbarBrand>
-    <NavbarToggler onclick="@onclick" />
+    <NavbarToggler onclick="@openNav" />
     <Collapse IsOpen="@IsOpen" IsNavbar="true">
         <BlazorNav IsList="true" Class="mr-auto" IsNavbar="true">
             <NavItem>
-                <BlazorNavLink href="#">Home</BlazorNavLink>
+                <BlazorNavLink href="#" onclick="@closeNav">Home</BlazorNavLink>
             </NavItem>
             <NavItem>
-                <BlazorNavLink href="patient/list/1">Patients</BlazorNavLink>
+                <BlazorNavLink href="patient/list/1" onclick="@closeNav">Patients</BlazorNavLink>
             </NavItem>
             <NavItem>
-                <BlazorNavLink href="organization/list/1">Organizations</BlazorNavLink>
+                <BlazorNavLink href="organization/list/1" onclick="@closeNav">Organizations</BlazorNavLink>
             </NavItem>
             <NavItem>
-                <BlazorNavLink IsDisabled="true" href="#">Claims</BlazorNavLink>
+                <BlazorNavLink IsDisabled="true" href="#" onclick="@closeNav">Claims</BlazorNavLink>
             </NavItem>
             <NavItem>
-                <BlazorNavLink IsDisabled="true" href="#">Attachments</BlazorNavLink>
+                <BlazorNavLink IsDisabled="true" href="#" onclick="@closeNav">Attachments</BlazorNavLink>
             </NavItem>
             <NavItem>
-                <BlazorNavLink IsDisabled="true" href="#">Users</BlazorNavLink>
+                <BlazorNavLink IsDisabled="true" href="#" onclick="@closeNav">Users</BlazorNavLink>
             </NavItem>
             @if (isLoggedOn())
             {
@@ -54,18 +54,24 @@
 </footer>
 
 @functions {
-// Handle Navbar events
+    // Handle Navbar events
 
-bool IsOpen { get; set; } = false;
+    bool IsOpen { get; set; } = false;
 
-void onclick(UIMouseEventArgs e)
-{
-    IsOpen = !IsOpen;
-    StateHasChanged();
-}
+    void openNav(UIMouseEventArgs e)
+    {
+        IsOpen = !IsOpen;
+        StateHasChanged();
+    }
 
-protected bool isLoggedOn()
-{
-    return Storage["JWT-Token"] != String.Empty;
-}
+    void closeNav(UIMouseEventArgs e)
+    {
+        IsOpen = !IsOpen;
+        StateHasChanged();
+    }
+
+    protected bool isLoggedOn()
+    {
+        return Storage["JWT-Token"] != String.Empty;
+    }
 }

@@ -74,11 +74,11 @@
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await Http.SendJsonAsync(HttpMethod.Put, "http://becksapi.azurewebsites.net/api/patient/" + Convert.ToInt32(Id), patient);
         }
-        UriHelper.NavigateTo("/patient/list/1");
+        UriHelper.NavigateTo("/patient/modified");
     }
 
     void cancel()
     {
-        UriHelper.NavigateTo("/patient/list/1");
+        UriHelper.NavigateTo("/patient/cancelled");
     }
 }

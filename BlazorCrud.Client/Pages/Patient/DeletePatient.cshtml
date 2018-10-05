@@ -64,10 +64,10 @@
             Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             await Http.DeleteAsync("http://becksapi.azurewebsites.net/api/patient/" + Convert.ToInt32(Id));
         }
-        UriHelper.NavigateTo("/patient/list/1");
+        UriHelper.NavigateTo("/patient/modified");
     }
     void cancel()
     {
-        UriHelper.NavigateTo("/patient/list/1");
+        UriHelper.NavigateTo("/patient/cancelled");
     }
 }

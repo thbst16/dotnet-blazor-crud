@@ -1,8 +1,22 @@
 ﻿@page "/patient/list/{Page}"
+@page "/patient/{Transaction}"
+@addTagHelper *, BlazorStrap
 @inject HttpClient Http
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 @using BlazorCrud.Shared.Data
 @inject LocalStorage Storage
+
+@if (Transaction == "modified") {
+<Alert Color="Color.Success" IsDismissible="true">
+    Patient successfully updated in the system.
+</Alert>
+}
+@if (Transaction == "cancelled")
+{
+    <Alert Color="Color.Warning" IsDismissible="true">
+        Patient transaction cancelled.
+    </Alert>
+}
 
 <h1>Patient Data</h1>
 <p>This component demonstrates fetching patient data from the server.</p>
@@ -44,8 +58,8 @@ else
                         <a href='/patient/view/@patient.Id'>View</a>
                         @if (isLoggedOn())
                         {
-                        <span> | </span><a href='/patient/edit/@patient.Id'>Edit</a>
-                        <span> | </span><a href='/patient/delete/@patient.Id'>Delete</a>
+                            <span> | </span><a href='/patient/edit/@patient.Id'>Edit</a>
+                            <span> | </span><a href='/patient/delete/@patient.Id'>Delete</a>
                         }
                     </td>
                 </tr>
@@ -53,11 +67,13 @@ else
         </tbody>
     </table>
     <Pager Result=@Patients PageChanged=@PagerPageChanged />
-} 
+}
 
 @functions {
     [Parameter]
     protected string Page { get; set; } = "1";
+    [Parameter]
+    protected string Transaction { get; set; }
 
     protected PagedResult<Patient> Patients;
 
@@ -72,8 +88,10 @@ else
             Patients = await Http.GetJsonAsync<PagedResult<Patient>>("http://becksapi.azurewebsites.net/api/patient?page=" + Page);
         }
     }
+
     protected void PagerPageChanged(int page)
     {
+        Transaction = string.Empty;
         UriHelper.NavigateTo("/patient/list/" + page);
     }
 

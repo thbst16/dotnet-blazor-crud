@@ -1,4 +1,15 @@
 ﻿@page "/"
+@page "/logout"
+@addTagHelper *, BlazorStrap
+@inject LocalStorage Storage
+
+@if (Storage["App-State"] == "logged-out")
+{
+    <Alert Color="Color.Warning" IsDismissible="true">
+        You have been successfully logged out of the application.
+    </Alert>
+    Storage["App-State"] = string.Empty;
+}
 
 <main role="main">
 

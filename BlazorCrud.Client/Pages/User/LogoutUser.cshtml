@@ -8,7 +8,8 @@
     protected override void OnInit()
     {
         Storage["JWT-Token"] = String.Empty;
+        Storage["App-State"] = "logged-out";
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", String.Empty);
-        UriHelper.NavigateTo("/");
+        UriHelper.NavigateTo("/logout");
     }
 }
