@@ -1,63 +1,71 @@
+@addTagHelper *, BlazorStrap
 @inherits BlazorLayoutComponent
 @inject LocalStorage Storage
 
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand" href="#">Blazor CRUD</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="patient/list/1">Patients</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="organization/list/1">Organizations</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#">Claims</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#">Attachments</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#">Users</a>
-            </li>
+<Navbar IsExpand="true" IsDark="true" Color="Color.Dark" IsFixedTop="true">
+    <NavbarBrand Href="#">Blazor CRUD</NavbarBrand>
+    <NavbarToggler onclick="@onclick" />
+    <Collapse IsOpen="@IsOpen" IsNavbar="true">
+        <BlazorNav IsList="true" Class="mr-auto" IsNavbar="true">
+            <NavItem>
+                <BlazorNavLink href="#">Home</BlazorNavLink>
+            </NavItem>
+            <NavItem>
+                <BlazorNavLink href="patient/list/1">Patients</BlazorNavLink>
+            </NavItem>
+            <NavItem>
+                <BlazorNavLink href="organization/list/1">Organizations</BlazorNavLink>
+            </NavItem>
+            <NavItem>
+                <BlazorNavLink IsDisabled="true" href="#">Claims</BlazorNavLink>
+            </NavItem>
+            <NavItem>
+                <BlazorNavLink IsDisabled="true" href="#">Attachments</BlazorNavLink>
+            </NavItem>
+            <NavItem>
+                <BlazorNavLink IsDisabled="true" href="#">Users</BlazorNavLink>
+            </NavItem>
             @if (isLoggedOn())
             {
-                <li class="nav-item">
-                    <a class="nav-link" href="/user/logout">Logout</a>
-                </li>
+                <NavItem>
+                    <BlazorNavLink href="/user/logout">Logout</BlazorNavLink>
+                </NavItem>
             }
             else
             {
-                <li>
-                    <a class="nav-link" href="/user/login">Logon</a>
-                </li>
+                <NavItem>
+                    <BlazorNavLink href="/user/login">Login</BlazorNavLink>
+                </NavItem>
             }
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0">Search</button>
-        </form>
-    </div>
-</nav>
+        </BlazorNav>
+        <BlazorForm IsInline="true" Class="my-2 my-lg-0">
+            <BlazorInput InputType="InputType.Search" PlaceHolder="Search" Class="mr-sm-2" />
+            <BlazorButton IsOutline="true" Color="Color.Success" ButtonType="ButtonType.Submit" Class="my-2 my-sm-0">Search</BlazorButton>
+        </BlazorForm>
+    </Collapse>
+</Navbar>
 
 <div class="content px-4">
     @Body
 </div>
 
 <footer class="container">
-        <p>&copy; Beckshome.com 2018</p>
+    <p>&copy; Beckshome.com 2018</p>
 </footer>
 
 @functions {
-    protected bool isLoggedOn()
-    {
-        return Storage["JWT-Token"] != String.Empty;
-    }
+// Handle Navbar events
+
+bool IsOpen { get; set; } = false;
+
+void onclick(UIMouseEventArgs e)
+{
+    IsOpen = !IsOpen;
+    StateHasChanged();
+}
+
+protected bool isLoggedOn()
+{
+    return Storage["JWT-Token"] != String.Empty;
+}
 }
