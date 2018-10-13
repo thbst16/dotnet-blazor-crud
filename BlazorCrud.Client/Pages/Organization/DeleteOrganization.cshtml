@@ -29,41 +29,41 @@
 </div>
 
 @functions {
-[Parameter]
-string Id { get; set; }
+    [Parameter]
+    string Id { get; set; }
 
-Organization organization = new Organization();
+    Organization organization = new Organization();
 
-protected override async Task OnInitAsync()
-{
-    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    protected override async Task OnInitAsync()
     {
-        organization = await Http.GetJsonAsync<Organization>("http://localhost:10002/api/organization/" + Convert.ToInt32(Id));
+        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+        {
+            organization = await Http.GetJsonAsync<Organization>("http://localhost:10002/api/organization/" + Convert.ToInt32(Id));
+        }
+        else
+        {
+            organization = await Http.GetJsonAsync<Organization>("http://becksapi.azurewebsites.net/api/organization/" + Convert.ToInt32(Id));
+        }
     }
-    else
-    {
-        organization = await Http.GetJsonAsync<Organization>("http://becksapi.azurewebsites.net/api/organization/" + Convert.ToInt32(Id));
-    }
-}
 
-protected async Task RemoveOrganization()
-{
-    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    protected async Task RemoveOrganization()
     {
-        var token = Storage["JWT-Token"];
-        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        await Http.DeleteAsync("http://localhost:10002/api/organization/" + Convert.ToInt32(Id));
+        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+        {
+            var token = Storage["JWT-Token"];
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await Http.DeleteAsync("http://localhost:10002/api/organization/" + Convert.ToInt32(Id));
+        }
+        else
+        {
+            var token = Storage["JWT-Token"];
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await Http.DeleteAsync("http://becksapi.azurewebsites.net/api/organization/" + Convert.ToInt32(Id));
+        }
+        UriHelper.NavigateTo("/organization/modified");
     }
-    else
+    void cancel()
     {
-        var token = Storage["JWT-Token"];
-        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        await Http.DeleteAsync("http://becksapi.azurewebsites.net/api/organization/" + Convert.ToInt32(Id));
+        UriHelper.NavigateTo("/organization/cancelled");
     }
-    UriHelper.NavigateTo("/organization/list/1");
-}
-void cancel()
-{
-    UriHelper.NavigateTo("/organization/list/1");
-}
 }

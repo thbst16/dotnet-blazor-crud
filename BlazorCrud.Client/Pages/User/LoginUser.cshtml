@@ -1,7 +1,16 @@
 ﻿@page "/user/login"
+@page "/user/login/{Transaction}"
+@addTagHelper *, BlazorStrap
 @inject HttpClient Http
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 @inject LocalStorage Storage
+
+@if (Transaction == "invalid")
+{
+    <Alert Color="Color.Danger" IsDismissible="true">
+        Invalid username and/or password. Please retry your credentials.
+    </Alert>
+}
 
 <h1>Login</h1>
 <h3>User</h3>
@@ -30,6 +39,9 @@
 </div>
 
 @functions {
+    [Parameter]
+    protected string Transaction { get; set; }
+
     Login login = new Login();
 
     protected async Task LogonUser(UIEventArgs ev)
@@ -38,13 +50,38 @@
         {
             var response = await Http.PostJsonAsync<JwtToken>("http://localhost:10002/api/user/logon", login);
             Storage["JWT-Token"] = response.token;
+
+            login.Username = string.Empty;
+            login.Password = string.Empty;
+
+            if (response.token == string.Empty)
+            {
+                Transaction = string.Empty;
+                UriHelper.NavigateTo("/user/login/invalid");
+            }
+            else
+            {
+                UriHelper.NavigateTo("/");
+            }
         }
         else
         {
             var response = await Http.PostJsonAsync<JwtToken>("http://becksapi.azurewebsites.net/api/user/logon", login);
             Storage["JWT-Token"] = response.token;
+
+            login.Username = string.Empty;
+            login.Password = string.Empty;
+
+            if (response.token == string.Empty)
+            {
+                Transaction = string.Empty;
+                UriHelper.NavigateTo("/user/login/invalid");
+            }
+            else
+            {
+                UriHelper.NavigateTo("/");
+            }
         }
-        UriHelper.NavigateTo("/");
     }
 
     void cancel()

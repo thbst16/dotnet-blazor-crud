@@ -47,42 +47,42 @@
 </div>
 
 @functions {
-[Parameter]
-string Id { get; set; }
+    [Parameter]
+    string Id { get; set; }
 
-Organization organization = new Organization();
+    Organization organization = new Organization();
 
-protected override async Task OnInitAsync()
-{
-    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    protected override async Task OnInitAsync()
     {
-        organization = await Http.GetJsonAsync<Organization>("http://localhost:10002/api/organization/" + Convert.ToInt32(Id));
+        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+        {
+            organization = await Http.GetJsonAsync<Organization>("http://localhost:10002/api/organization/" + Convert.ToInt32(Id));
+        }
+        else
+        {
+            organization = await Http.GetJsonAsync<Organization>("http://becksapi.azurewebsites.net/api/organization/" + Convert.ToInt32(Id));
+        }
     }
-    else
-    {
-        organization = await Http.GetJsonAsync<Organization>("http://becksapi.azurewebsites.net/api/organization/" + Convert.ToInt32(Id));
-    }
-}
 
-protected async Task UpdateOrganization(UIEventArgs ev)
-{
-    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    protected async Task UpdateOrganization(UIEventArgs ev)
     {
-        var token = Storage["JWT-Token"];
-        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        await Http.SendJsonAsync(HttpMethod.Put, "http://localhost:10002/api/organization/" + Convert.ToInt32(Id), organization);
+        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+        {
+            var token = Storage["JWT-Token"];
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await Http.SendJsonAsync(HttpMethod.Put, "http://localhost:10002/api/organization/" + Convert.ToInt32(Id), organization);
+        }
+        else
+        {
+            var token = Storage["JWT-Token"];
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            await Http.SendJsonAsync(HttpMethod.Put, "http://becksapi.azurewebsites.net/api/organization/" + Convert.ToInt32(Id), organization);
+        }
+        UriHelper.NavigateTo("/organization/modified");
     }
-    else
-    {
-        var token = Storage["JWT-Token"];
-        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        await Http.SendJsonAsync(HttpMethod.Put, "http://becksapi.azurewebsites.net/api/organization/" + Convert.ToInt32(Id), organization);
-    }
-    UriHelper.NavigateTo("/organization/list/1");
-}
 
-void cancel()
-{
-    UriHelper.NavigateTo("/organization/list/1");
-}
+    void cancel()
+    {
+        UriHelper.NavigateTo("/organization/cancelled");
+    }
 }

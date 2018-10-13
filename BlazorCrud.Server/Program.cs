@@ -22,7 +22,8 @@ namespace BlazorCrud.Server
                     var patientContext = services.GetRequiredService<PatientContext>();
                     var userContext = services.GetRequiredService<UserContext>();
                     var organizationContext = services.GetRequiredService<OrganizationContext>();
-                    DataInitializer.Initialize(patientContext, organizationContext, userContext);
+                    var claimContext = services.GetRequiredService<ClaimContext>();
+                    DataInitializer.Initialize(patientContext, organizationContext, claimContext, userContext);
                 }
                 catch (Exception ex)
                 {

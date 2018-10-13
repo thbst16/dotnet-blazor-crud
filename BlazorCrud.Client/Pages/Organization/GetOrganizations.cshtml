@@ -1,8 +1,23 @@
 ﻿@page "/organization/list/{Page}"
+@page "/organization/{Transaction}"
+@addTagHelper *, BlazorStrap
 @inject HttpClient Http
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 @using BlazorCrud.Shared.Data
 @inject LocalStorage Storage
+
+@if (Transaction == "modified")
+{
+    <Alert Color="Color.Success" IsDismissible="true">
+        Organization successfully updated in the system.
+    </Alert>
+}
+@if (Transaction == "cancelled")
+{
+    <Alert Color="Color.Warning" IsDismissible="true">
+        Organization transaction cancelled.
+    </Alert>
+}
 
 <h1>Organization Data</h1>
 <p>This component demonstrates fetching organization data from the server.</p>
@@ -54,29 +69,32 @@ else
 }
 
 @functions {
-[Parameter]
-protected string Page { get; set; } = "1";
+    [Parameter]
+    protected string Page { get; set; } = "1";
+    [Parameter]
+    protected string Transaction { get; set; }
 
-protected PagedResult<Organization> Organizations;
+    protected PagedResult<Organization> Organizations;
 
-protected override async Task OnParametersSetAsync()
-{
-    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    protected override async Task OnParametersSetAsync()
     {
-        Organizations = await Http.GetJsonAsync<PagedResult<Organization>>("http://localhost:10002/api/organization/?page=" + Page);
+        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+        {
+            Organizations = await Http.GetJsonAsync<PagedResult<Organization>>("http://localhost:10002/api/organization/?page=" + Page);
+        }
+        else
+        {
+            Organizations = await Http.GetJsonAsync<PagedResult<Organization>>("http://becksapi.azurewebsites.net/api/organization/?page=" + Page);
+        }
     }
-    else
+    protected void PagerPageChanged(int page)
     {
-        Organizations = await Http.GetJsonAsync<PagedResult<Organization>>("http://becksapi.azurewebsites.net/api/organization/?page=" + Page);
+        Transaction = string.Empty;
+        UriHelper.NavigateTo("/organization/list/" + page);
     }
-}
-protected void PagerPageChanged(int page)
-{
-    UriHelper.NavigateTo("/organization/list/" + page);
-}
 
-protected bool isLoggedOn()
-{
-    return Storage["JWT-Token"] != String.Empty;
-}
+    protected bool isLoggedOn()
+    {
+        return Storage["JWT-Token"] != String.Empty;
+    }
 }

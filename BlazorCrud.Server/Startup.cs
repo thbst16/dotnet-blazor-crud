@@ -30,6 +30,7 @@ namespace BlazorCrud.Server
         {
             services.AddDbContext<PatientContext>(opt => opt.UseInMemoryDatabase("PatientDb"));
             services.AddDbContext<OrganizationContext>(opt => opt.UseInMemoryDatabase("OrganizationDb"));
+            services.AddDbContext<ClaimContext>(opt => opt.UseInMemoryDatabase("ClaimDb"));
             services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("UserDb"));
 
             services.AddAutoMapper();

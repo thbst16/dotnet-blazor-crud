@@ -1,0 +1,102 @@
+﻿@page "/claim/list/{Page}"
+@page "/claim/{Transaction}"
+@addTagHelper *, BlazorStrap
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@using BlazorCrud.Shared.Data
+@inject LocalStorage Storage
+
+@if (Transaction == "modified")
+{
+    <Alert Color="Color.Success" IsDismissible="true">
+        Claim successfully updated in the system.
+    </Alert>
+}
+@if (Transaction == "cancelled")
+{
+    <Alert Color="Color.Warning" IsDismissible="true">
+        Claim transaction cancelled.
+    </Alert>
+}
+
+<h1>Claim Data</h1>
+<p>This component demonstrates fetching claim data from the server.</p>
+
+@if (isLoggedOn())
+{
+    <p>
+        <a href="/claim/new">Add New Claim</a>
+    </p>
+}
+
+@if (Claims == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class='table'>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Organization</th>
+                <th>Status</th>
+                <th>Type</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var claim in Claims.Results)
+            {
+            <tr>
+                <td>@claim.Id</td>
+                <td>@claim.Patient</td>
+                <td>@claim.Organization</td>
+                <td>@claim.Status</td>
+                <td>@claim.Type</td>
+                <td>
+                    <a href='/claim/view/@claim.Id'>View</a>
+                    @if (isLoggedOn())
+                    {
+                        <span> | </span><a href='/claim/edit/@claim.Id'>Edit</a>
+                        <span> | </span><a href='/claim/delete/@claim.Id'>Delete</a>
+                    }
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <Pager Result=@Claims PageChanged=@PagerPageChanged />
+}
+
+@functions {
+[Parameter]
+protected string Page { get; set; } = "1";
+[Parameter]
+protected string Transaction { get; set; }
+
+protected PagedResult<Claim> Claims;
+
+protected override async Task OnParametersSetAsync()
+{
+    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    {
+        Claims = await Http.GetJsonAsync<PagedResult<Claim>>("http://localhost:10002/api/claim/?page=" + Page);
+    }
+    else
+    {
+        Claims = await Http.GetJsonAsync<PagedResult<Claim>>("http://becksapi.azurewebsites.net/api/claim/?page=" + Page);
+    }
+}
+protected void PagerPageChanged(int page)
+{
+    Transaction = string.Empty;
+    UriHelper.NavigateTo("/claim/list/" + page);
+}
+
+protected bool isLoggedOn()
+{
+    return Storage["JWT-Token"] != String.Empty;
+}
+}

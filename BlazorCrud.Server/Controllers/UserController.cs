@@ -33,7 +33,9 @@ namespace BlazorCrud.Server.Controllers
         [Route("logon")]
         public IActionResult LogOn([FromBody]Login login)
         {
-            IActionResult response = Unauthorized();
+            // Removed unauthorized default since Blazor can't handle HTTP 403 respons
+            // IActionResult response = Unauthorized();
+            IActionResult response = Ok( new { token = string.Empty });
             var user = _context.Users
                 .Where(u => u.Username == login.Username && u.Password == login.Password)
                 .FirstOrDefault();
@@ -49,10 +51,10 @@ namespace BlazorCrud.Server.Controllers
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, u.Username),
-                new Claim(JwtRegisteredClaimNames.GivenName, u.FirstName),
-                new Claim(JwtRegisteredClaimNames.FamilyName, u.LastName),
-                new Claim(JwtRegisteredClaimNames.Email, u.Email)
+                new System.Security.Claims.Claim(JwtRegisteredClaimNames.Sub, u.Username),
+                new System.Security.Claims.Claim(JwtRegisteredClaimNames.GivenName, u.FirstName),
+                new System.Security.Claims.Claim(JwtRegisteredClaimNames.FamilyName, u.LastName),
+                new System.Security.Claims.Claim(JwtRegisteredClaimNames.Email, u.Email)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));

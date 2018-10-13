@@ -5,7 +5,7 @@
 
 @if (Storage["App-State"] == "logged-out")
 {
-    <Alert Color="Color.Warning" IsDismissible="true">
+    <Alert Color="Color.Info" IsDismissible="true">
         You have been successfully logged out of the application.
     </Alert>
     Storage["App-State"] = string.Empty;

@@ -9,6 +9,7 @@ namespace BlazorCrud.Shared.Data
         {
             CreateMap<Patient, Patient>().ReverseMap();
             CreateMap<Organization, Organization>().ReverseMap();
+            CreateMap<Claim, Claim>().ReverseMap();
         }
     }
 }
