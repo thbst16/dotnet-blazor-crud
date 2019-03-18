@@ -7,43 +7,74 @@
 <h3>Patient</h3>
 
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <ValidatedForm Model="@patient" OnSubmit="@CreatePatient">
-            <div class="form-group">
-                <label for="Name" class="control-label">Name</label>
-                <input for="Name" class="form-control" bind="@patient.Name" />
-                <ClientValidationError FieldName="Name" Model="patient" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Gender" class="control-label">Gender</label>
-                <select asp-for="Gender" class="form-control" bind="@patient.Gender">
-                    <option value="">-- Select Gender --</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
-                <ClientValidationError FieldName="Gender" Model="patient" />
-            </div>
-            <div class="form-group">
-                <label asp-for="PrimaryCareProvider" class="control-label">Primary Care Provider</label>
-                <input asp-for="PrimaryCareProvider" class="form-control" bind="@patient.PrimaryCareProvider" />
-                <ClientValidationError FieldName="PrimaryCareProvider" Model="patient" />
-            </div>
-            <div class="form-group">
-                <label asp-for="State" class="control-label">State</label>
-                <input asp-for="State" class="form-control" bind="@patient.State" />
-                <ClientValidationError FieldName="State" Model="patient" />
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-default">Save</button>
-                <button class="btn" onclick="@cancel">Cancel</button>
-            </div>
-        </ValidatedForm>
+<h5>Demographic Data</h5>
+<hr />
+<ValidatedForm Model="@patient" OnSubmit="@CreatePatient">
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <input for="Name" class="form-control" placeholder="Name" bind="@patient.Name" />
+            <ClientValidationError FieldName="Name" Model="patient" />
+        </div>
+        <div class="form-group col-md-2">
+            <select asp-for="Gender" class="form-control" bind="@patient.Gender">
+                <option value="">-- Select Gender --</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+            <ClientValidationError FieldName="Gender" Model="patient" />
+        </div>
     </div>
-</div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <input asp-for="PrimaryCareProvider" class="form-control" placeholder="Primary Care Provider" bind="@patient.PrimaryCareProvider" />
+            <ClientValidationError FieldName="PrimaryCareProvider" Model="patient" />
+        </div>
+        <div class="form-group col-md-2">
+            <input asp-for="State" class="form-control" placeholder="State Abbreviation" bind="@patient.State" />
+            <ClientValidationError FieldName="State" Model="patient" />
+        </div>
+    </div>
+
+    <hr />
+    <h5>Contact Point</h5>
+    <hr />
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            <input asp-for="PrimaryCareProvider" class="form-control" placeholder="Type" bind="@patient.PrimaryCareProvider" />
+            <ClientValidationError FieldName="PrimaryCareProvider" Model="patient" />
+        </div>
+        <div class="form-group col-md-2">
+            <input asp-for="State" class="form-control" placeholder="Number" bind="@patient.State" />
+            <ClientValidationError FieldName="State" Model="patient" />
+        </div>
+        <div class="form-group col-md-2">
+            <input asp-for="State" class="form-control" placeholder="Use" bind="@patient.State" />
+            <ClientValidationError FieldName="State" Model="patient" />
+        </div>
+        <div class="form-group col-md-1">
+            <a class="btn btn-danger" href='#'>X</a>
+        </div>
+    </div>
+    <div class="form-group">
+        <button class="btn btn-primary" onclick="@cancel">Add New Contact Point</button>
+    </div>
+    <hr />
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-default btn-success">Save</button>
+        <button class="btn btn-primary" onclick="@cancel">Cancel</button>
+    </div>
+</ValidatedForm>
+
 
 @functions {
     Patient patient = new Patient();
+    IList<ContactPoint> contacts = new List<ContactPoint>();
+
+    protected void AddContact()
+    {
+        contacts.Add(new ContactPoint());
+    }
 
     protected async Task CreatePatient(UIEventArgs ev)
     {
