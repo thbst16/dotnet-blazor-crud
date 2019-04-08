@@ -71,6 +71,15 @@
     Patient patient = new Patient();
     IList<ContactPoint> contacts = new List<ContactPoint>();
 
+    protected override void OnInit()
+    {
+        base.OnInit();
+        if (!(Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]))) // not logged on
+        {
+            UriHelper.NavigateTo("/user/login");
+        }
+    }
+
     protected void AddContact()
     {
         contacts.Add(new ContactPoint());

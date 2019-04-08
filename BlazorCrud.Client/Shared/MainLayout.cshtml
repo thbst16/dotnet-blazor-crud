@@ -50,7 +50,7 @@
 </div>
 
 <footer class="container">
-    <p>&copy; Beckshome.com 2018</p>
+    <p>&copy; Beckshome.com 2019</p>
 </footer>
 
 @functions {
@@ -72,6 +72,6 @@
 
     protected bool isLoggedOn()
     {
-        return Storage["JWT-Token"] != String.Empty;
+        return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
     }
 }

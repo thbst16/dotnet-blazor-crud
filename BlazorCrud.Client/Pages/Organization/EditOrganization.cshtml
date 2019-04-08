@@ -56,6 +56,11 @@
 
     protected override async Task OnInitAsync()
     {
+        if (!(Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]))) // not logged on
+        {
+            UriHelper.NavigateTo("/user/login");
+        }
+
         if (UriHelper.GetBaseUri() == "http://localhost:10001/")
         {
             organization = await Http.GetJsonAsync<Organization>("http://localhost:10002/api/organization/" + Convert.ToInt32(Id));

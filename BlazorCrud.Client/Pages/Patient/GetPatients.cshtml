@@ -97,6 +97,6 @@ else
 
     protected bool isLoggedOn()
     {
-        return Storage["JWT-Token"] != String.Empty;
+        return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
     }
 }

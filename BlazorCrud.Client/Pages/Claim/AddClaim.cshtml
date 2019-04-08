@@ -54,6 +54,15 @@
 @functions {
     Claim claim = new Claim();
 
+    protected override void OnInit()
+    {
+        base.OnInit();
+        if (!(Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]))) // not logged on
+        {
+            UriHelper.NavigateTo("/user/login");
+        }
+    }
+
     protected async Task CreateClaim(UIEventArgs ev)
     {
         if (UriHelper.GetBaseUri() == "http://localhost:10001/")
