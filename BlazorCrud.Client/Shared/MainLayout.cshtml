@@ -11,6 +11,9 @@
                 <BlazorNavLink href="#" onclick="@closeNav">Home</BlazorNavLink>
             </NavItem>
             <NavItem>
+                <BlazorNavLink IsDisabled="true" href="#" onclick="@closeNav">Dashboard</BlazorNavLink>
+            </NavItem>
+            <NavItem>
                 <BlazorNavLink href="patient/list/1" onclick="@closeNav">Patients</BlazorNavLink>
             </NavItem>
             <NavItem>
@@ -20,28 +23,26 @@
                 <BlazorNavLink href="claim/list/1" onclick="@closeNav">Claims</BlazorNavLink>
             </NavItem>
             <NavItem>
-                <BlazorNavLink IsDisabled="true" href="#" onclick="@closeNav">Attachments</BlazorNavLink>
+                <BlazorNavLink IsDisabled="true" href="#" onclick="@closeNav">Uploads</BlazorNavLink>
             </NavItem>
             <NavItem>
                 <BlazorNavLink IsDisabled="true" href="#" onclick="@closeNav">Users</BlazorNavLink>
             </NavItem>
+        </BlazorNav>
+        <BlazorNav IsList="true" Alignment="Alignment.Right" IsNavbar="true">
             @if (isLoggedOn())
             {
                 <NavItem>
-                    <BlazorNavLink href="/user/logout">Logout</BlazorNavLink>
+                    <BlazorNavLink IsDisabled="true" href="/user/logout" onclick="@closeNav">Logout</BlazorNavLink>
                 </NavItem>
             }
             else
             {
                 <NavItem>
-                    <BlazorNavLink href="/user/login">Login</BlazorNavLink>
+                    <BlazorNavLink IsDisabled="true" href="/user/login" onclick="@closeNav">Login</BlazorNavLink>
                 </NavItem>
             }
         </BlazorNav>
-        <BlazorForm IsInline="true" Class="my-2 my-lg-0">
-            <BlazorInput InputType="InputType.Search" PlaceHolder="Search" Class="mr-sm-2" />
-            <BlazorButton IsOutline="true" Color="Color.Success" ButtonType="ButtonType.Submit" Class="my-2 my-sm-0">Search</BlazorButton>
-        </BlazorForm>
     </Collapse>
 </Navbar>
 
