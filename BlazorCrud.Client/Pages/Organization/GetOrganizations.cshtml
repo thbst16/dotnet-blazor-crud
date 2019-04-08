@@ -20,7 +20,6 @@
 }
 
 <h1>Organization Data</h1>
-<p>This component demonstrates fetching organization data from the server.</p>
 
 @if (isLoggedOn())
 {
@@ -36,13 +35,13 @@
 else
 {
     <table class='table'>
-        <thead>
+        <thead class="thead-light">
             <tr>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Type</th>
                 <th>Active</th>
-                <th></th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -54,11 +53,11 @@ else
                     <td>@organization.Type</td>
                     <td>@organization.IsActive</td>
                     <td>
-                        <a href='/organization/view/@organization.Id'>View</a>
+                        <ActionLinkButton Action="view" Route="/organization" RouteValue="@organization.Id.ToString()"></ActionLinkButton>
                         @if (isLoggedOn())
                         {
-                            <span> | </span><a href='/organization/edit/@organization.Id'>Edit</a>
-                            <span> | </span><a href='/organization/delete/@organization.Id'>Delete</a>
+                            <ActionLinkButton Action="edit" Route="/organization" RouteValue="@organization.Id.ToString()"></ActionLinkButton>
+                            <ActionLinkButton Action="delete" Route="/organization" RouteValue="@organization.Id.ToString()"></ActionLinkButton>
                         }
                     </td>
                 </tr>

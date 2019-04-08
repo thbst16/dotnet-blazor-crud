@@ -19,7 +19,6 @@
 }
 
 <h1>Patient Data</h1>
-<p>This component demonstrates fetching patient data from the server.</p>
 
 @if (isLoggedOn())
 {
@@ -35,14 +34,14 @@
 else
 {
     <table class='table'>
-        <thead>
+        <thead class="thead-light">
             <tr>
                 <th>ID</th>
                 <th>Name</th>
                 <th>Gender</th>
                 <th>Primary Care Provier</th>
                 <th>State</th>
-                <th></th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -55,11 +54,11 @@ else
                     <td>@patient.PrimaryCareProvider</td>
                     <td>@patient.State</td>
                     <td>
-                        <a href='/patient/view/@patient.Id'>View</a>
+                        <ActionLinkButton Action="view" Route="/patient" RouteValue="@patient.Id.ToString()"></ActionLinkButton>
                         @if (isLoggedOn())
                         {
-                            <span> | </span><a href='/patient/edit/@patient.Id'>Edit</a>
-                            <span> | </span><a href='/patient/delete/@patient.Id'>Delete</a>
+                            <ActionLinkButton Action="edit" Route="/patient" RouteValue="@patient.Id.ToString()"></ActionLinkButton>
+                            <ActionLinkButton Action="delete" Route="/patient" RouteValue="@patient.Id.ToString()"></ActionLinkButton>
                         }
                     </td>
                 </tr>

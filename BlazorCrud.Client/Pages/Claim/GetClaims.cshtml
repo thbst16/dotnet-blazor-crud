@@ -20,7 +20,6 @@
 }
 
 <h1>Claim Data</h1>
-<p>This component demonstrates fetching claim data from the server.</p>
 
 @if (isLoggedOn())
 {
@@ -36,16 +35,16 @@
 else
 {
     <table class='table'>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Patient</th>
-                <th>Organization</th>
-                <th>Status</th>
-                <th>Type</th>
-                <th></th>
-            </tr>
-        </thead>
+        <thead class="thead-light">
+    <tr>
+        <th>ID</th>
+        <th>Patient</th>
+        <th>Organization</th>
+        <th>Status</th>
+        <th>Type</th>
+        <th>Actions</th>
+    </tr>
+</thead>
         <tbody>
             @foreach (var claim in Claims.Results)
             {
@@ -56,11 +55,11 @@ else
                 <td>@claim.Status</td>
                 <td>@claim.Type</td>
                 <td>
-                    <a href='/claim/view/@claim.Id'>View</a>
+                    <ActionLinkButton Action="view" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
                     @if (isLoggedOn())
                     {
-                        <span> | </span><a href='/claim/edit/@claim.Id'>Edit</a>
-                        <span> | </span><a href='/claim/delete/@claim.Id'>Delete</a>
+                        <ActionLinkButton Action="edit" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
+                        <ActionLinkButton Action="delete" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
                     }
                 </td>
             </tr>
