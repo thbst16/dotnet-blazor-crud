@@ -33,13 +33,13 @@
             @if (isLoggedOn())
             {
                 <NavItem>
-                    <BlazorNavLink IsDisabled="true" href="/user/logout" onclick="@closeNav">Logout</BlazorNavLink>
+                    <BlazorNavLink href="/user/logout" onclick="@closeNav">Logout</BlazorNavLink>
                 </NavItem>
             }
             else
             {
                 <NavItem>
-                    <BlazorNavLink IsDisabled="true" href="/user/login" onclick="@closeNav">Login</BlazorNavLink>
+                    <BlazorNavLink href="/user/login" onclick="@closeNav">Login</BlazorNavLink>
                 </NavItem>
             }
         </BlazorNav>
