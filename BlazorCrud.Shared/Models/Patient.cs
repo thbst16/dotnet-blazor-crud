@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlazorCrud.Shared.Models
 {
@@ -16,5 +17,7 @@ namespace BlazorCrud.Shared.Models
         [Required]
         [StringLength(2, ErrorMessage = "The {0} must be max {1} characters long.")]
         public string State{ get; set; }
+        // [MinLength(1)]
+        public List<ContactPoint> Contacts { get; set; }
     }
 }
