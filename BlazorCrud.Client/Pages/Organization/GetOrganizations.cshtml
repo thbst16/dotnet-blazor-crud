@@ -34,7 +34,7 @@
 }
 else
 {
-    <table class='table'>
+    <BlazorTable IsResponsive="true" class='table'>
         <thead class="thead-light">
             <tr>
                 <th>ID</th>
@@ -63,7 +63,7 @@ else
                 </tr>
             }
         </tbody>
-    </table>
+    </BlazorTable>
     <Pager Result=@Organizations PageChanged=@PagerPageChanged />
 }
 
