@@ -3,6 +3,10 @@ body {
     padding-top: 5.0rem;
 }
 
+.carousel-text {
+    color: black;
+}
+
 .grid {
     width: 60vw;
     height: 60vh;

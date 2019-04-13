@@ -43,18 +43,18 @@
         <div class="form-row">
             <div class="form-group col-md-2">
                 <input asp-for="Type" class="form-control" placeholder="Type" bind="@contactPoint.Type" />
-                <ClientValidationError FieldName="Type" Model="contactPoint" />
+                <ClientValidationError FieldName="Type" Model="patient" />
             </div>
             <div class="form-group col-md-2">
                 <input asp-for="Number" class="form-control" placeholder="Number" bind="@contactPoint.Number" />
-                <ClientValidationError FieldName="Number" Model="contactPoint" />
+                <ClientValidationError FieldName="Number" Model="patient" />
             </div>
             <div class="form-group col-md-2">
                 <input asp-for="Use" class="form-control" placeholder="Use" bind="@contactPoint.Use" />
-                <ClientValidationError FieldName="Use" Model="contactPoint" />
+                <ClientValidationError FieldName="Use" Model="patient" />
             </div>
             <div class="form-group col-md-1">
-                <button class="btn btn-danger" onclick="@(()=>OnContactDelete(patient, contactPoint))">X</button>
+                <a href="javascript:void(0)" class="btn btn-danger" onclick="@(()=>OnContactDelete(patient, contactPoint))">X</a>
             </div>
         </div>
     }

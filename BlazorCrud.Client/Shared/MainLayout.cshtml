@@ -33,13 +33,19 @@
             @if (isLoggedOn())
             {
                 <NavItem>
-                    <BlazorNavLink href="/user/logout" onclick="@closeNav">Logout</BlazorNavLink>
+                    <BlazorNavLink href="/user/logout" onclick="@closeNav">
+                        Logout
+                        <span class="oi oi-lock-unlocked" title="lock locked" aria-hidden="true"></span>
+                    </BlazorNavLink>
                 </NavItem>
             }
             else
             {
                 <NavItem>
-                    <BlazorNavLink href="/user/login" onclick="@closeNav">Login</BlazorNavLink>
+                    <BlazorNavLink href="/user/login" onclick="@closeNav">
+                        Login
+                        <span class="oi oi-lock-locked" title="lock locked" aria-hidden="true"></span>
+                    </BlazorNavLink>
                 </NavItem>
             }
         </BlazorNav>

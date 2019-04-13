@@ -16,7 +16,25 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\img\claims.jpg" />
+    <None Include="wwwroot\img\patients.jpg" />
+    <None Include="wwwroot\img\providers.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BlazorCrud.Shared\BlazorCrud.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\img\claims.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\img\patients.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\img\providers.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
