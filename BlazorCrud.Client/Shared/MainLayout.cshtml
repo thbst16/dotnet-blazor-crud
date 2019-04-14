@@ -8,10 +8,10 @@
     <Collapse IsOpen="@IsOpen" IsNavbar="true">
         <BlazorNav IsList="true" Class="mr-auto" IsNavbar="true">
             <NavItem>
-                <BlazorNavLink href="#" onclick="@closeNav">Home</BlazorNavLink>
+                <BlazorNavLink href="/" onclick="@closeNav">Home</BlazorNavLink>
             </NavItem>
             <NavItem>
-                <BlazorNavLink IsDisabled="true" href="#" onclick="@closeNav">Dashboard</BlazorNavLink>
+                <BlazorNavLink href="/dashboard" onclick="@closeNav">Dashboard</BlazorNavLink>
             </NavItem>
             <NavItem>
                 <BlazorNavLink href="patient/list/1" onclick="@closeNav">Patients</BlazorNavLink>
@@ -52,7 +52,7 @@
     </Collapse>
 </Navbar>
 
-<div class="content px-4">
+<div class="container">
     @Body
 </div>
 

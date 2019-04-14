@@ -1,0 +1,246 @@
+﻿@page "/dashboard"
+@using ChartJs.Blazor.ChartJS.DoughnutChart
+@using ChartJs.Blazor.ChartJS.BarChart
+@using ChartJs.Blazor.ChartJS.Common
+@using ChartJs.Blazor.ChartJS.Common.Legends
+@using ChartJs.Blazor.Charts
+@using ChartJs.Blazor.ChartJS.BarChart.Dataset
+@using ChartJs.Blazor.Util.Color
+@addTagHelper *,ChartJs.Blazor
+@addTagHelper *, BlazorStrap
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+
+<div class="row">
+    <div class="col-md-4">
+        <Card CardType="CardType.Card">
+            <Card Color="Color.Light" IsOutline="true">
+                <Card CardType="CardType.Body">
+                    <Card CardType="CardType.Title">Patients By State</Card>
+                    <ChartJsDoughnutChart ref="doughnutChartJsPatient" Config="@doughnutChartConfigPatient" />
+                    <a href="#" class="btn btn-primary">Details</a>
+                </Card>
+            </Card>
+        </Card>
+    </div>
+    <div class="col-md-4">
+        <Card CardType="CardType.Card">
+            <Card Color="Color.Light" IsOutline="true">
+                <Card CardType="CardType.Body">
+                    <Card CardType="CardType.Title">Provider Organizations by Type</Card>
+                    <ChartJsDoughnutChart ref="doughnutChartJsOrganization" Config="@doughnutChartConfigOrganization" />
+                    <a href="#" class="btn btn-primary">Details</a>
+                </Card>
+            </Card>
+        </Card>
+    </div>
+    <div class="col-md-4">
+        <Card CardType="CardType.Card">
+            <Card Color="Color.Light" IsOutline="true">
+                <Card CardType="CardType.Body">
+                    <Card CardType="CardType.Title">Claims by Status</Card>
+                    <ChartJsDoughnutChart ref="doughnutChartJsClaim" Config="@doughnutChartConfigClaim" />
+                    <a href="#" class="btn btn-primary">Details</a>
+                </Card>
+            </Card>
+        </Card>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-12">
+        <Card CardType="CardType.Card">
+            <Card Color="Color.Light" IsOutline="true">
+                <Card CardType="CardType.Body">
+                    <Card CardType="CardType.Title">Newly Created Patients, Organizations, and Claims</Card>
+                    <ChartJsBarChart ref="barChartJs" Config="@barChartConfig" Width="600" Height="200" />
+                    <a href="#" class="btn btn-primary">Details</a>
+                </Card>
+            </Card>
+        </Card>
+    </div>
+</div>
+<br>
+
+@functions {
+            public DoughnutChartConfig doughnutChartConfigPatient { get; set; }
+            ChartJsDoughnutChart doughnutChartJsPatient;
+            public DoughnutChartConfig doughnutChartConfigOrganization { get; set; }
+            ChartJsDoughnutChart doughnutChartJsOrganization;
+            public DoughnutChartConfig doughnutChartConfigClaim { get; set; }
+            ChartJsDoughnutChart doughnutChartJsClaim;
+            public BarChartConfig barChartConfig { get; set; }
+            ChartJsBarChart barChartJs;
+
+            protected override void OnInit()
+            {
+                RenderCitizenDoughnutChart();
+                RenderOrganizationDoughnutChart();
+                RenderClaimDoughnutChart();
+                RenderBarChart();
+            }
+
+            protected override void OnAfterRender()
+            {
+                base.OnAfterRender();
+                doughnutChartJsPatient.Reload();
+                doughnutChartJsOrganization.Reload();
+                doughnutChartJsClaim.Reload();
+                barChartJs.Reload();
+            }
+
+            protected void RenderCitizenDoughnutChart()
+            {
+                doughnutChartConfigPatient = doughnutChartConfigPatient ?? new DoughnutChartConfig
+                {
+                    CanvasId = "PatientDoughnutChart",
+                    Options = new DoughnutOptions
+                    {
+                        Text = "Patients by State",
+                        Animation = new DoughnutAnimation
+                        {
+                            AnimateRotate = true,
+                            AnimateScale = true
+                        },
+                        Display = true,
+                        Responsive = true,
+                        Legend = new ChartJs.Blazor.ChartJS.Common.Legends.Legend { Position = LegendPosition.RIGHT.ToString() }
+                    },
+                    Data = new DoughnutData
+                    {
+                        Labels = new List<string> { "A", "B", "C", "D" },
+                        Datasets = new List<DoughnutDataset>
+                {
+                    new DoughnutDataset
+                    {
+                        BackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+                        Label = "Light Red",
+                        Data = new List<int> {1, 2, 3, 4},
+                        BorderWidth = 0,
+                        HoverBackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+                        HoverBorderColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+                        HoverBorderWidth = new[] {1, 1, 1, 1},
+                        BorderColor = new[] {"#ffffff", "#ffffff", "#ffffff", "#ffffff"}
+                    }
+                }
+                    }
+                };
+            }
+
+            protected void RenderOrganizationDoughnutChart()
+            {
+                doughnutChartConfigOrganization = doughnutChartConfigOrganization ?? new DoughnutChartConfig
+                {
+                    CanvasId = "OrganizationDoughnutChart",
+                    Options = new DoughnutOptions
+                    {
+                        Text = "Provider Organizations by Type",
+                        Animation = new DoughnutAnimation
+                        {
+                            AnimateRotate = true,
+                            AnimateScale = true
+                        },
+                        Display = true,
+                        Responsive = true,
+                        Legend = new ChartJs.Blazor.ChartJS.Common.Legends.Legend { Position = LegendPosition.RIGHT.ToString() }
+                    },
+                    Data = new DoughnutData
+                    {
+                        Labels = new List<string> { "A", "B", "C", "D" },
+                        Datasets = new List<DoughnutDataset>
+{
+new DoughnutDataset
+{
+BackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+Label = "Light Red",
+Data = new List<int> {1, 2, 3, 4},
+BorderWidth = 0,
+HoverBackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+HoverBorderColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+HoverBorderWidth = new[] {1, 1, 1, 1},
+BorderColor = new[] {"#ffffff", "#ffffff", "#ffffff", "#ffffff"}
+}
+}
+                    }
+                };
+            }
+
+            protected void RenderClaimDoughnutChart()
+            {
+                doughnutChartConfigClaim = doughnutChartConfigClaim ?? new DoughnutChartConfig
+                {
+                    CanvasId = "ClaimDoughnutChart",
+                    Options = new DoughnutOptions
+                    {
+                        Text = "Claims by Type",
+                        Animation = new DoughnutAnimation
+                        {
+                            AnimateRotate = true,
+                            AnimateScale = true
+                        },
+                        Display = true,
+                        Responsive = true,
+                        Legend = new ChartJs.Blazor.ChartJS.Common.Legends.Legend { Position = LegendPosition.RIGHT.ToString() }
+                    },
+                    Data = new DoughnutData
+                    {
+                        Labels = new List<string> { "A", "B", "C", "D" },
+                        Datasets = new List<DoughnutDataset>
+{
+new DoughnutDataset
+{
+BackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+Label = "Light Red",
+Data = new List<int> {1, 2, 3, 4},
+BorderWidth = 0,
+HoverBackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+HoverBorderColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+HoverBorderWidth = new[] {1, 1, 1, 1},
+BorderColor = new[] {"#ffffff", "#ffffff", "#ffffff", "#ffffff"}
+}
+}
+                    }
+                };
+            }
+
+protected void RenderBarChart()
+{
+    barChartConfig = barChartConfig ?? new BarChartConfig
+    {
+        CanvasId = "BarChart",
+        Options = new BarChartOptions
+        {
+            Text = "Patients, Organizations, and Claims Counts by Day",
+            Display = true,
+            Responsive = true
+        },
+        Data = new BarChartData
+        {
+            Labels = new List<string> { "4/1/2019", "4/12/2019", "4/13/2019", "4/14/2019" },
+            Datasets = new List<BaseBarChartDataset>
+            {
+                new BarChartDataset
+                {
+                    Label = "Patients",
+                    BackgroundColor = ColorUtil.RandomColorString(),
+                    BorderColor = ColorUtil.RandomColorString(),
+                    Data = new List<dynamic> {7,5,2,9}
+                },
+                new BarChartDataset
+                {
+                    Label = "Organizations",
+                    BackgroundColor = ColorUtil.RandomColorString(),
+                    BorderColor = ColorUtil.RandomColorString(),
+                    Data = new List<dynamic> {1,3,1,2}
+                },
+                new BarChartDataset
+                {
+                    Label = "Claims",
+                    BackgroundColor = ColorUtil.RandomColorString(),
+                    BorderColor = ColorUtil.RandomColorString(),
+                    Data = new List<dynamic> {15,44,21,17}
+                },
+            }
+        }
+    };
+}
+}
