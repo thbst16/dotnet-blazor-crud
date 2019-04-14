@@ -17,7 +17,7 @@
                 <Card CardType="CardType.Body">
                     <Card CardType="CardType.Title">Patients By State</Card>
                     <ChartJsDoughnutChart ref="doughnutChartJsPatient" Config="@doughnutChartConfigPatient" />
-                    <a href="#" class="btn btn-primary">Details</a>
+                    <a href="patient/list/1" class="btn btn-primary">View details &raquo;</a>
                 </Card>
             </Card>
         </Card>
@@ -26,9 +26,9 @@
         <Card CardType="CardType.Card">
             <Card Color="Color.Light" IsOutline="true">
                 <Card CardType="CardType.Body">
-                    <Card CardType="CardType.Title">Provider Organizations by Type</Card>
+                    <Card CardType="CardType.Title">Organizations by Type</Card>
                     <ChartJsDoughnutChart ref="doughnutChartJsOrganization" Config="@doughnutChartConfigOrganization" />
-                    <a href="#" class="btn btn-primary">Details</a>
+                    <a href="organization/list/1" class="btn btn-primary">View details &raquo;</a>
                 </Card>
             </Card>
         </Card>
@@ -37,9 +37,9 @@
         <Card CardType="CardType.Card">
             <Card Color="Color.Light" IsOutline="true">
                 <Card CardType="CardType.Body">
-                    <Card CardType="CardType.Title">Claims by Status</Card>
+                    <Card CardType="CardType.Title">Claims by Type</Card>
                     <ChartJsDoughnutChart ref="doughnutChartJsClaim" Config="@doughnutChartConfigClaim" />
-                    <a href="#" class="btn btn-primary">Details</a>
+                    <a href="claim/list/1" class="btn btn-primary">View details &raquo;</a>
                 </Card>
             </Card>
         </Card>
@@ -53,7 +53,6 @@
                 <Card CardType="CardType.Body">
                     <Card CardType="CardType.Title">Newly Created Patients, Organizations, and Claims</Card>
                     <ChartJsBarChart ref="barChartJs" Config="@barChartConfig" Width="600" Height="200" />
-                    <a href="#" class="btn btn-primary">Details</a>
                 </Card>
             </Card>
         </Card>
@@ -62,59 +61,63 @@
 <br>
 
 @functions {
-            public DoughnutChartConfig doughnutChartConfigPatient { get; set; }
-            ChartJsDoughnutChart doughnutChartJsPatient;
-            public DoughnutChartConfig doughnutChartConfigOrganization { get; set; }
-            ChartJsDoughnutChart doughnutChartJsOrganization;
-            public DoughnutChartConfig doughnutChartConfigClaim { get; set; }
-            ChartJsDoughnutChart doughnutChartJsClaim;
-            public BarChartConfig barChartConfig { get; set; }
-            ChartJsBarChart barChartJs;
+    public DoughnutChartConfig doughnutChartConfigPatient { get; set; }
+    ChartJsDoughnutChart doughnutChartJsPatient;
+    public DoughnutChartConfig doughnutChartConfigOrganization { get; set; }
+    ChartJsDoughnutChart doughnutChartJsOrganization;
+    public DoughnutChartConfig doughnutChartConfigClaim { get; set; }
+    ChartJsDoughnutChart doughnutChartJsClaim;
+    public BarChartConfig barChartConfig { get; set; }
+    ChartJsBarChart barChartJs;
 
-            protected override void OnInit()
-            {
-                RenderCitizenDoughnutChart();
-                RenderOrganizationDoughnutChart();
-                RenderClaimDoughnutChart();
-                RenderBarChart();
-            }
+    protected override void OnInit()
+    {
+        RenderCitizenDoughnutChart();
+        RenderOrganizationDoughnutChart();
+        RenderClaimDoughnutChart();
+        RenderBarChart();
+    }
 
-            protected override void OnAfterRender()
-            {
-                base.OnAfterRender();
-                doughnutChartJsPatient.Reload();
-                doughnutChartJsOrganization.Reload();
-                doughnutChartJsClaim.Reload();
-                barChartJs.Reload();
-            }
+    protected override void OnAfterRender()
+    {
+        base.OnAfterRender();
+        doughnutChartJsPatient.Reload();
+        doughnutChartJsOrganization.Reload();
+        doughnutChartJsClaim.Reload();
+        barChartJs.Reload();
+    }
 
-            protected void RenderCitizenDoughnutChart()
+    protected void RenderCitizenDoughnutChart()
+    {
+        doughnutChartConfigPatient = doughnutChartConfigPatient ?? new DoughnutChartConfig
+        {
+            CanvasId = "PatientDoughnutChart",
+            Options = new DoughnutOptions
             {
-                doughnutChartConfigPatient = doughnutChartConfigPatient ?? new DoughnutChartConfig
+                Text = "Patients by State",
+                Animation = new DoughnutAnimation
                 {
-                    CanvasId = "PatientDoughnutChart",
-                    Options = new DoughnutOptions
-                    {
-                        Text = "Patients by State",
-                        Animation = new DoughnutAnimation
-                        {
-                            AnimateRotate = true,
-                            AnimateScale = true
-                        },
-                        Display = true,
-                        Responsive = true,
-                        Legend = new ChartJs.Blazor.ChartJS.Common.Legends.Legend { Position = LegendPosition.RIGHT.ToString() }
-                    },
-                    Data = new DoughnutData
-                    {
-                        Labels = new List<string> { "A", "B", "C", "D" },
-                        Datasets = new List<DoughnutDataset>
+                    AnimateRotate = true,
+                    AnimateScale = true
+                },
+                Display = true,
+                Responsive = true,
+                Legend = new Legend
+                {
+                    Position = LegendPosition.RIGHT.ToString(),
+                    Labels  = new Labels()
+                }
+            },
+            Data = new DoughnutData
+            {
+                Labels = new List<string> { "MI", "OH", "IL", "IN" },
+                Datasets = new List<DoughnutDataset>
                 {
                     new DoughnutDataset
                     {
                         BackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
                         Label = "Light Red",
-                        Data = new List<int> {1, 2, 3, 4},
+                        Data = new List<int> {170, 23, 10, 6},
                         BorderWidth = 0,
                         HoverBackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
                         HoverBorderColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
@@ -122,101 +125,101 @@
                         BorderColor = new[] {"#ffffff", "#ffffff", "#ffffff", "#ffffff"}
                     }
                 }
-                    }
-                };
             }
+        };
+    }
 
-            protected void RenderOrganizationDoughnutChart()
-            {
-                doughnutChartConfigOrganization = doughnutChartConfigOrganization ?? new DoughnutChartConfig
-                {
-                    CanvasId = "OrganizationDoughnutChart",
-                    Options = new DoughnutOptions
-                    {
-                        Text = "Provider Organizations by Type",
-                        Animation = new DoughnutAnimation
-                        {
-                            AnimateRotate = true,
-                            AnimateScale = true
-                        },
-                        Display = true,
-                        Responsive = true,
-                        Legend = new ChartJs.Blazor.ChartJS.Common.Legends.Legend { Position = LegendPosition.RIGHT.ToString() }
-                    },
-                    Data = new DoughnutData
-                    {
-                        Labels = new List<string> { "A", "B", "C", "D" },
-                        Datasets = new List<DoughnutDataset>
-{
-new DoughnutDataset
-{
-BackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
-Label = "Light Red",
-Data = new List<int> {1, 2, 3, 4},
-BorderWidth = 0,
-HoverBackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
-HoverBorderColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
-HoverBorderWidth = new[] {1, 1, 1, 1},
-BorderColor = new[] {"#ffffff", "#ffffff", "#ffffff", "#ffffff"}
-}
-}
-                    }
-                };
-            }
-
-            protected void RenderClaimDoughnutChart()
-            {
-                doughnutChartConfigClaim = doughnutChartConfigClaim ?? new DoughnutChartConfig
-                {
-                    CanvasId = "ClaimDoughnutChart",
-                    Options = new DoughnutOptions
-                    {
-                        Text = "Claims by Type",
-                        Animation = new DoughnutAnimation
-                        {
-                            AnimateRotate = true,
-                            AnimateScale = true
-                        },
-                        Display = true,
-                        Responsive = true,
-                        Legend = new ChartJs.Blazor.ChartJS.Common.Legends.Legend { Position = LegendPosition.RIGHT.ToString() }
-                    },
-                    Data = new DoughnutData
-                    {
-                        Labels = new List<string> { "A", "B", "C", "D" },
-                        Datasets = new List<DoughnutDataset>
-{
-new DoughnutDataset
-{
-BackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
-Label = "Light Red",
-Data = new List<int> {1, 2, 3, 4},
-BorderWidth = 0,
-HoverBackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
-HoverBorderColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
-HoverBorderWidth = new[] {1, 1, 1, 1},
-BorderColor = new[] {"#ffffff", "#ffffff", "#ffffff", "#ffffff"}
-}
-}
-                    }
-                };
-            }
-
-protected void RenderBarChart()
-{
-    barChartConfig = barChartConfig ?? new BarChartConfig
+    protected void RenderOrganizationDoughnutChart()
     {
-        CanvasId = "BarChart",
-        Options = new BarChartOptions
+        doughnutChartConfigOrganization = doughnutChartConfigOrganization ?? new DoughnutChartConfig
         {
-            Text = "Patients, Organizations, and Claims Counts by Day",
-            Display = true,
-            Responsive = true
-        },
-        Data = new BarChartData
+            CanvasId = "OrganizationDoughnutChart",
+            Options = new DoughnutOptions
+            {
+                Text = "Organizations by Type",
+                Animation = new DoughnutAnimation
+                {
+                    AnimateRotate = true,
+                    AnimateScale = true
+                },
+                Display = true,
+                Responsive = true,
+                Legend = new Legend { Position = LegendPosition.RIGHT.ToString() }
+            },
+            Data = new DoughnutData
+            {
+                Labels = new List<string> { "Healthcare Provider", "Hospital Department", "Government", "Insurance Company" },
+                Datasets = new List<DoughnutDataset>
+                        {
+                        new DoughnutDataset
+                        {
+                        BackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+                        Label = "Light Red",
+                        Data = new List<int> {23, 9, 6, 15},
+                        BorderWidth = 0,
+                        HoverBackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+                        HoverBorderColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+                        HoverBorderWidth = new[] {1, 1, 1, 1},
+                        BorderColor = new[] {"#ffffff", "#ffffff", "#ffffff", "#ffffff"}
+                        }
+                        }
+            }
+        };
+    }
+
+    protected void RenderClaimDoughnutChart()
+    {
+        doughnutChartConfigClaim = doughnutChartConfigClaim ?? new DoughnutChartConfig
         {
-            Labels = new List<string> { "4/1/2019", "4/12/2019", "4/13/2019", "4/14/2019" },
-            Datasets = new List<BaseBarChartDataset>
+            CanvasId = "ClaimDoughnutChart",
+            Options = new DoughnutOptions
+            {
+                Text = "Claims by Type",
+                Animation = new DoughnutAnimation
+                {
+                    AnimateRotate = true,
+                    AnimateScale = true
+                },
+                Display = true,
+                Responsive = true,
+                Legend = new Legend { Position = LegendPosition.RIGHT.ToString() }
+            },
+            Data = new DoughnutData
+            {
+                Labels = new List<string> { "Institutional", "Oral", "Pharmacy", "Professional" },
+                Datasets = new List<DoughnutDataset>
+                        {
+                        new DoughnutDataset
+                        {
+                        BackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+                        Label = "Light Red",
+                        Data = new List<int> {34, 15, 181, 316},
+                        BorderWidth = 0,
+                        HoverBackgroundColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+                        HoverBorderColor = new[] {"#ff6384", "#55ee84", "#4463ff", "#efefef"},
+                        HoverBorderWidth = new[] {1, 1, 1, 1},
+                        BorderColor = new[] {"#ffffff", "#ffffff", "#ffffff", "#ffffff"}
+                        }
+                        }
+            }
+        };
+    }
+
+    protected void RenderBarChart()
+    {
+        barChartConfig = barChartConfig ?? new BarChartConfig
+        {
+            CanvasId = "BarChart",
+            Options = new BarChartOptions
+            {
+                Text = "Patients, Organizations, and Claims Counts by Day",
+                Display = true,
+                Responsive = true
+            },
+            Data = new BarChartData
+            {
+                Labels = new List<string> { "4/1/2019", "4/12/2019", "4/13/2019", "4/14/2019" },
+                Datasets = new List<BaseBarChartDataset>
             {
                 new BarChartDataset
                 {
@@ -240,7 +243,7 @@ protected void RenderBarChart()
                     Data = new List<dynamic> {15,44,21,17}
                 },
             }
-        }
-    };
-}
+            }
+        };
+    }
 }

@@ -26,7 +26,7 @@ namespace BlazorCrud.Server.Controllers
         [HttpGet]
         public PagedResult<Claim> GetAll([FromQuery]int page)
         {
-            int pageSize = 5;
+            int pageSize = 10;
             return _context.Claims
                 .OrderBy(p => p.Id)
                 .GetPaged(page, pageSize);

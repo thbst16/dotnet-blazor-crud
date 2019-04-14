@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />
+    <PackageReference Include="Bogus" Version="26.0.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.8" />
   </ItemGroup>
 
