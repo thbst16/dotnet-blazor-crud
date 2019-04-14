@@ -1,6 +1,8 @@
 @addTagHelper *, BlazorStrap
 @inherits BlazorLayoutComponent
 @inject LocalStorage Storage
+@addTagHelper *, Sotsera.Blazor.Toaster
+<toastContainer />
 
 <Navbar IsExpand="true" IsDark="true" Color="Color.Dark" IsFixedTop="true">
     <NavbarBrand Href="#">Blazor CRUD</NavbarBrand>
@@ -63,24 +65,24 @@
 </footer>
 
 @functions {
-    // Handle Navbar events
+// Handle Navbar events
 
-    bool IsOpen { get; set; } = false;
+bool IsOpen { get; set; } = false;
 
-    void openNav(UIMouseEventArgs e)
-    {
-        IsOpen = !IsOpen;
-        StateHasChanged();
-    }
+void openNav(UIMouseEventArgs e)
+{
+    IsOpen = !IsOpen;
+    StateHasChanged();
+}
 
-    void closeNav(UIMouseEventArgs e)
-    {
-        IsOpen = !IsOpen;
-        StateHasChanged();
-    }
+void closeNav(UIMouseEventArgs e)
+{
+    IsOpen = !IsOpen;
+    StateHasChanged();
+}
 
-    protected bool isLoggedOn()
-    {
-        return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
-    }
+protected bool isLoggedOn()
+{
+    return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
+}
 }

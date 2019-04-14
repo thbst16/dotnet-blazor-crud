@@ -5,17 +5,15 @@
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 @using BlazorCrud.Shared.Data
 @inject LocalStorage Storage
+@inject Sotsera.Blazor.Toaster.IToaster toaster
 
-@if (Transaction == "modified") {
-<Alert Color="Color.Success" IsDismissible="true">
-    Patient successfully updated in the system.
-</Alert>
+@if (Transaction == "modified")
+{
+    toaster.Success("Patient successfully updated in the system.", "Patient Updated");
 }
 @if (Transaction == "cancelled")
 {
-    <Alert Color="Color.Warning" IsDismissible="true">
-        Patient transaction cancelled.
-    </Alert>
+    toaster.Warning("Patient transaction has been cancelled.", "Transaction Cancelled");
 }
 
 <h1>Patient Data</h1>
@@ -69,33 +67,33 @@ else
 }
 
 @functions {
-    [Parameter]
-    protected string Page { get; set; } = "1";
-    [Parameter]
-    protected string Transaction { get; set; }
+[Parameter]
+protected string Page { get; set; } = "1";
+[Parameter]
+protected string Transaction { get; set; }
 
-    protected PagedResult<Patient> Patients;
+protected PagedResult<Patient> Patients;
 
-    protected override async Task OnParametersSetAsync()
+protected override async Task OnParametersSetAsync()
+{
+    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
     {
-        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-        {
-            Patients = await Http.GetJsonAsync<PagedResult<Patient>>("http://localhost:10002/api/patient/?page=" + Page);
-        }
-        else
-        {
-            Patients = await Http.GetJsonAsync<PagedResult<Patient>>("http://becksapi.azurewebsites.net/api/patient?page=" + Page);
-        }
+        Patients = await Http.GetJsonAsync<PagedResult<Patient>>("http://localhost:10002/api/patient/?page=" + Page);
     }
-
-    protected void PagerPageChanged(int page)
+    else
     {
-        Transaction = string.Empty;
-        UriHelper.NavigateTo("/patient/list/" + page);
+        Patients = await Http.GetJsonAsync<PagedResult<Patient>>("http://becksapi.azurewebsites.net/api/patient?page=" + Page);
     }
+}
 
-    protected bool isLoggedOn()
-    {
-        return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
-    }
+protected void PagerPageChanged(int page)
+{
+    Transaction = string.Empty;
+    UriHelper.NavigateTo("/patient/list/" + page);
+}
+
+protected bool isLoggedOn()
+{
+    return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
+}
 }

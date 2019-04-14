@@ -1,5 +1,6 @@
 ﻿using BlazorCrud.Client.Services;
 using Cloudcrate.AspNetCore.Blazor.Browser.Storage;
+using Sotsera.Blazor.Toaster.Core.Models;
 using Microsoft.AspNetCore.Blazor.Browser.Rendering;
 using Microsoft.AspNetCore.Blazor.Browser.Services;
 using Microsoft.AspNetCore.Blazor.Hosting;
@@ -15,6 +16,12 @@ namespace BlazorCrud.Client
             {
                 configure.Add(ServiceDescriptor.Singleton<IModelValidator, ModelValidator>());
                 configure.AddStorage();
+                configure.AddToaster(config =>
+                {
+                    config.PositionClass = Defaults.Classes.Position.TopRight;
+                    config.PreventDuplicates = true;
+                    config.NewestOnTop = false;
+                });
             });
 
             new BrowserRenderer(serviceProvider).AddComponent<App>("app");

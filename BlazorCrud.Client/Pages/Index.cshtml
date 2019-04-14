@@ -1,7 +1,13 @@
 ﻿@page "/"
-@page "/logout"
+@page "/{Transaction}"
 @addTagHelper *, BlazorStrap
 @inject LocalStorage Storage
+@inject Sotsera.Blazor.Toaster.IToaster toaster
+
+@if (Transaction == "logout")
+{
+    toaster.Info("you have been successfully logged out of the system.", "Logged Out");
+}
 
 <div class="row">
     <div class="col-md-11">
@@ -48,44 +54,47 @@
 </div>
 
 @functions {
-IList<Item> items = new List<Item>
-{
-new Item {
-    Source = @"..\img\patients.jpg",
-    Alt ="Patients",
-    Header = "Patients",
-    Caption = "Locate patients and edit patient data."
-},
-new Item {
-    Source = @"..\img\providers.jpg",
-    Alt ="Provider Organizations",
-    Header = "Provider Organizations",
-    Caption = "Track and manage provider organizations."
-},
-new Item {
-    Source = @"..\img\claims.jpg",
-    Alt ="Claims",
-    Header = "Claims",
-    Caption = "Record and edit claims for services provided."
-}
-};
+    [Parameter]
+    protected string Transaction { get; set; }
 
-private string _apiImage = @"..\img\apis.jpg";
-private string _alexaImage = @"..\img\alexa.jpg";
-private string _automateImage = @"..\img\automate.jpg";
+    private string _apiImage = @"..\img\apis.jpg";
+    private string _alexaImage = @"..\img\alexa.jpg";
+    private string _automateImage = @"..\img\automate.jpg";
 
-private int _secondIndex;
-int SecondIndex
-{
-    get => _secondIndex;
-    set { _secondIndex = value; StateHasChanged(); }
-}
+    IList<Item> items = new List<Item>
+    {
+        new Item {
+        Source = @"..\img\patients.jpg",
+        Alt ="Patients",
+        Header = "Patients",
+        Caption = "Locate patients and edit patient data."
+    },
+    new Item {
+        Source = @"..\img\providers.jpg",
+        Alt ="Provider Organizations",
+        Header = "Provider Organizations",
+        Caption = "Track and manage provider organizations."
+    },
+    new Item {
+        Source = @"..\img\claims.jpg",
+        Alt ="Claims",
+        Header = "Claims",
+        Caption = "Record and edit claims for services provided."
+    }
+    };
 
-class Item
-{
-    public string Source { get; set; }
-    public string Alt { get; set; }
-    public string Caption { get; set; }
-    public string Header { get; set; }
-}
+    private int _secondIndex;
+    int SecondIndex
+    {
+        get => _secondIndex;
+        set { _secondIndex = value; StateHasChanged(); }
+    }
+
+    class Item
+    {
+        public string Source { get; set; }
+        public string Alt { get; set; }
+        public string Caption { get; set; }
+        public string Header { get; set; }
+    }
 }

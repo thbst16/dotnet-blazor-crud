@@ -5,18 +5,15 @@
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 @using BlazorCrud.Shared.Data
 @inject LocalStorage Storage
+@inject Sotsera.Blazor.Toaster.IToaster toaster
 
 @if (Transaction == "modified")
 {
-    <Alert Color="Color.Success" IsDismissible="true">
-        Claim successfully updated in the system.
-    </Alert>
+    toaster.Success("Claim successfully updated in the system.", "Claim Updated");
 }
 @if (Transaction == "cancelled")
 {
-    <Alert Color="Color.Warning" IsDismissible="true">
-        Claim transaction cancelled.
-    </Alert>
+    toaster.Warning("Claim transaction has been cancelled.", "Transaction Cancelled");
 }
 
 <h1>Claim Data</h1>
@@ -36,33 +33,33 @@ else
 {
     <BlazorTable IsResponsive="true" class='table'>
         <thead class="thead-light">
-    <tr>
-        <th>ID</th>
-        <th>Patient</th>
-        <th>Organization</th>
-        <th>Status</th>
-        <th>Type</th>
-        <th>Actions</th>
-    </tr>
-</thead>
+            <tr>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Organization</th>
+                <th>Status</th>
+                <th>Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
         <tbody>
             @foreach (var claim in Claims.Results)
             {
-            <tr>
-                <td>@claim.Id</td>
-                <td>@claim.Patient</td>
-                <td>@claim.Organization</td>
-                <td>@claim.Status</td>
-                <td>@claim.Type</td>
-                <td>
-                    <ActionLinkButton Action="view" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
-                    @if (isLoggedOn())
-                    {
-                        <ActionLinkButton Action="edit" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
-                        <ActionLinkButton Action="delete" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
-                    }
-                </td>
-            </tr>
+                <tr>
+                    <td>@claim.Id</td>
+                    <td>@claim.Patient</td>
+                    <td>@claim.Organization</td>
+                    <td>@claim.Status</td>
+                    <td>@claim.Type</td>
+                    <td>
+                        <ActionLinkButton Action="view" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
+                        @if (isLoggedOn())
+                        {
+                            <ActionLinkButton Action="edit" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
+                            <ActionLinkButton Action="delete" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
+                        }
+                    </td>
+                </tr>
             }
         </tbody>
     </BlazorTable>
@@ -70,32 +67,32 @@ else
 }
 
 @functions {
-    [Parameter]
-    protected string Page { get; set; } = "1";
-    [Parameter]
-    protected string Transaction { get; set; }
+[Parameter]
+protected string Page { get; set; } = "1";
+[Parameter]
+protected string Transaction { get; set; }
 
-    protected PagedResult<Claim> Claims;
+protected PagedResult<Claim> Claims;
 
-    protected override async Task OnParametersSetAsync()
+protected override async Task OnParametersSetAsync()
+{
+    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
     {
-        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-        {
-            Claims = await Http.GetJsonAsync<PagedResult<Claim>>("http://localhost:10002/api/claim/?page=" + Page);
-        }
-        else
-        {
-            Claims = await Http.GetJsonAsync<PagedResult<Claim>>("http://becksapi.azurewebsites.net/api/claim/?page=" + Page);
-        }
+        Claims = await Http.GetJsonAsync<PagedResult<Claim>>("http://localhost:10002/api/claim/?page=" + Page);
     }
-    protected void PagerPageChanged(int page)
+    else
     {
-        Transaction = string.Empty;
-        UriHelper.NavigateTo("/claim/list/" + page);
+        Claims = await Http.GetJsonAsync<PagedResult<Claim>>("http://becksapi.azurewebsites.net/api/claim/?page=" + Page);
     }
+}
+protected void PagerPageChanged(int page)
+{
+    Transaction = string.Empty;
+    UriHelper.NavigateTo("/claim/list/" + page);
+}
 
-    protected bool isLoggedOn()
-    {
-        return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
-    }
+protected bool isLoggedOn()
+{
+    return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
+}
 }

@@ -9,7 +9,6 @@
     {
         Storage["JWT-Token"] = String.Empty;
         Storage["JWT-Time-Exire"] = String.Empty;
-        // Storage["App-State"] = "logged-out";
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", String.Empty);
         UriHelper.NavigateTo("/logout");
     }
