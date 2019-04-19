@@ -21,7 +21,7 @@ namespace BlazorCrud.Server.Controllers
         }
 
         /// <summary>
-        /// Returns a list of paginated patients with a default page size of 5.
+        /// Returns a list of paginated patients with a default page size of 10.
         /// </summary>
         [HttpGet]
         public PagedResult<Patient> GetAll([FromQuery]int page)

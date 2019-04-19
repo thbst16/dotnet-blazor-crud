@@ -21,7 +21,7 @@ namespace BlazorCrud.Server.Controllers
         }
 
         /// <summary>
-        /// Returns a list of paginated organizations with a default page size of 5.
+        /// Returns a list of paginated organizations with a default page size of 10.
         /// </summary>
         [HttpGet]
         public PagedResult<Organization> GetAll([FromQuery]int page)

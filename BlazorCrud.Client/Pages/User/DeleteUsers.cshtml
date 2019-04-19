@@ -1,0 +1,82 @@
+﻿@page "/user/delete/{Id}"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject LocalStorage Storage
+
+<h1>Delete</h1>
+<h3>Are you sure you want to delete the user with id : @Id</h3>
+
+<br />
+<div class="col-md-4">
+    <table class="table">
+        <tr>
+            <td>Id</td>
+            <td>@user.Id</td>
+        </tr>
+        <tr>
+            <td>Username</td>
+            <td>@user.Username</td>
+        </tr>
+        <tr>
+            <td>GLast Name</td>
+            <td>@user.LastName</td>
+        </tr>
+        <tr>
+            <td>First Name</td>
+            <td>@user.FirstName</td>
+        </tr>
+        <tr>
+            <td>Email</td>
+            <td>@user.Email</td>
+        </tr>
+    </table>
+    <div class="form-group">
+        <button type="button" class="btn btn-danger" onclick="@(async () => await RemoveUser())">Delete</button>
+        <button class="btn btn-primary" onclick="@cancel">Cancel</button>
+    </div>
+</div>
+
+@functions {
+[Parameter]
+string Id { get; set; }
+
+User user = new User();
+
+protected override async Task OnInitAsync()
+{
+    if (!(Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]))) // not logged on
+    {
+        UriHelper.NavigateTo("/user/login");
+    }
+
+    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    {
+        user = await Http.GetJsonAsync<User>("http://localhost:10002/api/user/" + Convert.ToInt32(Id));
+    }
+    else
+    {
+        user = await Http.GetJsonAsync<User>("http://becksapi.azurewebsites.net/api/user/" + Convert.ToInt32(Id));
+    }
+}
+
+protected async Task RemoveUser()
+{
+    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.DeleteAsync("http://localhost:10002/api/user/" + Convert.ToInt32(Id));
+    }
+    else
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.DeleteAsync("http://becksapi.azurewebsites.net/api/user/" + Convert.ToInt32(Id));
+    }
+    UriHelper.NavigateTo("/user/modified");
+}
+void cancel()
+{
+    UriHelper.NavigateTo("/user/cancelled");
+}
+}

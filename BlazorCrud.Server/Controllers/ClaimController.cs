@@ -21,7 +21,7 @@ namespace BlazorCrud.Server.Controllers
         }
 
         /// <summary>
-        /// Returns a list of paginated claims with a default page size of 5.
+        /// Returns a list of paginated claims with a default page size of 10.
         /// </summary>
         [HttpGet]
         public PagedResult<Claim> GetAll([FromQuery]int page)

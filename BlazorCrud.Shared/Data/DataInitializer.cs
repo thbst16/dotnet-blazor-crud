@@ -70,11 +70,20 @@ namespace BlazorCrud.Shared.Data
             if (userContext.Users.Count() == 0)
             {
                 // Create new users only if the collection is empty.
-                var users = new User[]
-                {
-                    new User {Username="admin@beckshome.com", Password="Password123", FirstName="Thomas", LastName="Beck", Email="admin@beckshome.com"},
-                    new User {Username="user@beckshome.com", Password="Password123", FirstName="Anna", LastName="Beck", Email="user@beckshome.com"}
-                };
+                var testUsers = new Faker<User>()
+                    .RuleFor(u => u.Username, u => u.Internet.UserName())
+                    .RuleFor(u => u.Password, u => u.Internet.Password())
+                    .RuleFor(u => u.FirstName, u => u.Name.FirstName())
+                    .RuleFor(u => u.LastName, u => u.Name.LastName())
+                    .RuleFor(u => u.Email, u => u.Internet.Email());
+                var users = testUsers.Generate(20);
+
+                users.AddRange(
+                    new User[] {
+                        new User { Username = "admin@beckshome.com", Password = "Password123", FirstName = "Thomas", LastName = "Beck", Email = "admin@beckshome.com" },
+                        new User { Username = "user@beckshome.com", Password = "Password123", FirstName = "Anna", LastName = "Beck", Email = "user@beckshome.com" }
+                });
+
                 foreach (User u in users)
                 {
                     userContext.Users.Add(u);

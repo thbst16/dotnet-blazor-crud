@@ -1,0 +1,78 @@
+﻿@page "/user/new"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject LocalStorage Storage
+
+<h1>Create</h1>
+<h3>User</h3>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <ValidatedForm Model="@user" OnSubmit="@CreateUser">
+            <div class="form-group">
+                <label for="Username" class="control-label">User Name</label>
+                <input for="Username" class="form-control" bind="@user.Username" />
+                <ClientValidationError FieldName="Username" Model="user" />
+            </div>
+            <div class="form-group">
+                <label for="Lastname" class="control-label">Last Name</label>
+                <input for="Lastname" class="form-control" bind="@user.LastName" />
+                <ClientValidationError FieldName="Lastname" Model="user" />
+            </div>
+            <div class="form-group">
+                <label for="Firstname" class="control-label">First Name</label>
+                <input for="Firstname" class="form-control" bind="@user.FirstName" />
+                <ClientValidationError FieldName="Lastname" Model="user" />
+            </div>
+            <div class="form-group">
+                <label for="Email" class="control-label">Email</label>
+                <input for="Email" class="form-control" bind="@user.Email" />
+                <ClientValidationError FieldName="Email" Model="user" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Password" class="control-label">Password</label>
+                <input asp-for="Password" class="form-control" type="password" bind="@user.Password" />
+                <ClientValidationError FieldName="Password" Model="user" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Save</button>
+                <button class="btn btn-primary" onclick="@cancel">Cancel</button>
+            </div>
+        </ValidatedForm>
+    </div>
+</div>
+
+@functions {
+User user = new User();
+
+protected override void OnInit()
+{
+    base.OnInit();
+    if (!(Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]))) // not logged on
+    {
+        UriHelper.NavigateTo("/user/login");
+    }
+}
+
+protected async Task CreateUser(UIEventArgs ev)
+{
+    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.SendJsonAsync(HttpMethod.Post, "http://localhost:10002/api/user", user);
+    }
+    else
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.SendJsonAsync(HttpMethod.Post, "http://becksapi.azurewebsites.net/api/user", user);
+    }
+    UriHelper.NavigateTo("/user/modified");
+}
+void cancel()
+{
+    UriHelper.NavigateTo("/user/cancelled");
+}
+}
