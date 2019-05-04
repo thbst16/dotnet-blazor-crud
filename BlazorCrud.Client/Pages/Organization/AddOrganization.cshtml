@@ -62,18 +62,10 @@
 
     protected async Task CreateOrganization(UIEventArgs ev)
     {
-        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-        {
-            var token = Storage["JWT-Token"];
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await Http.SendJsonAsync(HttpMethod.Post, "http://localhost:10002/api/organization", organization);
-        }
-        else
-        {
-            var token = Storage["JWT-Token"];
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await Http.SendJsonAsync(HttpMethod.Post, "http://becksapi.azurewebsites.net/api/organization/", organization);
-        }
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.SendJsonAsync(HttpMethod.Post, Storage["environment_uri"] + "/organization", organization);
+
         UriHelper.NavigateTo("/organization/modified");
     }
     void cancel()

@@ -76,14 +76,7 @@ protected PagedResult<User> Users;
 
 protected override async Task OnParametersSetAsync()
 {
-    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-    {
-        Users = await Http.GetJsonAsync<PagedResult<User>>("http://localhost:10002/api/user/?page=" + Page);
-    }
-    else
-    {
-        Users = await Http.GetJsonAsync<PagedResult<User>>("http://becksapi.azurewebsites.net/api/user?page=" + Page);
-    }
+    Users = await Http.GetJsonAsync<PagedResult<User>>(Storage["environment_uri"] + "/user/?page=" + Page);
 }
 
 protected void PagerPageChanged(int page)

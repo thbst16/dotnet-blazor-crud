@@ -1,6 +1,7 @@
 @addTagHelper *, BlazorStrap
 @inherits BlazorLayoutComponent
 @inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 @addTagHelper *, Sotsera.Blazor.Toaster
 <toastContainer />
 
@@ -68,6 +69,19 @@
 // Handle Navbar events
 
 bool IsOpen { get; set; } = false;
+
+protected override void OnInit()
+{
+    Storage["environment_uri"] = string.Empty;
+    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
+    {
+        Storage["environment_uri"] = "http://localhost:10002/api";
+    }
+    else
+    {
+        Storage["environment_uri"] = "http://becksapi.azurewebsites.net/api";
+    }
+}
 
 void openNav(UIMouseEventArgs e)
 {

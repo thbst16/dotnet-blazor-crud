@@ -1,6 +1,7 @@
 ﻿@page "/patient/view/{Id}"
 @inject HttpClient Http
 @addTagHelper *, BlazorStrap
+@inject LocalStorage Storage
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 <h1>View</h1>
@@ -67,35 +68,28 @@
 </div>
 
 @functions {
-    [Parameter]
-    string Id { get; set; }
+[Parameter]
+string Id { get; set; }
 
-    Patient patient = new Patient
-    {
-        Name = "",
-        PrimaryCareProvider = "",
-        Gender = "",
-        State = "",
-        Contacts = new List<ContactPoint>
-        {
-            new ContactPoint { System = "", Value = "", Use = "" }
-        }
-    };
+Patient patient = new Patient
+{
+    Name = "",
+    PrimaryCareProvider = "",
+    Gender = "",
+    State = "",
+    Contacts = new List<ContactPoint>
+{
+new ContactPoint { System = "", Value = "", Use = "" }
+}
+};
 
-    protected override async Task OnInitAsync()
-    {
-        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-        {
-            patient = await Http.GetJsonAsync<Patient>("http://localhost:10002/api/patient/" + Convert.ToInt32(Id));
-        }
-        else
-        {
-            patient = await Http.GetJsonAsync<Patient>("http://becksapi.azurewebsites.net/api/patient/" + Convert.ToInt32(Id));
-        }
-    }
+protected override async Task OnInitAsync()
+{
+    patient = await Http.GetJsonAsync<Patient>(Storage["environment_uri"] + "/patient/" + Convert.ToInt32(Id));
+}
 
-    void back()
-    {
-        UriHelper.NavigateTo("/patient/list/1");
-    }
+void back()
+{
+    UriHelper.NavigateTo("/patient/list/1");
+}
 }

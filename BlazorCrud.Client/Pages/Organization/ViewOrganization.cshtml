@@ -1,5 +1,6 @@
 ﻿@page "/organization/view/{Id}"
 @inject HttpClient Http
+@inject LocalStorage Storage
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 <h1>View</h1>
@@ -38,14 +39,7 @@ Organization organization = new Organization();
 
 protected override async Task OnInitAsync()
 {
-    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-    {
-        organization = await Http.GetJsonAsync<Organization>("http://localhost:10002/api/organization/" + Convert.ToInt32(Id));
-    }
-    else
-    {
-        organization = await Http.GetJsonAsync<Organization>("http://becksapi.azurewebsites.net/api/organization/" + Convert.ToInt32(Id));
-    }
+    organization = await Http.GetJsonAsync<Organization>(Storage["environment_uri"] + "/organization/" + Convert.ToInt32(Id));
 }
 
 void back()

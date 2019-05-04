@@ -45,30 +45,15 @@
             UriHelper.NavigateTo("/user/login");
         }
 
-        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-        {
-            claim = await Http.GetJsonAsync<Claim>("http://localhost:10002/api/claim/" + Convert.ToInt32(Id));
-        }
-        else
-        {
-            claim = await Http.GetJsonAsync<Claim>("http://becksapi.azurewebsites.net/api/claim/" + Convert.ToInt32(Id));
-        }
+        claim = await Http.GetJsonAsync<Claim>(Storage["environment_uri"] + "/claim/" + Convert.ToInt32(Id));
     }
 
     protected async Task RemoveClaim()
     {
-        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-        {
-            var token = Storage["JWT-Token"];
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await Http.DeleteAsync("http://localhost:10002/api/claim/" + Convert.ToInt32(Id));
-        }
-        else
-        {
-            var token = Storage["JWT-Token"];
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await Http.DeleteAsync("http://becksapi.azurewebsites.net/api/claim/" + Convert.ToInt32(Id));
-        }
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.DeleteAsync(Storage["environment_uri"] + "/claim/" + Convert.ToInt32(Id));
+
         UriHelper.NavigateTo("/claim/modified");
     }
     void cancel()

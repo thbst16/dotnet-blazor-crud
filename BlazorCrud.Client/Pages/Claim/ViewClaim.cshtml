@@ -1,5 +1,7 @@
 ﻿@page "/claim/view/{Id}"
 @inject HttpClient Http
+@using BlazorCrud.Shared.Data
+@inject LocalStorage Storage
 @inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 
 <h1>View</h1>
@@ -35,25 +37,18 @@
 </div>
 
 @functions {
-    [Parameter]
-    string Id { get; set; }
+[Parameter]
+string Id { get; set; }
 
-    Claim claim = new Claim();
+Claim claim = new Claim();
 
-    protected override async Task OnInitAsync()
-    {
-        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-        {
-            claim = await Http.GetJsonAsync<Claim>("http://localhost:10002/api/claim/" + Convert.ToInt32(Id));
-        }
-        else
-        {
-            claim = await Http.GetJsonAsync<Claim>("http://becksapi.azurewebsites.net/api/claim/" + Convert.ToInt32(Id));
-        }
-    }
+protected override async Task OnInitAsync()
+{
+    claim = await Http.GetJsonAsync<Claim>(Storage["environment_uri"] + "/claim/" + Convert.ToInt32(Id));
+}
 
-    void back()
-    {
-        UriHelper.NavigateTo("/claim/list/1");
-    }
+void back()
+{
+    UriHelper.NavigateTo("/claim/list/1");
+}
 }

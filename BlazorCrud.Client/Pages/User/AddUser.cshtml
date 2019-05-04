@@ -57,18 +57,10 @@ protected override void OnInit()
 
 protected async Task CreateUser(UIEventArgs ev)
 {
-    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-    {
-        var token = Storage["JWT-Token"];
-        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        await Http.SendJsonAsync(HttpMethod.Post, "http://localhost:10002/api/user", user);
-    }
-    else
-    {
-        var token = Storage["JWT-Token"];
-        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        await Http.SendJsonAsync(HttpMethod.Post, "http://becksapi.azurewebsites.net/api/user", user);
-    }
+    var token = Storage["JWT-Token"];
+    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+    await Http.SendJsonAsync(HttpMethod.Post, Storage["environment_uri"] + "/user", user);
+
     UriHelper.NavigateTo("/user/modified");
 }
 void cancel()

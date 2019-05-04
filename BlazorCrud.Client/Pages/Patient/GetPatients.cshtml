@@ -2,8 +2,8 @@
 @page "/patient/{Transaction}"
 @addTagHelper *, BlazorStrap
 @inject HttpClient Http
-@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 @using BlazorCrud.Shared.Data
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
 @inject LocalStorage Storage
 @inject Sotsera.Blazor.Toaster.IToaster toaster
 
@@ -76,14 +76,7 @@ protected PagedResult<Patient> Patients;
 
 protected override async Task OnParametersSetAsync()
 {
-    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-    {
-        Patients = await Http.GetJsonAsync<PagedResult<Patient>>("http://localhost:10002/api/patient/?page=" + Page);
-    }
-    else
-    {
-        Patients = await Http.GetJsonAsync<PagedResult<Patient>>("http://becksapi.azurewebsites.net/api/patient?page=" + Page);
-    }
+    Patients = await Http.GetJsonAsync<PagedResult<Patient>>(Storage["environment_uri"] + "/patient/?page=" + Page);
 }
 
 protected void PagerPageChanged(int page)

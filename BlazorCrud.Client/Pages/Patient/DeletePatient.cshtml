@@ -91,30 +91,15 @@ protected override async Task OnInitAsync()
         UriHelper.NavigateTo("/user/login");
     }
 
-    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-    {
-        patient = await Http.GetJsonAsync<Patient>("http://localhost:10002/api/patient/" + Convert.ToInt32(Id));
-    }
-    else
-    {
-        patient = await Http.GetJsonAsync<Patient>("http://becksapi.azurewebsites.net/api/patient/" + Convert.ToInt32(Id));
-    }
+    patient = await Http.GetJsonAsync<Patient>(Storage["environment_uri"] + "/patient/" + Convert.ToInt32(Id));
 }
 
 protected async Task RemovePatient()
 {
-    if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-    {
-        var token = Storage["JWT-Token"];
-        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        await Http.DeleteAsync("http://localhost:10002/api/patient/" + Convert.ToInt32(Id));
-    }
-    else
-    {
-        var token = Storage["JWT-Token"];
-        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        await Http.DeleteAsync("http://becksapi.azurewebsites.net/api/patient/" + Convert.ToInt32(Id));
-    }
+    var token = Storage["JWT-Token"];
+    Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+    await Http.DeleteAsync(Storage["environment_uri"] + "/patient/" + Convert.ToInt32(Id));
+
     UriHelper.NavigateTo("/patient/modified");
 }
 void cancel()

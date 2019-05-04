@@ -64,30 +64,15 @@
             UriHelper.NavigateTo("/user/login");
         }
 
-        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-        {
-            claim = await Http.GetJsonAsync<Claim>("http://localhost:10002/api/claim/" + Convert.ToInt32(Id));
-        }
-        else
-        {
-            claim = await Http.GetJsonAsync<Claim>("http://becksapi.azurewebsites.net/api/claim/" + Convert.ToInt32(Id));
-        }
+        claim = await Http.GetJsonAsync<Claim>(Storage["environment_uri"] + "/claim/" + Convert.ToInt32(Id));
     }
 
     protected async Task UpdateClaim(UIEventArgs ev)
     {
-        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-        {
-            var token = Storage["JWT-Token"];
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await Http.SendJsonAsync(HttpMethod.Put, "http://localhost:10002/api/claim/" + Convert.ToInt32(Id), claim);
-        }
-        else
-        {
-            var token = Storage["JWT-Token"];
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await Http.SendJsonAsync(HttpMethod.Put, "http://becksapi.azurewebsites.net/api/claim/" + Convert.ToInt32(Id), claim);
-        }
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.SendJsonAsync(HttpMethod.Put, Storage["environment_uri"] + "/claim/" + Convert.ToInt32(Id), claim);
+
         UriHelper.NavigateTo("/claim/modified");
     }
 

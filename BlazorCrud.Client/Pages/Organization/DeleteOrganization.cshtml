@@ -53,18 +53,10 @@
 
     protected async Task RemoveOrganization()
     {
-        if (UriHelper.GetBaseUri() == "http://localhost:10001/")
-        {
-            var token = Storage["JWT-Token"];
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await Http.DeleteAsync("http://localhost:10002/api/organization/" + Convert.ToInt32(Id));
-        }
-        else
-        {
-            var token = Storage["JWT-Token"];
-            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            await Http.DeleteAsync("http://becksapi.azurewebsites.net/api/organization/" + Convert.ToInt32(Id));
-        }
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.DeleteAsync(Storage["environment_uri"] + "/organization/" + Convert.ToInt32(Id));
+        
         UriHelper.NavigateTo("/organization/modified");
     }
     void cancel()

@@ -13,6 +13,14 @@ namespace BlazorCrud.Shared.Data
 
             if (patientContext.Patients.Count() == 0)
             {
+                // Create test contacts
+                var system = new[] { "Phone", "Fax", "Pager", "SMS" };
+                var use = new[] { "Home", "Work", "Mobile" };
+                var testContacts = new Faker<ContactPoint>()
+                    .RuleFor(c => c.System, f => f.PickRandom(system))
+                    .RuleFor(c => c.Value, f => f.Phone.PhoneNumber())
+                    .RuleFor(c => c.Use, f => f.PickRandom(use));
+                
                 // Create new patients only if the collection is empty.
                 var gender = new[] { "Male", "Female" };
                 var state = new[] { "MI", "OH", "IL", "IN" };
@@ -21,7 +29,7 @@ namespace BlazorCrud.Shared.Data
                     .RuleFor(p => p.Gender, f => f.PickRandom(gender))
                     .RuleFor(p => p.PrimaryCareProvider, f => f.Company.CompanyName())
                     .RuleFor(p => p.State, f => f.PickRandom(state))
-                    .RuleFor(p => p.Contacts, f => null);
+                    .RuleFor(p => p.Contacts, f => testContacts.Generate(2).ToList());
                 var patients = testPatients.Generate(200);
                 
                 foreach (Patient p in patients)
