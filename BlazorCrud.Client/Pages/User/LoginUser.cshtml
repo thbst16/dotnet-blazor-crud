@@ -11,29 +11,24 @@
     toaster.Error("Invalid username and/or password. Please retry your credentials.", "Invalid Credentials");
 }
 
-<h1>Login</h1>
-<h3>User</h3>
-<hr />
-
-<div class="row">
-    <div class="col-md-4">
-        <ValidatedForm Model="@login" OnSubmit="@LogonUser">
-            <div class="form-group">
-                <label for="Username" class="control-label">User Name</label>
-                <input for="Username" class="form-control" bind="@login.Username" />
-                <ClientValidationError FieldName="Username" Model="login" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label">Password</label>
-                <input asp-for="Password" class="form-control" type="password" bind="@login.Password" />
-                <ClientValidationError FieldName="Password" Model="login" />
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-success">Login</button>
-                <button class="btn btn-primary" onclick="@cancel">Cancel</button>
-            </div>
-        </ValidatedForm>
+<div class="form-signin">
+    <div class="text-center">
+        <img src="img/blazorbrand.png" />
     </div>
+    <ValidatedForm Model="@login" OnSubmit="@LogonUser">
+        <h1 class="h3 mb-3 text-center">Please sign in</h1>
+        <div class="form-group">
+            <input for="Username" class="form-control" placeholder="User name" bind="@login.Username" />
+            <ClientValidationError FieldName="Username" Model="login" />
+        </div>
+        <div class="form-group">
+            <input asp-for="Password" class="form-control" type="password" placeholder="Password" bind="@login.Password" />
+            <ClientValidationError FieldName="Password" Model="login" />
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-lg btn-primary btn-block">Sign in</button>
+        </div>
+    </ValidatedForm>
 </div>
 
 @functions {
