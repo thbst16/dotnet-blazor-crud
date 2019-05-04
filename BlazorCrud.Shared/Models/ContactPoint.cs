@@ -5,11 +5,8 @@ namespace BlazorCrud.Shared.Models
     public class ContactPoint
     {
         public int Id { get; set; }
-        //[Required]
-        public string Type { get; set; }
-        //[Required]
-        public string Number { get; set; }
-        //[Required]
+        public string System { get; set; }
+        public string Value { get; set; }
         public string Use { get; set; }
     }
 }

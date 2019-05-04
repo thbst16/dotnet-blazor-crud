@@ -21,13 +21,12 @@
     protected void HandleError(object sender, ValidationErrorEventArgs args)
     {
         if (args.Instance != Model)
-            return;
+           return;
         errorMessage = null;
         var error = args.Errors?.FirstOrDefault(e => e.MemberNames.Any(m => m == FieldName));
         if (error == null)
             return;
         errorMessage = error.ErrorMessage;
-
     }
     public void Dispose()
     {

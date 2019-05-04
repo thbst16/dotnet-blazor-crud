@@ -7,46 +7,97 @@
 <h3>Patient</h3>
 
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <ValidatedForm Model="@patient" OnSubmit="@UpdatePatient">
-            <div class="form-group">
-                <label for="Name" class="control-label">Name</label>
-                <input for="Name" class="form-control" bind="@patient.Name" />
-                <ClientValidationError FieldName="Name" Model="patient" />
-            </div>
-            <div class="form-group">
-                <label asp-for="Gender" class="control-label">Gender</label>
-                <select asp-for="Gender" class="form-control" bind="@patient.Gender">
-                    <option value="">-- Select Gender --</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
-                <ClientValidationError FieldName="Gender" Model="patient" />
-            </div>
-            <div class="form-group">
-                <label asp-for="PrimaryCareProvider" class="control-label">Primary Care Provider</label>
-                <input asp-for="PrimaryCareProvider" class="form-control" bind="@patient.PrimaryCareProvider" />
-                <ClientValidationError FieldName="PrimaryCareProvider" Model="patient" />
-            </div>
-            <div class="form-group">
-                <label asp-for="State" class="control-label">State</label>
-                <input asp-for="State" class="form-control" bind="@patient.State" />
-                <ClientValidationError FieldName="State" Model="patient" />
-            </div>
-            <div class="form-group">
-                <button type="submit" class="btn btn-success">Save</button>
-                <button class="btn btn-primary" onclick="@cancel">Cancel</button>
-            </div>
-        </ValidatedForm>
+<h5>Demographic Data</h5>
+<hr />
+<ValidatedForm Model="@patient" OnSubmit="@UpdatePatient">
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <input for="Name" class="form-control" placeholder="Name" bind="@patient.Name" />
+            <ClientValidationError FieldName="Name" Model="patient" />
+        </div>
+        <div class="form-group col-md-2">
+            <select asp-for="Gender" class="form-control" bind="@patient.Gender">
+                <option value="">-- Select Gender --</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+            </select>
+            <ClientValidationError FieldName="Gender" Model="patient" />
+        </div>
     </div>
-</div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <input asp-for="PrimaryCareProvider" class="form-control" placeholder="Primary Care Provider" bind="@patient.PrimaryCareProvider" />
+            <ClientValidationError FieldName="PrimaryCareProvider" Model="patient" />
+        </div>
+        <div class="form-group col-md-2">
+            <input asp-for="State" class="form-control" placeholder="State Abbreviation" bind="@patient.State" />
+            <ClientValidationError FieldName="State" Model="patient" />
+        </div>
+    </div>
 
+    <hr />
+    <h5>Contact Point</h5>
+    <hr />
+    @foreach (var contactPoint in patient.Contacts)
+    {
+        <div class="form-row">
+            <div class="form-group col-md-2">
+                <select asp-for="System" class="form-control" placeholder="System" bind="@contactPoint.System">
+                    <option value="">-- Select System --</option>
+                    <option value="Phone">Phone</option>
+                    <option value="Fax">Fax</option>
+                    <option value="Email">Email</option>
+                    <option value="Pager">Pager</option>
+                    <option value="SMS">SMS</option>
+                    <option value="Other">Other</option>
+                </select>
+                <ClientValidationError FieldName="System" Model="patient" />
+            </div>
+            <div class="form-group col-md-2">
+                <input asp-for="Value" class="form-control" placeholder="Value" bind="@contactPoint.Value" />
+                <ClientValidationError FieldName="Value" Model="patient" />
+            </div>
+            <div class="form-group col-md-2">
+                <select asp-for="Use" class="form-control" placeholder="Use" bind="@contactPoint.Use">
+                    <option value="">-- Select Use --</option>
+                    <option value="Home">Home</option>
+                    <option value="Work">Work</option>
+                    <option value="Temp">Temp</option>
+                    <option value="Old">Old</option>
+                    <option value="Mobile">Mobile</option>
+                </select>
+                <ClientValidationError FieldName="Use" Model="patient" />
+            </div>
+            <div class="form-group col-md-1">
+                <a href="javascript:void(0)" class="btn btn-danger" onclick="@(()=>OnContactDelete(patient, contactPoint))">X</a>
+            </div>
+        </div>
+    }
+    <div class="form-group">
+        <a href="javascript:void(0)" class="btn btn-success" onclick="@(()=>OnContactAdd(patient))">Add Contact</a>
+    </div>
+    <hr />
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-success">Save</button>
+        <button class="btn btn-primary" onclick="@cancel">Cancel</button>
+    </div>
+</ValidatedForm>
 @functions {
     [Parameter]
     string Id { get; set; }
 
-    Patient patient = new Patient();
+    Patient patient = new Patient
+    {
+        Name = "",
+        PrimaryCareProvider = "",
+        Gender = "",
+        State = "",
+        Contacts = new List<ContactPoint>
+        {
+            new ContactPoint { System = "", Value = "", Use = "" }
+        }
+    };
 
     protected override async Task OnInitAsync()
     {
@@ -80,6 +131,16 @@
             await Http.SendJsonAsync(HttpMethod.Put, "http://becksapi.azurewebsites.net/api/patient/" + Convert.ToInt32(Id), patient);
         }
         UriHelper.NavigateTo("/patient/modified");
+    }
+
+    public void OnContactDelete(Patient patient, ContactPoint contactPoint)
+    {
+        patient.Contacts.Remove(contactPoint);
+    }
+
+    public void OnContactAdd(Patient patient)
+    {
+        patient.Contacts.Add(new ContactPoint { System = "", Value = "", Use = "" });
     }
 
     void cancel()

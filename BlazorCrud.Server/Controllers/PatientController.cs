@@ -1,6 +1,7 @@
 ﻿using BlazorCrud.Shared.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
 using BlazorCrud.Shared.Models;
 using AutoMapper;
@@ -38,7 +39,9 @@ namespace BlazorCrud.Server.Controllers
         [HttpGet("{id}", Name = "GetPatient")]
         public ActionResult<Patient> GetById(int id)
         {
-            var item = _context.Patients.Find(id);
+            var item = _context.Patients
+                .Include(patient => patient.Contacts)
+                .Single(p => p.Id == id);
             if (item == null)
             {
                 return NotFound();
@@ -74,7 +77,11 @@ namespace BlazorCrud.Server.Controllers
         {
             if (ModelState.IsValid)
             {
-                var pat = _context.Patients.Find(id);
+                // var pat = _context.Patients.Find(id);
+                var pat = _context.Patients
+                    .AsNoTracking()
+                    .Include(pa => pa.Contacts)
+                    .Single(p => p.Id == id);
                 if (pat == null)
                 {
                     return NotFound();
