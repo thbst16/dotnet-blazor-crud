@@ -1,0 +1,28 @@
+﻿@page "/upload/new"
+@inject HttpClient Http
+@inject Microsoft.AspNetCore.Blazor.Services.IUriHelper UriHelper
+@inject LocalStorage Storage
+
+<h1>Create</h1>
+<h3>Upload</h3>
+
+<div class="row">
+    <img src="@Picture" />
+    <input ref="fileUpload" class="form-control" type="file"
+            onchange="@(async (e) => Picture = await JSRuntime.Current.InvokeAsync<string>("readFileAsBase64", fileUpload))" />
+</div>
+<div class="row">
+    <button type="submit" class="btn btn-default" onclick="@(async () => await UploadDocument())">Upload</button>
+</div>
+
+@functions{
+    ElementRef fileUpload;
+    string Picture;
+
+    protected async Task UploadDocument()
+    {
+        // Blazor complains because this is not currently valid JSON
+        var response = await Http.PostJsonAsync<string>(Storage["environment_uri"] + "/upload", Picture);
+        StateHasChanged();
+    }
+}
