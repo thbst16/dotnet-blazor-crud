@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using BlazorCrud.Shared.Data;
 using BlazorCrud.Shared.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -60,14 +62,25 @@ namespace BlazorCrud.Server.Controllers
         /// Creates a file.
         /// </summary>
         [HttpPost]
-        public async Task<IActionResult> Create()
+        [Authorize]
+        public IActionResult Create(Upload upload)
         {
-            var tempFileName = Path.GetTempFileName();
-            using (var writer = System.IO.File.OpenWrite(tempFileName))
+            upload.UploadTimestamp = DateTime.Now;
+            upload.ProcessedTimestamp = null;
+            // Trim the header from the Base 64 encoded content
+            int position = upload.FileContent.IndexOf("base64,");
+            string trimmedContent = upload.FileContent.Remove(0, position + 7);
+            upload.FileContent = trimmedContent;
+            if (ModelState.IsValid)
             {
-                await Request.Body.CopyToAsync(writer);
+                _context.Uploads.Add(upload);
+                _context.SaveChanges();
+                return CreatedAtRoute("GetUpload", new { id = upload.Id }, upload);
             }
-            return Ok(Path.GetFileNameWithoutExtension(tempFileName));
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
     }
 }

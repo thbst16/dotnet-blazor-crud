@@ -28,7 +28,9 @@
         </tr>
         <tr>
             <td>File</td>
-            <td>Download File Here!!</td>
+            <td>
+                <button onclick="@DownloadFile">Download</button>
+            </td>
         </tr>
     </table>
     <div class="form-group">
@@ -37,18 +39,26 @@
 </div>
 
 @functions {
-[Parameter]
-string Id { get; set; }
+    [Parameter]
+    string Id { get; set; }
 
-Upload upload = new Upload();
+    Upload upload = new Upload();
 
-protected override async Task OnInitAsync()
-{
-    upload = await Http.GetJsonAsync<Upload>(Storage["environment_uri"] + "/upload/" + Convert.ToInt32(Id));
-}
+    protected override async Task OnInitAsync()
+    {
+        upload = await Http.GetJsonAsync<Upload>(Storage["environment_uri"] + "/upload/" + Convert.ToInt32(Id));
+    }
 
-void back()
-{
-    UriHelper.NavigateTo("/upload/list/1");
-}
+    void DownloadFile()
+    {
+        JSRuntime.Current.InvokeAsync<object>(
+            "saveAsFile",
+            upload.FileName,
+            upload.FileContent);
+    }
+
+    void back()
+    {
+        UriHelper.NavigateTo("/upload/list/1");
+    }
 }

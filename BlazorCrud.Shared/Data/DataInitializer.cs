@@ -106,7 +106,7 @@ namespace BlazorCrud.Shared.Data
                     .RuleFor(u => u.FileName, u => u.System.FileName())
                     .RuleFor(u => u.UploadTimestamp, u => u.Date.Past(1, DateTime.Now))
                     .RuleFor(u => u.ProcessedTimestamp, u => u.Date.Future(1, DateTime.Now))
-                    .RuleFor(u => u.FileContent, u => u.Image.PicsumUrl(640, 480, false, false));
+                    .RuleFor(u => u.FileContent, Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("Hello Bogus!!")));
                 var uploads = testUploads.Generate(30);
 
                 foreach (Upload u in uploads)

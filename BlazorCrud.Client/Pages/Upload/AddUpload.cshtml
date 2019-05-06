@@ -6,23 +6,44 @@
 <h1>Create</h1>
 <h3>Upload</h3>
 
+<hr />
 <div class="row">
-    <img src="@Picture" />
-    <input ref="fileUpload" class="form-control" type="file"
-            onchange="@(async (e) => Picture = await JSRuntime.Current.InvokeAsync<string>("readFileAsBase64", fileUpload))" />
-</div>
-<div class="row">
-    <button type="submit" class="btn btn-default" onclick="@(async () => await UploadDocument())">Upload</button>
+    <div class="col-md-4">
+        <ValidatedForm Model="@upload" OnSubmit="@CreateUpload">
+            <div class="form-group">
+                <label for="FileName" class="control-label">File Name</label>
+                <input for="FileName" class="form-control" bind="@upload.FileName" />
+                <ClientValidationError FieldName="FileName" Model="upload" />
+            </div>
+            <div class="form-group">
+                <label for="FileContent" class="control-label">File</label>
+                <input ref="fileContent" class="form-control" type="file"
+                    onchange="@(async (e) => @upload.FileContent = await JSRuntime.Current.InvokeAsync<string>("readFileAsBase64", fileContent))" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Save</button>
+                <button class="btn btn-primary" onclick="@cancel">Cancel</button>
+            </div>
+        </ValidatedForm>
+    </div>
 </div>
 
 @functions{
-    ElementRef fileUpload;
-    string Picture;
+    ElementRef fileContent;
 
-    protected async Task UploadDocument()
+    Upload upload = new Upload();
+
+    protected async Task CreateUpload(UIEventArgs ev)
     {
-        // Blazor complains because this is not currently valid JSON
-        var response = await Http.PostJsonAsync<string>(Storage["environment_uri"] + "/upload", Picture);
-        StateHasChanged();
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.SendJsonAsync(HttpMethod.Post, Storage["environment_uri"] + "/upload", upload);
+
+        UriHelper.NavigateTo("/upload/modified");
+    }
+
+    void cancel()
+    {
+        UriHelper.NavigateTo("/upload/cancelled");
     }
 }

@@ -11,7 +11,7 @@ namespace BlazorCrud.Shared.Models
         public string FileName { get; set; }
         [Required]
         public DateTime UploadTimestamp { get; set; }
-        public DateTime ProcessedTimestamp { get; set; }
+        public DateTime? ProcessedTimestamp { get; set; }
         [Required]
         public string FileContent { get; set; }
     }
