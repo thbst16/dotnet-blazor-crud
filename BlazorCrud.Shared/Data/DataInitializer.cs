@@ -7,7 +7,7 @@ namespace BlazorCrud.Shared.Data
 {
     public class DataInitializer
     {
-        public static void Initialize(PatientContext patientContext, OrganizationContext organizationContext, ClaimContext claimContext, UserContext userContext)
+        public static void Initialize(PatientContext patientContext, OrganizationContext organizationContext, ClaimContext claimContext, UserContext userContext, UploadContext uploadContext)
         {
             Randomizer.Seed = new Random(8675309);
 
@@ -97,6 +97,23 @@ namespace BlazorCrud.Shared.Data
                     userContext.Users.Add(u);
                 }
                 userContext.SaveChanges();
+            }
+
+            if (uploadContext.Uploads.Count() == 0)
+            {
+                // Create new uploads only if the current collection is empty.
+                var testUploads = new Faker<Upload>()
+                    .RuleFor(u => u.FileName, u => u.System.FileName())
+                    .RuleFor(u => u.UploadTimestamp, u => u.Date.Past(1, DateTime.Now))
+                    .RuleFor(u => u.ProcessedTimestamp, u => u.Date.Future(1, DateTime.Now))
+                    .RuleFor(u => u.FileContent, u => u.Image.PicsumUrl(640, 480, false, false));
+                var uploads = testUploads.Generate(30);
+
+                foreach (Upload u in uploads)
+                {
+                    uploadContext.Uploads.Add(u);
+                }
+                uploadContext.SaveChanges();
             }
         }
     }
