@@ -11,11 +11,11 @@ pool:
 
 variables:
   #solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
+  # buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build BlazorCrud.sln --configuration ${buildConfiguration}
+- script: dotnet build BlazorCrud.sln --configuration $(buildConfiguration)
   displayName: 'dotnet build BlazorCrud.sln'
 
 # steps:
