@@ -13,11 +13,17 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: |
-    dotnet build BlazorCrud.sln --configuration $(buildConfiguration)
-    dotnet publish BlazorCrud.Client/BlazorCrud.Client.csproj --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY
-    dotnet publish BlazorCrud.Server/BlazorCrud.Server.csproj --configuration $(buildConfiguration) --output $BUILD_ARTIFACTSTAGINGDIRECTORY
-  displayName: 'Building and Packaging BlazorCrud...'
+- script: dotnet build BlazorCrud.sln --configuration $(buildConfiguration)
+  displayName: 'Building BlazorCrud'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Persisting BlazorCrud Build Artifacts'
+  inputs:
+    command: publish
+    projects: '**/*.csproj'
+    publishWebProjects: false
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: false
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publishing Blazor BlazorCrud Build Artifacts'
