@@ -68,7 +68,7 @@ namespace BlazorCrud.Server
                 {
                     Title = "Blazor CRUD API",
                     Version = "v1",
-                    Description = "CRUD API Services that act as the backend to the Blazor CRUD website"
+                    Description = "CRUD API Services that act as the backend to the Blazor CRUD website - CICD"
                 });
 
                 // Set the comments path for the Swagger JSON and UI.
