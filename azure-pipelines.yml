@@ -16,6 +16,14 @@ steps:
 - script: dotnet build BlazorCrud.sln --configuration $(buildConfiguration)
   displayName: 'Building BlazorCrud'
 
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'config'
+    versioningScheme: 'off'
+    zipAfterPublish: false
+    
 - task: DotNetCoreCLI@2
   displayName: 'Persisting BlazorCrud Build Artifacts'
   inputs:
@@ -23,7 +31,7 @@ steps:
     projects: '**/*.csproj'
     publishWebProjects: false
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-    zipAfterPublish: false
+
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publishing Blazor BlazorCrud Build Artifacts'
