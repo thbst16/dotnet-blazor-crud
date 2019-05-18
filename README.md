@@ -31,4 +31,4 @@ Blazor CRUD uses the following DevOps environment and tools to support a CI / CD
 * [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle) for Swagger document generation.
 * [AutoMapper](https://github.com/AutoMapper/AutoMapper) for object-object mappings.
 * [Bogus](https://github.com/bchavez/Bogus) for data generation.
-* [Azure Fluent Management](https://github.com/Azure/azure-libraries-for-net) for Azure automation rom C#.
+* [Azure Fluent Management](https://github.com/Azure/azure-libraries-for-net) for Azure automation rom C#.--
