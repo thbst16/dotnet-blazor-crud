@@ -13,15 +13,15 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
-- script: dotnet build BlazorCrud.sln --configuration $(buildConfiguration)
-  displayName: 'Building BlazorCrud'
-
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
     restoreSolution: '**/*.sln'
     feedsToUse: 'config'
     versioningScheme: 'off'
+
+- script: dotnet build BlazorCrud.sln --configuration $(buildConfiguration)
+  displayName: 'Building BlazorCrud'
     
 - task: DotNetCoreCLI@2
   displayName: 'Persisting BlazorCrud Build Artifacts'
