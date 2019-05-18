@@ -12,13 +12,6 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
-steps:
-- task: NuGetCommand@2
-  inputs:
-    command: 'restore'
-    restoreSolution: '**/*.sln'
-    versioningScheme: 'off'
-
 - script: dotnet build BlazorCrud.sln --configuration $(buildConfiguration)
   displayName: 'Building BlazorCrud'
     
