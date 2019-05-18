@@ -12,9 +12,10 @@ pool:
 variables:
   buildConfiguration: 'Release'
 
+steps:
 - script: dotnet build BlazorCrud.sln --configuration $(buildConfiguration)
   displayName: 'Building BlazorCrud'
-    
+
 - task: DotNetCoreCLI@2
   displayName: 'Persisting BlazorCrud Build Artifacts'
   inputs:
