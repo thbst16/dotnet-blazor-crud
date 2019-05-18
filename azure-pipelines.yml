@@ -17,7 +17,6 @@ steps:
   inputs:
     command: 'restore'
     restoreSolution: '**/*.sln'
-    feedsToUse: 'config'
     versioningScheme: 'off'
 
 - script: dotnet build BlazorCrud.sln --configuration $(buildConfiguration)
