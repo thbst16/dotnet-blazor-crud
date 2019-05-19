@@ -17,7 +17,17 @@ namespace BlazorCrud.Tests.E2E
             var chromeOptions = new ChromeOptions();
             // chromeOptions.AddArgument("--headless");
 
-            using (var driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions))
+            ChromeDriver driver;
+            if (Environment.GetEnvironmentVariable("ChromeWebDriver") != null)
+            {
+                driver = new ChromeDriver(Environment.GetEnvironmentVariable("ChromeWebDriver"), chromeOptions);
+            }
+            else
+            {
+                driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), chromeOptions);
+            }
+                        
+            using (driver)
             {
                 driver.Navigate().GoToUrl("https://becksblazor.azurewebsites.net/index.html");
                 var waitLoad = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
