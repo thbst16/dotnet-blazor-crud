@@ -30,7 +30,7 @@ namespace BlazorCrud.Tests.E2E
             using (driver)
             {
                 driver.Navigate().GoToUrl("https://becksblazor.azurewebsites.net/index.html");
-                var waitLoad = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
+                var waitLoad = new WebDriverWait(driver, TimeSpan.FromSeconds(240));
                 waitLoad.Until(d => d.FindElement(By.PartialLinkText("Login")));
                 IWebElement LoginLink = driver.FindElement(By.PartialLinkText("Login"));
                 LoginLink.Click();
