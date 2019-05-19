@@ -34,7 +34,7 @@ namespace BlazorCrud.Server
             services.AddDbContext<UserContext>(opt => opt.UseInMemoryDatabase("UserDb"));
             services.AddDbContext<UploadContext>(opt => opt.UseInMemoryDatabase("UploadDb"));
 
-            services.AddAutoMapper();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddCors(options =>
             {
