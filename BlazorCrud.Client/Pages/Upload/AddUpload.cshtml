@@ -17,7 +17,7 @@
             </div>
             <div class="form-group">
                 <label for="FileContent" class="control-label">File</label>
-                <input ref="fileContent" class="form-control" type="file"
+                <input ref="fileContent" class="form-control-file" type="file"
                     onchange="@(async (e) => @upload.FileContent = await JSRuntime.Current.InvokeAsync<string>("readFileAsBase64", fileContent))" />
             </div>
             <div class="form-group">

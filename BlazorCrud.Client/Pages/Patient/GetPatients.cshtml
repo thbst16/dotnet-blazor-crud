@@ -18,12 +18,27 @@
 
 <h1>Patient Data</h1>
 
-@if (isLoggedOn())
-{
-    <p>
-        <a href="/patient/new">Add New Patient</a>
-    </p>
-}
+<div class="row mb-3">
+    <div class="col-md-7">
+    @if (isLoggedOn())
+    {
+        <a href="/patient/new" class="btn btn-primary">Add New Patient</a>
+    }
+    </div>
+    <div class="input-group col-md-5 text-md-right">
+        <input type="text" class="form-control" placeholder="Patient Name" bind="@this.SearchTerm" onkeyup="@SearchBoxKeyPress" />
+        <div class="input-group-btn">
+            <button class="btn btn-default" onclick="@SearchClick">
+                <i class="oi oi-magnifying-glass" title="search" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="input-group-btn">
+            <button class="btn btn-default" onclick="@ClearSearch">
+                <i class="oi oi-x" title="clear" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>
 
 @if (Patients == null)
 {
@@ -67,26 +82,55 @@ else
 }
 
 @functions {
-[Parameter]
-protected string Page { get; set; } = "1";
-[Parameter]
-protected string Transaction { get; set; }
+    [Parameter]
+    protected string Page { get; set; } = "1";
+    [Parameter]
+    protected string Transaction { get; set; }
+    [Parameter]
+    protected string SearchTerm { get; set; } = string.Empty;
 
-protected PagedResult<Patient> Patients;
+    protected PagedResult<Patient> Patients;
 
-protected override async Task OnParametersSetAsync()
-{
-    Patients = await Http.GetJsonAsync<PagedResult<Patient>>(Storage["environment_uri"] + "/patient/?page=" + Page);
-}
+    protected override async Task OnParametersSetAsync()
+    {
+        Patients = await Http.GetJsonAsync<PagedResult<Patient>>(Storage["environment_uri"] + "/patient/?name=" + SearchTerm + "&page=" + Page);
+    }
 
-protected void PagerPageChanged(int page)
-{
-    Transaction = string.Empty;
-    UriHelper.NavigateTo("/patient/list/" + page);
-}
+    protected void PagerPageChanged(int page)
+    {
+        Transaction = string.Empty;
+        UriHelper.NavigateTo("/patient/list/" + page);
+    }
 
-protected bool isLoggedOn()
-{
-    return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
-}
+    protected bool isLoggedOn()
+    {
+        return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
+    }
+
+    protected async Task SearchClick()
+    {
+        if (string.IsNullOrEmpty(SearchTerm))
+        {
+            Patients = await Http.GetJsonAsync<PagedResult<Patient>>(Storage["environment_uri"] + "/patient/?name=" + SearchTerm + "&page=1");
+            return;
+        }
+
+        Patients = await Http.GetJsonAsync<PagedResult<Patient>>(Storage["environment_uri"] + "/patient/?name=" + SearchTerm + "&page=1");
+        StateHasChanged();
+    }
+
+    protected async Task SearchBoxKeyPress(UIKeyboardEventArgs ev)
+    {
+        if (ev.Key == "Enter")
+        {
+            await SearchClick();
+        }
+    }
+
+    protected async Task ClearSearch()
+    {
+        SearchTerm = string.Empty;
+        Patients = await Http.GetJsonAsync<PagedResult<Patient>>(Storage["environment_uri"] + "/patient/?page=1");
+        StateHasChanged();
+    }
 }

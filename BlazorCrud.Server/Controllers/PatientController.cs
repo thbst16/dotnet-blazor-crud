@@ -25,12 +25,21 @@ namespace BlazorCrud.Server.Controllers
         /// Returns a list of paginated patients with a default page size of 10.
         /// </summary>
         [HttpGet]
-        public PagedResult<Patient> GetAll([FromQuery]int page)
+        public PagedResult<Patient> GetAll([FromQuery]string name, int page)
         {
             int pageSize = 10;
-            return _context.Patients
+            if (name != null)
+            {
+                return _context.Patients
+                .Where(p => p.Name.Contains(name, System.StringComparison.CurrentCultureIgnoreCase))
                 .OrderBy(p => p.Id)
                 .GetPaged(page, pageSize);
+            }
+            else
+            { return _context.Patients
+                .OrderBy(p => p.Id)
+                .GetPaged(page, pageSize);
+            }
         }
 
         /// <summary>
