@@ -54,8 +54,7 @@ namespace BlazorCrud.Tests.E2E
                 driver.Navigate().GoToUrl("https://becksblazor.azurewebsites.net/index.html");
                 var waitLoad = new WebDriverWait(driver, TimeSpan.FromMinutes(10));
                 waitLoad.Until(d => d.FindElement(By.PartialLinkText("Login")));
-                IWebElement LoginLink = driver.FindElement(By.PartialLinkText("Login"));
-                LoginLink.Click();
+                driver.FindElement(By.PartialLinkText("Login")).Click();
                 var waitClick = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 waitClick.Until(d => d.Url.Equals("https://becksblazor.azurewebsites.net/user/login"));
                 Assert.AreEqual(driver.Url, "https://becksblazor.azurewebsites.net/user/login");
@@ -70,11 +69,31 @@ namespace BlazorCrud.Tests.E2E
                 driver.Navigate().GoToUrl("https://becksblazor.azurewebsites.net/index.html");
                 var waitLoad = new WebDriverWait(driver, TimeSpan.FromMinutes(10));
                 waitLoad.Until(d => d.FindElement(By.PartialLinkText("Dashboard")));
-                IWebElement DashboardLink = driver.FindElement(By.PartialLinkText("Dashboard"));
-                DashboardLink.Click();
+                driver.FindElement(By.PartialLinkText("Dashboard")).Click();
                 var waitClick = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 waitClick.Until(d => d.Url.Equals("https://becksblazor.azurewebsites.net/dashboard"));
                 Assert.AreEqual(driver.Url, "https://becksblazor.azurewebsites.net/dashboard");
+            }
+        }
+
+        [TestMethod()]
+        public void PerformPatientSearchReturnsPatients()
+        {
+            using (driver)
+            {
+                driver.Navigate().GoToUrl("https://becksblazor.azurewebsites.net/index.html");
+                var waitLoad = new WebDriverWait(driver, TimeSpan.FromMinutes(10));
+                waitLoad.Until(d => d.FindElement(By.PartialLinkText("Patients")));
+                driver.FindElement(By.PartialLinkText("Patients")).Click();
+                var waitClick = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                waitClick.Until(d => d.Url.Equals("https://becksblazor.azurewebsites.net/patient/list/1"));
+                driver.FindElement(By.Name("PatientSearchInput")).SendKeys("br");
+                driver.FindElement(By.Name("PatientSearchButton")).Click();
+                var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+                waitTest.Until(d => d.PageSource.Contains("<td>Velma Bradtke</td>"));
+                Assert.IsTrue(driver.PageSource.Contains("<td>Bradly Legros</td>"));
+                Assert.IsTrue(driver.PageSource.Contains("<td>Bridie Nader</td>"));
+                Assert.IsTrue(driver.PageSource.Contains("<td>Velma Bradtke</td>"));
             }
         }
 

@@ -3,6 +3,8 @@ using System.Net.Http;
 using BlazorCrud.Shared.Models;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace BlazorCrud.Tests.API
 {
@@ -29,6 +31,21 @@ namespace BlazorCrud.Tests.API
 
         [TestInitialize()]
         public void SetupTest() { }
+
+        [TestMethod()]
+        public async Task SearchMemberReturnsExpectedCount()
+        {
+            List<Patient> patients = null;
+            var requestUri = "https://becksapi.azurewebsites.net/api/patient?name=br&page=1";
+            HttpResponseMessage response = await client.GetAsync(requestUri);
+            var responseData = response.Content.ReadAsStringAsync();
+            patients = JObject.Parse(responseData.Result).SelectToken("results").ToObject<List<Patient>>();
+            Assert.AreEqual(8, patients.Count);
+            Assert.AreEqual("Bradly Legros", patients[0].Name);
+            Assert.AreEqual("Male", patients[0].Gender);
+            Assert.AreEqual("Sporer - Schiller", patients[0].PrimaryCareProvider);
+            Assert.AreEqual("IL", patients[0].State);
+        }
 
         [TestMethod()]
         public async Task GetClaimReturnsExpectedClaimDetails()

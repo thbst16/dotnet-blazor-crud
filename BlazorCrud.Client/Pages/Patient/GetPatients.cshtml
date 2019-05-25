@@ -26,14 +26,14 @@
     }
     </div>
     <div class="input-group col-md-5 text-md-right">
-        <input type="text" class="form-control" placeholder="Patient Name" bind="@this.SearchTerm" onkeyup="@SearchBoxKeyPress" />
+        <input name="PatientSearchInput" type="text" class="form-control" placeholder="Patient Name" bind="@this.SearchTerm" onkeyup="@SearchBoxKeyPress" />
         <div class="input-group-btn">
-            <button class="btn btn-default" onclick="@SearchClick">
+            <button name="PatientSearchButton" class="btn btn-default" onclick="@SearchClick">
                 <i class="oi oi-magnifying-glass" title="search" aria-hidden="true"></i>
             </button>
         </div>
         <div class="input-group-btn">
-            <button class="btn btn-default" onclick="@ClearSearch">
+            <button name="PatientSearchClear" class="btn btn-default" onclick="@ClearSearch">
                 <i class="oi oi-x" title="clear" aria-hidden="true"></i>
             </button>
         </div>
