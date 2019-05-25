@@ -18,12 +18,27 @@
 
 <h1>Organization Data</h1>
 
-@if (isLoggedOn())
-{
-    <p>
-        <a href="/organization/new">Add New Organization</a>
-    </p>
-}
+<div class="row mb-3">
+    <div class="col-md-7">
+        @if (isLoggedOn())
+        {
+            <a href="/organization/new" class="btn btn-primary">Add New Organization</a>
+        }
+    </div>
+    <div class="input-group col-md-5 text-md-right">
+        <input name="OrganizationSearchInput" type="text" class="form-control" placeholder="Organization Name" bind="@this.SearchTerm" onkeyup="@SearchBoxKeyPress" />
+        <div class="input-group-btn">
+            <button name="OrganizationSearchButton" class="btn btn-default" onclick="@SearchClick">
+                <i class="oi oi-magnifying-glass" title="search" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="input-group-btn">
+            <button name="OrganizationSearchClear" class="btn btn-default" onclick="@ClearSearch">
+                <i class="oi oi-x" title="clear" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>
 
 @if (Organizations == null)
 {
@@ -65,25 +80,55 @@ else
 }
 
 @functions {
-[Parameter]
-protected string Page { get; set; } = "1";
-[Parameter]
-protected string Transaction { get; set; }
+    [Parameter]
+    protected string Page { get; set; } = "1";
+    [Parameter]
+    protected string Transaction { get; set; }
+    [Parameter]
+    protected string SearchTerm { get; set; } = string.Empty;
 
-protected PagedResult<Organization> Organizations;
+    protected PagedResult<Organization> Organizations;
 
-protected override async Task OnParametersSetAsync()
-{
-    Organizations = await Http.GetJsonAsync<PagedResult<Organization>>(Storage["environment_uri"] + "/organization/?page=" + Page);
-}
-protected void PagerPageChanged(int page)
-{
-    Transaction = string.Empty;
-    UriHelper.NavigateTo("/organization/list/" + page);
-}
+    protected override async Task OnParametersSetAsync()
+    {
+        Organizations = await Http.GetJsonAsync<PagedResult<Organization>>(Storage["environment_uri"] + "/organization/?name=" + SearchTerm + "&page=" + Page);
+    }
 
-protected bool isLoggedOn()
-{
-    return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
-}
+    protected void PagerPageChanged(int page)
+    {
+        Transaction = string.Empty;
+        UriHelper.NavigateTo("/organization/list/" + page);
+    }
+
+    protected bool isLoggedOn()
+    {
+        return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
+    }
+
+    protected async Task SearchClick()
+    {
+        if (string.IsNullOrEmpty(SearchTerm))
+        {
+            Organizations = await Http.GetJsonAsync<PagedResult<Organization>>(Storage["environment_uri"] + "/organization/?name=" + SearchTerm + "&page=1");
+            return;
+        }
+
+        Organizations = await Http.GetJsonAsync<PagedResult<Organization>>(Storage["environment_uri"] + "/organization/?name=" + SearchTerm + "&page=1");
+        StateHasChanged();
+    }
+
+    protected async Task SearchBoxKeyPress(UIKeyboardEventArgs ev)
+    {
+        if (ev.Key == "Enter")
+        {
+            await SearchClick();
+        }
+    }
+
+    protected async Task ClearSearch()
+    {
+        SearchTerm = string.Empty;
+        Organizations = await Http.GetJsonAsync<PagedResult<Organization>>(Storage["environment_uri"] + "/organization/?page=1");
+        StateHasChanged();
+    }
 }
