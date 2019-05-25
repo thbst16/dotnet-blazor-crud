@@ -24,12 +24,22 @@ namespace BlazorCrud.Server.Controllers
         /// Returns a list of paginated organizations with a default page size of 10.
         /// </summary>
         [HttpGet]
-        public PagedResult<Organization> GetAll([FromQuery]int page)
+        public PagedResult<Organization> GetAll([FromQuery]string name, int page)
         {
             int pageSize = 10;
-            return _context.Organizations
+            if (name != null)
+            {
+                return _context.Organizations
+                .Where(o => o.Name.Contains(name, System.StringComparison.CurrentCultureIgnoreCase))
                 .OrderBy(o => o.Id)
                 .GetPaged(page, pageSize);
+            }
+            else
+            {
+                return _context.Organizations
+                  .OrderBy(o => o.Id)
+                  .GetPaged(page, pageSize);
+            }
         }
 
         /// <summary>

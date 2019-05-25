@@ -33,7 +33,7 @@ namespace BlazorCrud.Tests.API
         public void SetupTest() { }
 
         [TestMethod()]
-        public async Task SearchMemberReturnsExpectedCount()
+        public async Task SearchPatientsReturnsExpectedCount()
         {
             List<Patient> patients = null;
             var requestUri = "https://becksapi.azurewebsites.net/api/patient?name=br&page=1";
@@ -45,6 +45,19 @@ namespace BlazorCrud.Tests.API
             Assert.AreEqual("Male", patients[0].Gender);
             Assert.AreEqual("Sporer - Schiller", patients[0].PrimaryCareProvider);
             Assert.AreEqual("IL", patients[0].State);
+        }
+
+        [TestMethod()]
+        public async Task SearchOrganizationsReturnsExpectedCount()
+        {
+            List<Organization> organizations = null;
+            var requestUri = "https://becksapi.azurewebsites.net/api/Organization?name=wa&page=1";
+            HttpResponseMessage response = await client.GetAsync(requestUri);
+            var responseData = response.Content.ReadAsStringAsync();
+            organizations = JObject.Parse(responseData.Result).SelectToken("results").ToObject<List<Organization>>();
+            Assert.AreEqual(3, organizations.Count);
+            Assert.AreEqual("Walker - Feest", organizations[0].Name);
+            Assert.AreEqual("Healthcare Provider", organizations[0].Type);
         }
 
         [TestMethod()]
