@@ -14,7 +14,7 @@ Blazor CRUD uses the following DevOps environment and tools to support a CI / CD
 * Online Demo Site to Explore the Application
 * CI/CD Using Azure DevOps
 * Dashboard Page
-* Tables with Pagination
+* Entity Lists with Pagination and Search
 * Data Entry Forms with Validations
 * File Upload and Download Using JavaScript Interop
 * REST Interfaces with Swagger Documentation
