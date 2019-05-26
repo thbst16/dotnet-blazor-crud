@@ -18,12 +18,27 @@
 
 <h1>Claim Data</h1>
 
-@if (isLoggedOn())
-{
-    <p>
-        <a href="/claim/new">Add New Claim</a>
-    </p>
-}
+<div class="row mb-3">
+    <div class="col-md-7">
+        @if (isLoggedOn())
+        {
+            <a href="/claim/new" class="btn btn-primary">Add New Claim</a>
+        }
+    </div>
+    <div class="input-group col-md-5 text-md-right">
+        <input name="ClaimSearchInput" type="text" class="form-control" placeholder="Patient or Organization" bind="@this.SearchTerm" onkeyup="@SearchBoxKeyPress" />
+        <div class="input-group-btn">
+            <button name="ClaimSearchButton" class="btn btn-default" onclick="@SearchClick">
+                <i class="oi oi-magnifying-glass" title="search" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="input-group-btn">
+            <button name="ClaimSearchClear" class="btn btn-default" onclick="@ClearSearch">
+                <i class="oi oi-x" title="clear" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>
 
 @if (Claims == null)
 {
@@ -67,25 +82,55 @@ else
 }
 
 @functions {
-[Parameter]
-protected string Page { get; set; } = "1";
-[Parameter]
-protected string Transaction { get; set; }
+    [Parameter]
+    protected string Page { get; set; } = "1";
+    [Parameter]
+    protected string Transaction { get; set; }
+    [Parameter]
+    protected string SearchTerm { get; set; } = string.Empty;
 
-protected PagedResult<Claim> Claims;
+    protected PagedResult<Claim> Claims;
 
-protected override async Task OnParametersSetAsync()
-{
-    Claims = await Http.GetJsonAsync<PagedResult<Claim>>(Storage["environment_uri"] + "/claim/?page=" + Page);
-}
-protected void PagerPageChanged(int page)
-{
-    Transaction = string.Empty;
-    UriHelper.NavigateTo("/claim/list/" + page);
-}
+    protected override async Task OnParametersSetAsync()
+    {
+        Claims = await Http.GetJsonAsync<PagedResult<Claim>>(Storage["environment_uri"] + "/claim/?name=" + SearchTerm + "&page=" + Page);
+    }
 
-protected bool isLoggedOn()
-{
-    return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
-}
+    protected void PagerPageChanged(int page)
+    {
+        Transaction = string.Empty;
+        UriHelper.NavigateTo("/claim/list/" + page);
+    }
+
+    protected bool isLoggedOn()
+    {
+        return (Storage["JWT-Token"] != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage["JWT-Time-Exire"]));
+    }
+
+    protected async Task SearchClick()
+    {
+        if (string.IsNullOrEmpty(SearchTerm))
+        {
+            Claims = await Http.GetJsonAsync<PagedResult<Claim>>(Storage["environment_uri"] + "/claim/?name=" + SearchTerm + "&page=1");
+            return;
+        }
+
+        Claims = await Http.GetJsonAsync<PagedResult<Claim>>(Storage["environment_uri"] + "/claim/?name=" + SearchTerm + "&page=1");
+        StateHasChanged();
+    }
+
+    protected async Task SearchBoxKeyPress(UIKeyboardEventArgs ev)
+    {
+        if (ev.Key == "Enter")
+        {
+            await SearchClick();
+        }
+    }
+
+    protected async Task ClearSearch()
+    {
+        SearchTerm = string.Empty;
+        Claims = await Http.GetJsonAsync<PagedResult<Claim>>(Storage["environment_uri"] + "/claim/?page=1");
+        StateHasChanged();
+    }
 }

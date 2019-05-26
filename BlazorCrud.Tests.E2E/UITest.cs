@@ -89,7 +89,7 @@ namespace BlazorCrud.Tests.E2E
                 waitClick.Until(d => d.Url.Equals("https://becksblazor.azurewebsites.net/patient/list/1"));
                 driver.FindElement(By.Name("PatientSearchInput")).SendKeys("br");
                 driver.FindElement(By.Name("PatientSearchButton")).Click();
-                var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+                var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 waitTest.Until(d => d.PageSource.Contains("<td>Velma Bradtke</td>"));
                 Assert.IsTrue(driver.PageSource.Contains("<td>Bradly Legros</td>"));
                 Assert.IsTrue(driver.PageSource.Contains("<td>Bridie Nader</td>"));
@@ -110,11 +110,32 @@ namespace BlazorCrud.Tests.E2E
                 waitClick.Until(d => d.Url.Equals("https://becksblazor.azurewebsites.net/organization/list/1"));
                 driver.FindElement(By.Name("OrganizationSearchInput")).SendKeys("wa");
                 driver.FindElement(By.Name("OrganizationSearchButton")).Click();
-                var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+                var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 waitTest.Until(d => d.PageSource.Contains("<td>Walker - Feest</td>"));
                 Assert.IsTrue(driver.PageSource.Contains("<td>Walker - Feest</td>"));
                 Assert.IsTrue(driver.PageSource.Contains("<td>Schowalter Group</td>"));
                 Assert.IsTrue(driver.PageSource.Contains("<td>Barrows, Legros and Waters</td>"));
+            }
+        }
+
+        [TestMethod()]
+        public void PerformClaimsSearchReturnsClaims()
+        {
+            using (driver)
+            {
+                driver.Navigate().GoToUrl("https://becksblazor.azurewebsites.net/index.html");
+                var waitLoad = new WebDriverWait(driver, TimeSpan.FromMinutes(10));
+                waitLoad.Until(d => d.FindElement(By.PartialLinkText("Claims")));
+                driver.FindElement(By.PartialLinkText("Claims")).Click();
+                var waitClick = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                waitClick.Until(d => d.Url.Equals("https://becksblazor.azurewebsites.net/claim/list/1"));
+                driver.FindElement(By.Name("ClaimSearchInput")).SendKeys("bre");
+                driver.FindElement(By.Name("ClaimSearchButton")).Click();
+                var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+                waitTest.Until(d => d.PageSource.Contains("<td>Sawayn - Brekke</td>"));
+                Assert.IsTrue(driver.PageSource.Contains("<td>Sawayn - Brekke</td>"));
+                Assert.IsTrue(driver.PageSource.Contains("<td>Brekke - Hickle</td>"));
+                Assert.IsTrue(driver.PageSource.Contains("<td>Tremayne Breitenberg</td>"));
             }
         }
 
