@@ -24,12 +24,23 @@ namespace BlazorCrud.Server.Controllers
         /// Returns a list of paginated claims with a default page size of 10.
         /// </summary>
         [HttpGet]
-        public PagedResult<Claim> GetAll([FromQuery]int page)
+        public PagedResult<Claim> GetAll([FromQuery]string name, int page)
         {
             int pageSize = 10;
-            return _context.Claims
-                .OrderBy(p => p.Id)
+            if (name != null)
+            {
+                return _context.Claims
+                .Where (c => c.Patient.Contains(name, System.StringComparison.CurrentCultureIgnoreCase) || 
+                        c.Organization.Contains(name,System.StringComparison.CurrentCultureIgnoreCase))
+                .OrderBy(c => c.Id)
                 .GetPaged(page, pageSize);
+            }
+            else
+            {
+                return _context.Claims
+                  .OrderBy(c => c.Id)
+                  .GetPaged(page, pageSize);
+            }
         }
 
         /// <summary>
