@@ -1,4 +1,4 @@
-﻿namespace BlazorCrud.Shared.Models
+﻿namespace BlazorCrud.Client.Shared
 {
     public class JwtToken
     {

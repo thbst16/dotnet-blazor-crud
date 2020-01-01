@@ -12,8 +12,8 @@ using System.Text;
 
 namespace BlazorCrud.Server.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly IConfiguration _config;
@@ -51,12 +51,12 @@ namespace BlazorCrud.Server.Controllers
         public ActionResult<User> GetById(int id)
         {
             var item = _context.Users.Find(id);
-            // Do not send password over webAPI GET
-            item.Password = string.Empty;
             if (item == null)
             {
                 return NotFound();
             }
+            // Do not send password over webAPI GET
+            item.Password = string.Empty;
             return item;
         }
 
@@ -140,7 +140,7 @@ namespace BlazorCrud.Server.Controllers
         {
             // Removed unauthorized default since Blazor can't handle HTTP 403 respons
             // IActionResult response = Unauthorized();
-            IActionResult response = Ok( new { token = string.Empty });
+            IActionResult response = Ok(new { token = string.Empty });
             var user = _context.Users
                 .Where(u => u.Username == login.Username && u.Password == login.Password)
                 .FirstOrDefault();

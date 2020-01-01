@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -13,6 +13,8 @@ namespace BlazorCrud.Tests.E2E
     {
         private IWebDriver driver;
         private TestContext testContextInstance;
+        // private const string ENV_URL = "https://localhost:44377";
+        private const string ENV_URL = "https://becksblazor.azurewebsites.net";
 
         public UITest() { }
 
@@ -48,16 +50,16 @@ namespace BlazorCrud.Tests.E2E
 
         [TestMethod()]
         public void ClickLoginButtonRoutesToLoginPage()
-        {             
+        {
             using (driver)
             {
-                driver.Navigate().GoToUrl("https://becksblazor.azurewebsites.net/index.html");
+                driver.Navigate().GoToUrl(ENV_URL);
                 var waitLoad = new WebDriverWait(driver, TimeSpan.FromMinutes(10));
                 waitLoad.Until(d => d.FindElement(By.PartialLinkText("Login")));
                 driver.FindElement(By.PartialLinkText("Login")).Click();
                 var waitClick = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                waitClick.Until(d => d.Url.Equals("https://becksblazor.azurewebsites.net/user/login"));
-                Assert.AreEqual(driver.Url, "https://becksblazor.azurewebsites.net/user/login");
+                waitClick.Until(d => d.Url.Equals(ENV_URL+ "/user/login"));
+                Assert.AreEqual(driver.Url, ENV_URL + "/user/login");
             }
         }
 
@@ -66,13 +68,13 @@ namespace BlazorCrud.Tests.E2E
         {
             using (driver)
             {
-                driver.Navigate().GoToUrl("https://becksblazor.azurewebsites.net/index.html");
+                driver.Navigate().GoToUrl(ENV_URL);
                 var waitLoad = new WebDriverWait(driver, TimeSpan.FromMinutes(10));
                 waitLoad.Until(d => d.FindElement(By.PartialLinkText("Dashboard")));
                 driver.FindElement(By.PartialLinkText("Dashboard")).Click();
                 var waitClick = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                waitClick.Until(d => d.Url.Equals("https://becksblazor.azurewebsites.net/dashboard"));
-                Assert.AreEqual(driver.Url, "https://becksblazor.azurewebsites.net/dashboard");
+                waitClick.Until(d => d.Url.Equals(ENV_URL + "/dashboard"));
+                Assert.AreEqual(driver.Url, ENV_URL + "/dashboard");
             }
         }
 
@@ -81,12 +83,12 @@ namespace BlazorCrud.Tests.E2E
         {
             using (driver)
             {
-                driver.Navigate().GoToUrl("https://becksblazor.azurewebsites.net/index.html");
+                driver.Navigate().GoToUrl(ENV_URL);
                 var waitLoad = new WebDriverWait(driver, TimeSpan.FromMinutes(10));
                 waitLoad.Until(d => d.FindElement(By.PartialLinkText("Patients")));
                 driver.FindElement(By.PartialLinkText("Patients")).Click();
                 var waitClick = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                waitClick.Until(d => d.Url.Equals("https://becksblazor.azurewebsites.net/patient/list/1"));
+                waitClick.Until(d => d.Url.Equals(ENV_URL + "/patient/list/1"));
                 driver.FindElement(By.Name("PatientSearchInput")).SendKeys("br");
                 driver.FindElement(By.Name("PatientSearchButton")).Click();
                 var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
@@ -102,12 +104,12 @@ namespace BlazorCrud.Tests.E2E
         {
             using (driver)
             {
-                driver.Navigate().GoToUrl("https://becksblazor.azurewebsites.net/index.html");
+                driver.Navigate().GoToUrl(ENV_URL);
                 var waitLoad = new WebDriverWait(driver, TimeSpan.FromMinutes(10));
                 waitLoad.Until(d => d.FindElement(By.PartialLinkText("Organizations")));
                 driver.FindElement(By.PartialLinkText("Organizations")).Click();
                 var waitClick = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                waitClick.Until(d => d.Url.Equals("https://becksblazor.azurewebsites.net/organization/list/1"));
+                waitClick.Until(d => d.Url.Equals(ENV_URL + "/organization/list/1"));
                 driver.FindElement(By.Name("OrganizationSearchInput")).SendKeys("wa");
                 driver.FindElement(By.Name("OrganizationSearchButton")).Click();
                 var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
@@ -123,12 +125,12 @@ namespace BlazorCrud.Tests.E2E
         {
             using (driver)
             {
-                driver.Navigate().GoToUrl("https://becksblazor.azurewebsites.net/index.html");
+                driver.Navigate().GoToUrl(ENV_URL);
                 var waitLoad = new WebDriverWait(driver, TimeSpan.FromMinutes(10));
                 waitLoad.Until(d => d.FindElement(By.PartialLinkText("Claims")));
                 driver.FindElement(By.PartialLinkText("Claims")).Click();
                 var waitClick = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                waitClick.Until(d => d.Url.Equals("https://becksblazor.azurewebsites.net/claim/list/1"));
+                waitClick.Until(d => d.Url.Equals(ENV_URL + "/claim/list/1"));
                 driver.FindElement(By.Name("ClaimSearchInput")).SendKeys("bre");
                 driver.FindElement(By.Name("ClaimSearchButton")).Click();
                 var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(10));

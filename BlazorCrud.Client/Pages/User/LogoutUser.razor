@@ -1,0 +1,16 @@
+﻿@page "/user/logout"
+@inject HttpClient Http
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+@code {      
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Storage.RemoveItem("JWT-Token");
+        Storage.RemoveItem("JWT-Time-Expire");
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", String.Empty);
+        Storage.SetItem("Transaction", "logout");
+        UriHelper.NavigateTo("/");
+    }
+}

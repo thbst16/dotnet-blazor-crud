@@ -1,10 +1,10 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Net.Http;
 using BlazorCrud.Shared.Models;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace BlazorCrud.Tests.API
 {
@@ -13,6 +13,8 @@ namespace BlazorCrud.Tests.API
     {
         private TestContext testContextInstance;
         static HttpClient client = new HttpClient();
+        // private const string ENV_URL = "https://localhost:44377/api";
+        private const string ENV_URL = "https://becksblazor.azurewebsites.net/api";
 
         public APITest() { }
 
@@ -36,7 +38,7 @@ namespace BlazorCrud.Tests.API
         public async Task SearchPatientsReturnsExpectedCountAndResults()
         {
             List<Patient> patients = null;
-            var requestUri = "https://becksapi.azurewebsites.net/api/patient?name=br&page=1";
+            var requestUri = ENV_URL + "/patient?name=br&page=1";
             HttpResponseMessage response = await client.GetAsync(requestUri);
             var responseData = response.Content.ReadAsStringAsync();
             patients = JObject.Parse(responseData.Result).SelectToken("results").ToObject<List<Patient>>();
@@ -51,7 +53,7 @@ namespace BlazorCrud.Tests.API
         public async Task SearchOrganizationsReturnsExpectedCountAndResults()
         {
             List<Organization> organizations = null;
-            var requestUri = "https://becksapi.azurewebsites.net/api/Organization?name=wa&page=1";
+            var requestUri = ENV_URL + "/organization?name=wa&page=1";
             HttpResponseMessage response = await client.GetAsync(requestUri);
             var responseData = response.Content.ReadAsStringAsync();
             organizations = JObject.Parse(responseData.Result).SelectToken("results").ToObject<List<Organization>>();
@@ -64,7 +66,7 @@ namespace BlazorCrud.Tests.API
         public async Task SearchClaimsReturnsExpectedCountAndResults()
         {
             List<Claim> claims = null;
-            var requestUri = "https://becksapi.azurewebsites.net/api/Claim?name=ist&page=1";
+            var requestUri = ENV_URL + "/Claim?name=ist&page=1";
             HttpResponseMessage response = await client.GetAsync(requestUri);
             var responseData = response.Content.ReadAsStringAsync();
             claims = JObject.Parse(responseData.Result).SelectToken("results").ToObject<List<Claim>>();
@@ -77,7 +79,7 @@ namespace BlazorCrud.Tests.API
         public async Task GetClaimReturnsExpectedClaimDetails()
         {
             Claim claim = null;
-            var requestUri = "https://becksapi.azurewebsites.net/api/Claim/1";
+            var requestUri = ENV_URL + "/Claim/1";
             HttpResponseMessage response = await client.GetAsync(requestUri);
             var responseData = response.Content.ReadAsStringAsync();
             claim = JsonConvert.DeserializeObject<Claim>(responseData.Result);

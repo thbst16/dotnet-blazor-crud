@@ -1,0 +1,64 @@
+﻿@page "/upload/view/{Id}"
+@inject HttpClient Http
+@inject IJSRuntime  JSRuntime
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+<h1>View</h1>
+<h3>Upload</h3>
+
+<br />
+<div class="col-md-6">
+    <BSTable IsResponsive="true" class="table">
+        <tr>
+            <td>Id</td>
+            <td>@upload.Id</td>
+        </tr>
+        <tr>
+            <td>Filename</td>
+            <td>@upload.FileName</td>
+        </tr>
+        <tr>
+            <td>Uploaded</td>
+            <td>@upload.UploadTimestamp</td>
+        </tr>
+        <tr>
+            <td>Processed</td>
+            <td>@upload.ProcessedTimestamp</td>
+        </tr>
+        <tr>
+            <td>File</td>
+            <td>
+                <button @onclick="DownloadFile">Download</button>
+            </td>
+        </tr>
+    </BSTable>
+    <div class="form-group">
+        <button class="btn btn-primary" @onclick="back">Back</button>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    protected Upload upload = new Upload();
+
+    protected override async Task OnInitializedAsync()
+    {
+        upload = await Http.GetJsonAsync<Upload>(Storage.GetItem("environment_uri") + "/upload/" + Convert.ToInt32(Id));
+    }
+
+    void DownloadFile()
+    {
+        JSRuntime.InvokeAsync<object>(
+            "saveAsFile",
+            upload.FileName,
+            upload.FileContent);
+    }
+
+    void back()
+    {
+        UriHelper.NavigateTo("/upload/list/1");
+    }
+}

@@ -1,10 +1,10 @@
-﻿using BlazorCrud.Shared.Data;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using BlazorCrud.Shared.Data;
 using BlazorCrud.Shared.Models;
-using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace BlazorCrud.Server.Controllers
 {
@@ -36,9 +36,10 @@ namespace BlazorCrud.Server.Controllers
                 .GetPaged(page, pageSize);
             }
             else
-            { return _context.Patients
-                .OrderBy(p => p.Id)
-                .GetPaged(page, pageSize);
+            {
+                return _context.Patients
+                  .OrderBy(p => p.Id)
+                  .GetPaged(page, pageSize);
             }
         }
 
@@ -48,13 +49,14 @@ namespace BlazorCrud.Server.Controllers
         [HttpGet("{id}", Name = "GetPatient")]
         public ActionResult<Patient> GetById(int id)
         {
-            var item = _context.Patients
-                .Include(patient => patient.Contacts)
-                .Single(p => p.Id == id);
+            var item = _context.Patients.Find(id);
             if (item == null)
             {
                 return NotFound();
             }
+            item = _context.Patients
+                .Include(patient => patient.Contacts)
+                .Single(p => p.Id == id);
             return item;
         }
 

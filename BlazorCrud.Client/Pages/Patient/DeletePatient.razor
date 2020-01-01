@@ -1,0 +1,110 @@
+﻿@page "/patient/delete/{Id}"
+@inject HttpClient Http
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+<h1>Delete</h1>
+<h3>Are you sure you want to delete the patient with id : @Id</h3>
+
+<hr />
+<h5>Demographic Data</h5>
+<hr />
+
+<br />
+<div class="col-md-6">
+    <BSTable IsResponsive="true" class="table">
+        <tr>
+            <td>Id</td>
+            <td>@patient.Id</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>@patient.Name</td>
+        </tr>
+        <tr>
+            <td>Gender</td>
+            <td>@patient.Gender</td>
+        </tr>
+        <tr>
+            <td>Primary Care Provider</td>
+            <td>@patient.PrimaryCareProvider</td>
+        </tr>
+        <tr>
+            <td>State</td>
+            <td>@patient.State</td>
+        </tr>
+    </BSTable>
+</div>
+
+<hr />
+<h5>Contact Points</h5>
+<hr />
+
+<BSTable IsResponsive="true" class='table'>
+    <thead class="thead-light">
+        <tr>
+            <th>ID</th>
+            <th>System</th>
+            <th>Value</th>
+            <th>Use</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var contactPoint in patient.Contacts)
+        {
+            <tr>
+                <td>@contactPoint.Id</td>
+                <td>@contactPoint.System</td>
+                <td>@contactPoint.Value</td>
+                <td>@contactPoint.Use</td>
+            </tr>
+        }
+    </tbody>
+</BSTable>
+
+<div class="form-group">
+    <button type="button" class="btn btn-danger" @onclick="(async () => await RemovePatient())">Delete</button>
+    <button class="btn btn-primary" @onclick="cancel">Cancel</button>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    Patient patient = new Patient
+    {
+        Name = "",
+        PrimaryCareProvider = "",
+        Gender = "",
+        State = "",
+        Contacts = new List<ContactPoint>
+    {
+        new ContactPoint { System = "", Value = "", Use = "" }
+    }
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+        if (!(Storage.GetItem("JWT-Token") != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage.GetItem("JWT-Time-Expire")))) // not logged on
+        {
+            UriHelper.NavigateTo("/user/login");
+        }
+
+        patient = await Http.GetJsonAsync<Patient>(Storage.GetItem("environment_uri") + "/patient/" + Convert.ToInt32(Id));
+    }
+
+    protected async Task RemovePatient()
+    {
+        var token = Storage.GetItem("JWT-Token");
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.DeleteAsync(Storage.GetItem("environment_uri") + "/patient/" + Convert.ToInt32(Id));
+        Storage.SetItem("Transaction", "modified");
+        UriHelper.NavigateTo("/patient/list/1");
+    }
+    void cancel()
+    {
+        Storage.SetItem("Transaction", "cancelled");
+        UriHelper.NavigateTo("/patient/list/1");
+    }
+}

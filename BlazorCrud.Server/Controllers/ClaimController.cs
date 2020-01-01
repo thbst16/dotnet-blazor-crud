@@ -1,14 +1,14 @@
-﻿using BlazorCrud.Shared.Data;
+﻿using AutoMapper;
+using BlazorCrud.Shared.Data;
+using BlazorCrud.Shared.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using Microsoft.AspNetCore.Authorization;
-using BlazorCrud.Shared.Models;
-using AutoMapper;
 
 namespace BlazorCrud.Server.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class ClaimController : ControllerBase
     {
         private readonly ClaimContext _context;
@@ -30,8 +30,8 @@ namespace BlazorCrud.Server.Controllers
             if (name != null)
             {
                 return _context.Claims
-                .Where (c => c.Patient.Contains(name, System.StringComparison.CurrentCultureIgnoreCase) || 
-                        c.Organization.Contains(name,System.StringComparison.CurrentCultureIgnoreCase))
+                .Where(c => c.Patient.Contains(name, System.StringComparison.CurrentCultureIgnoreCase) ||
+                       c.Organization.Contains(name, System.StringComparison.CurrentCultureIgnoreCase))
                 .OrderBy(c => c.Id)
                 .GetPaged(page, pageSize);
             }

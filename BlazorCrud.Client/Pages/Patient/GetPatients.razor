@@ -1,0 +1,133 @@
+﻿@page "/patient/list/{Page}"
+@inject HttpClient Http
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
+
+@if (Storage.GetItem("Transaction") == "modified")
+{
+    Toaster.Success("Patient successfully updated in the system.", "Patient Updated");
+    Storage.RemoveItem("Transaction");
+}
+@if (Storage.GetItem("Transaction") == "cancelled")
+{
+    Toaster.Warning("Patient transaction has been cancelled.", "Transaction Cancelled");
+    Storage.RemoveItem("Transaction");
+}
+
+<h1>Patient Data</h1>
+
+<div class="row mb-3">
+    <div class="col-md-7">
+        @if (isLoggedOn())
+        {
+            <a href="/patient/new" class="btn btn-primary">Add New Patient</a>
+        }
+    </div>
+    <div class="input-group col-md-5 text-md-right">
+        <input name="PatientSearchInput" type="text" class="form-control" placeholder="Patient Name" @bind="this.SearchTerm" @onkeyup="SearchBoxKeyPress" />
+        <div class="input-group-btn">
+            <button name="PatientSearchButton" class="btn btn-default" @onclick="SearchClick">
+                <i class="oi oi-magnifying-glass" title="search" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="input-group-btn">
+            <button name="PatientSearchClear" class="btn btn-default" @onclick="ClearSearch">
+                <i class="oi oi-x" title="clear" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+@if (Patients == null)
+{
+    <p><em>Loading...</em></p>
+}
+
+else
+{
+    <BSTable IsResponsive="true" class='table'>
+        <thead class="thead-light">
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Primary Care Provider</th>
+                <th>State</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var patient in Patients.Results)
+            {
+                <tr>
+                    <td>@patient.Id</td>
+                    <td>@patient.Name</td>
+                    <td>@patient.Gender</td>
+                    <td>@patient.PrimaryCareProvider</td>
+                    <td>@patient.State</td>
+                    <td>
+                        <ActionLinkButton Action="view" Route="/patient" RouteValue="@patient.Id.ToString()"></ActionLinkButton>
+                        @if (isLoggedOn())
+                        {
+                            <ActionLinkButton Action="edit" Route="/patient" RouteValue="@patient.Id.ToString()"></ActionLinkButton>
+                            <ActionLinkButton Action="delete" Route="/patient" RouteValue="@patient.Id.ToString()"></ActionLinkButton>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </BSTable>
+    <Pager Result=@Patients PageChanged=PagerPageChanged />
+}
+
+@code {
+    [Parameter]
+    public string Page { get; set; } = "1";
+    [Parameter]
+    public string SearchTerm { get; set; } = string.Empty;
+
+    protected PagedResult<Patient> Patients;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Patients = await Http.GetJsonAsync<PagedResult<Patient>>(Storage["environment_uri"] + "/patient/?name=" + SearchTerm + "&page=" + Page);
+    }
+
+    protected bool isLoggedOn()
+    {
+        return (Storage.GetItem("JWT-Token") != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage.GetItem("JWT-Time-Expire")));
+    }
+
+    protected async Task SearchBoxKeyPress(KeyboardEventArgs ev)
+    {
+        if (ev.Key == "Enter")
+        {
+            await SearchClick();
+        }
+    }
+
+    protected async Task SearchClick()
+    {
+        if (string.IsNullOrEmpty(SearchTerm))
+        {
+            Patients = await Http.GetJsonAsync<PagedResult<Patient>>(Storage.GetItem("environment_uri") + "/patient/?name=" + SearchTerm + "&page=1");
+            return;
+        }
+
+        Patients = await Http.GetJsonAsync<PagedResult<Patient>>(Storage.GetItem("environment_uri") + "/patient/?name=" + SearchTerm + "&page=1");
+        StateHasChanged();
+    }
+
+    protected async Task ClearSearch()
+    {
+        SearchTerm = string.Empty;
+        Patients = await Http.GetJsonAsync<PagedResult<Patient>>(Storage.GetItem("environment_uri") + "/patient/?page=1");
+        StateHasChanged();
+    }
+
+    protected void PagerPageChanged(int page)
+    {
+        UriHelper.NavigateTo("/patient/list/" + page);
+    }
+}

@@ -1,0 +1,62 @@
+﻿<a class="btn btn-link pt-0 pb-0" href="@Href">
+    <span class="oi @Icon @IconColor" data-toggle="tooltip" title="@Action"></span>
+</a>
+
+@code {
+    [Parameter]
+    public string Route { get; set; }
+    [Parameter]
+    public string Action { get; set; }
+    [Parameter]
+    public string RouteValue { get; set; }
+
+    string Href
+    {
+        get
+        {
+            return $"{Route.ToLower()}/{Action.ToLower()}/{RouteValue}";
+        }
+    }
+
+    string Icon
+    {
+        get
+        {
+            string icon = "oi-eye";
+            switch (Action.ToLower())
+            {
+                case "view":
+                    icon = "oi-eye";
+                    break;
+                case "edit":
+                    icon = "oi-pencil";
+                    break;
+                case "delete":
+                    icon = "oi-trash";
+                    break;
+            }
+            return icon;
+        }
+    }
+
+    string IconColor
+    {
+        get
+        {
+            string color = "text-primary";
+            switch (Action.ToLower())
+            {
+                case "view":
+                    color = "text-primary";
+                    break;
+                case "edit":
+                    color = "text-warning";
+                    break;
+                case "delete":
+                    color = "text-danger";
+                    break;
+            }
+            return color;
+        }
+    }
+}

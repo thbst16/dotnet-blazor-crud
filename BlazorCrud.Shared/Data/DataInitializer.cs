@@ -7,7 +7,7 @@ namespace BlazorCrud.Shared.Data
 {
     public class DataInitializer
     {
-        public static void Initialize(PatientContext patientContext, OrganizationContext organizationContext, ClaimContext claimContext, UserContext userContext, UploadContext uploadContext)
+        public static void Initialize(PatientContext patientContext, OrganizationContext organizationContext, ClaimContext claimContext, UploadContext uploadContext, UserContext userContext)
         {
             Randomizer.Seed = new Random(8675309);
 
@@ -20,7 +20,7 @@ namespace BlazorCrud.Shared.Data
                     .RuleFor(c => c.System, f => f.PickRandom(system))
                     .RuleFor(c => c.Value, f => f.Phone.PhoneNumber())
                     .RuleFor(c => c.Use, f => f.PickRandom(use));
-                
+
                 // Create new patients only if the collection is empty.
                 var gender = new[] { "Male", "Female" };
                 var state = new[] { "MI", "OH", "IL", "IN" };
@@ -31,7 +31,7 @@ namespace BlazorCrud.Shared.Data
                     .RuleFor(p => p.State, f => f.PickRandom(state))
                     .RuleFor(p => p.Contacts, f => testContacts.Generate(2).ToList());
                 var patients = testPatients.Generate(200);
-                
+
                 foreach (Patient p in patients)
                 {
                     patientContext.Patients.Add(p);
@@ -42,13 +42,13 @@ namespace BlazorCrud.Shared.Data
             if (organizationContext.Organizations.Count() == 0)
             {
                 // Create new organizations only if the collection is empty
-                var orgType = new[] { "Healthcare Provider", "Hospital Department", "Organizational Team", "Government", "Insurance Company"};
+                var orgType = new[] { "Healthcare Provider", "Hospital Department", "Organizational Team", "Government", "Insurance Company" };
                 var testOrganizations = new Faker<Organization>()
                     .RuleFor(o => o.Name, f => f.Company.CompanyName())
                     .RuleFor(o => o.Type, f => f.PickRandom(orgType))
                     .RuleFor(o => o.IsActive, f => f.Random.Bool());
                 var organizations = testOrganizations.Generate(50);
-       
+
                 foreach (Organization o in organizations)
                 {
                     organizationContext.Organizations.Add(o);
@@ -60,7 +60,7 @@ namespace BlazorCrud.Shared.Data
             {
                 // Create new claims only if the collection is empty
                 var status = new[] { "Active", "Cancelled", "Draft" };
-                var type = new[] { "Institutional", "Oral", "Pharmacy", "Professional", "Vision"};
+                var type = new[] { "Institutional", "Oral", "Pharmacy", "Professional", "Vision" };
                 var testClaims = new Faker<Claim>()
                     .RuleFor(c => c.Patient, f => f.Name.FullName())
                     .RuleFor(c => c.Organization, f => f.Company.CompanyName())
@@ -73,6 +73,23 @@ namespace BlazorCrud.Shared.Data
                     claimContext.Claims.Add(c);
                 }
                 claimContext.SaveChanges();
+            }
+
+            if (uploadContext.Uploads.Count() == 0)
+            {
+                // Create new uploads only if the current collection is empty.
+                var testUploads = new Faker<Upload>()
+                    .RuleFor(u => u.FileName, u => u.System.FileName())
+                    .RuleFor(u => u.UploadTimestamp, u => u.Date.Past(1, DateTime.Now))
+                    .RuleFor(u => u.ProcessedTimestamp, u => u.Date.Future(1, DateTime.Now))
+                    .RuleFor(u => u.FileContent, Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("Hello Bogus!!")));
+                var uploads = testUploads.Generate(30);
+
+                foreach (Upload u in uploads)
+                {
+                    uploadContext.Uploads.Add(u);
+                }
+                uploadContext.SaveChanges();
             }
 
             if (userContext.Users.Count() == 0)
@@ -97,23 +114,6 @@ namespace BlazorCrud.Shared.Data
                     userContext.Users.Add(u);
                 }
                 userContext.SaveChanges();
-            }
-
-            if (uploadContext.Uploads.Count() == 0)
-            {
-                // Create new uploads only if the current collection is empty.
-                var testUploads = new Faker<Upload>()
-                    .RuleFor(u => u.FileName, u => u.System.FileName())
-                    .RuleFor(u => u.UploadTimestamp, u => u.Date.Past(1, DateTime.Now))
-                    .RuleFor(u => u.ProcessedTimestamp, u => u.Date.Future(1, DateTime.Now))
-                    .RuleFor(u => u.FileContent, Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes("Hello Bogus!!")));
-                var uploads = testUploads.Generate(30);
-
-                foreach (Upload u in uploads)
-                {
-                    uploadContext.Uploads.Add(u);
-                }
-                uploadContext.SaveChanges();
             }
         }
     }

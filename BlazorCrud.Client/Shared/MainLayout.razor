@@ -1,0 +1,34 @@
+﻿@inherits LayoutComponentBase
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+<ToastContainer />
+
+<div>
+    <NavMenu />
+</div>
+
+<div class="container">
+    @Body
+</div>
+
+<footer class="footer">
+    <div class="container text-center">
+        <span class="text-muted">&copy; Beckshome.com 2020</span>
+    </div>
+</footer>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Storage.SetItem("environment_uri", String.Empty);
+        if (UriHelper.BaseUri == "https://localhost:44377/")
+        {
+            Storage.SetItem("environment_uri", "https://localhost:44377/api");
+        }
+        else
+        {
+            // Changed URI to reflect hosted environment, not seperate APIs
+            Storage.SetItem("environment_uri", "https://becksblazor.azurewebsites.net/api");
+        }
+    }
+}

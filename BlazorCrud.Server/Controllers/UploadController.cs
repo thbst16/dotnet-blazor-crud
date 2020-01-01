@@ -9,8 +9,8 @@ using System.Linq;
 
 namespace BlazorCrud.Server.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class UploadController : ControllerBase
     {
         private readonly IConfiguration _config;
@@ -31,7 +31,7 @@ namespace BlazorCrud.Server.Controllers
         public PagedResult<Upload> GetAll([FromQuery]int page)
         {
             int pageSize = 10;
-            // Do not send password over webAPI GET
+            // Do not send file content for all files during search
             foreach (Upload u in _context.Uploads)
             {
                 u.FileContent = string.Empty;
@@ -65,10 +65,6 @@ namespace BlazorCrud.Server.Controllers
         {
             upload.UploadTimestamp = DateTime.Now;
             upload.ProcessedTimestamp = null;
-            // Trim the header from the Base 64 encoded content
-            int position = upload.FileContent.IndexOf("base64,");
-            string trimmedContent = upload.FileContent.Remove(0, position + 7);
-            upload.FileContent = trimmedContent;
             if (ModelState.IsValid)
             {
                 _context.Uploads.Add(upload);

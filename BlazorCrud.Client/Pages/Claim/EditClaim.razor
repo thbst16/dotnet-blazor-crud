@@ -1,0 +1,85 @@
+﻿@page "/claim/edit/{Id}"
+@inject HttpClient Http
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
+<h1>Edit</h1>
+<h3>Claim</h3>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm Model="@claim" OnValidSubmit="@UpdateClaim">
+            <DataAnnotationsValidator />
+            <div class="form-group">
+                <label for="Patient" class="control-label">Patient</label>
+                <InputText id="Patient" class="form-control" @bind-Value="claim.Patient" />
+                <ValidationMessage For="@(() => claim.Patient)" />
+            </div>
+            <div class="form-group">
+                <label for="Organization" class="control-label">Organization</label>
+                <InputText id="Organization" class="form-control" @bind-Value="claim.Organization" />
+                <ValidationMessage For="@(() => claim.Organization)" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label">Status</label>
+                <InputSelect id="Status" class="form-control" @bind-Value="claim.Status">
+                    <option value="">-- Select Status --</option>
+                    <option value="Active">Active</option>
+                    <option value="Cancelled">Cancelled</option>
+                    <option value="Draft">Draft</option>
+                    <option value="Entered-in-Error">Entered-in-Error</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => claim.Status)" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Type" class="control-label">Type</label>
+                <InputSelect id="Type" class="form-control" @bind-Value="claim.Type">
+                    <option value="">-- Select Type --</option>
+                    <option value="Institutional">Institutional</option>
+                    <option value="Oral">Oral</option>
+                    <option value="Pharmacy">Pharmacy</option>
+                    <option value="Professional">Professional</option>
+                    <option value="Vision">Vision</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => claim.Type)" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-success">Save</button>
+                <button class="btn btn-primary" @onclick="cancel">Cancel</button>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    
+    Claim claim = new Claim();
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitializedAsync();
+        if (!(Storage.GetItem("JWT-Token") != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage.GetItem("JWT-Time-Expire")))) // not logged on
+        {
+            UriHelper.NavigateTo("/user/login");
+        }
+
+        claim = await Http.GetJsonAsync<Claim>(Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(Id));
+    }
+
+    protected async Task UpdateClaim()
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.SendJsonAsync(HttpMethod.Put, Storage.GetItem("environment_uri") + "/claim/"  + Convert.ToInt32(Id), claim);
+        Storage.SetItem("Transaction", "modified");
+        UriHelper.NavigateTo("/claim/list/1");
+    }
+    void cancel()
+    {
+        Storage.SetItem("Transaction", "cancelled");
+        UriHelper.NavigateTo("/claim/list/1");
+    }
+}

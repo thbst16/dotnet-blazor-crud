@@ -1,14 +1,14 @@
-﻿using BlazorCrud.Shared.Data;
+﻿using AutoMapper;
+using BlazorCrud.Shared.Data;
+using BlazorCrud.Shared.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using Microsoft.AspNetCore.Authorization;
-using BlazorCrud.Shared.Models;
-using AutoMapper;
 
 namespace BlazorCrud.Server.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class OrganizationController : ControllerBase
     {
         private readonly OrganizationContext _context;

@@ -20,11 +20,11 @@ namespace BlazorCrud.Server
                 try
                 {
                     var patientContext = services.GetRequiredService<PatientContext>();
-                    var userContext = services.GetRequiredService<UserContext>();
                     var organizationContext = services.GetRequiredService<OrganizationContext>();
                     var claimContext = services.GetRequiredService<ClaimContext>();
                     var uploadContext = services.GetRequiredService<UploadContext>();
-                    DataInitializer.Initialize(patientContext, organizationContext, claimContext, userContext, uploadContext);
+                    var userContext = services.GetRequiredService<UserContext>();
+                    DataInitializer.Initialize(patientContext, organizationContext, claimContext, uploadContext, userContext);
                 }
                 catch (Exception ex)
                 {

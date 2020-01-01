@@ -1,0 +1,81 @@
+﻿@page "/upload/list/{Page}"
+@inject HttpClient Http
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
+
+@if (Storage.GetItem("Transaction") == "modified")
+{
+    Toaster.Success("Upload successfully updated in the system.", "User Updated");
+    Storage.RemoveItem("Transaction");
+}
+@if (Storage.GetItem("Transaction") == "cancelled")
+{
+    Toaster.Warning("Upload transaction has been cancelled.", "Transaction Cancelled");
+    Storage.RemoveItem("Transaction");
+}
+
+<h1>Upload Data</h1>
+
+@if (isLoggedOn())
+{
+    <p>
+        <a href="/upload/new" class="btn btn-primary">Add New Upload</a>
+    </p>
+}
+
+@if (Uploads == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <BSTable IsResponsive="true" class='table'>
+        <thead class="thead-light">
+            <tr>
+                <th>ID</th>
+                <th>Filename</th>
+                <th>Upload Time</th>
+                <th>Processed Time</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var upload in Uploads.Results)
+            {
+                <tr>
+                    <td>@upload.Id</td>
+                    <td>@upload.FileName</td>
+                    <td>@upload.UploadTimestamp</td>
+                    <td>@upload.ProcessedTimestamp</td>
+                    <td>
+                        <ActionLinkButton Action="view" Route="/upload" RouteValue="@upload.Id.ToString()"></ActionLinkButton>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </BSTable>
+    <Pager Result=@Uploads PageChanged=PagerPageChanged />
+}
+
+@code {
+    [Parameter]
+    public string Page { get; set; } = "1";
+
+    protected PagedResult<Upload> Uploads;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Uploads = await Http.GetJsonAsync<PagedResult<Upload>>(Storage["environment_uri"] + "/upload/?page=" + Page);
+    }
+
+    protected bool isLoggedOn()
+    {
+        return (Storage.GetItem("JWT-Token") != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage.GetItem("JWT-Time-Expire")));
+    }
+
+    protected void PagerPageChanged(int page)
+    {
+        UriHelper.NavigateTo("/upload/list/" + page);
+    }
+}

@@ -1,0 +1,72 @@
+﻿@inject LocalStorage Storage
+
+<BSNavbar IsExpand="true" IsDark="true" Color="Color.Dark" IsFixedTop="true">
+    <BSNavbarBrand Href="#">Blazor CRUD</BSNavbarBrand>
+    <BSNavbarToggler @onclick="openNav" />
+    <BSCollapse IsOpen="@IsOpen" IsNavbar="true">
+        <BSNav IsList="true" Class="mr-auto" IsNavbar="true">
+            <BSNavItem>
+                <BSNavLink href="/" @onclick="closeNav">Home</BSNavLink>
+            </BSNavItem>
+            <BSNavItem>
+                <BSNavLink href="/dashboard" @onclick="closeNav">Dashboard</BSNavLink>
+            </BSNavItem>
+            <BSNavItem>
+                <BSNavLink href="patient/list/1" @onclick="closeNav">Patients</BSNavLink>
+            </BSNavItem>
+            <BSNavItem>
+                <BSNavLink href="organization/list/1" @onclick="closeNav">Organizations</BSNavLink>
+            </BSNavItem>
+            <BSNavItem>
+                <BSNavLink href="claim/list/1" @onclick="closeNav">Claims</BSNavLink>
+            </BSNavItem>
+            <BSNavItem>
+                <BSNavLink href="upload/list/1" @onclick="closeNav">Uploads</BSNavLink>
+            </BSNavItem>
+            <BSNavItem>
+                <BSNavLink href="user/list/1" @onclick="closeNav">Users</BSNavLink>
+            </BSNavItem>
+        </BSNav>
+        <BSNav IsList="true" Alignment="Alignment.Right" IsNavbar="true">
+            @if (isLoggedOn())
+            {
+                <BSNavItem>
+                    <BSNavLink href="/user/logout" @onclick="closeNav">
+                        Logout
+                        <span class="oi oi-lock-unlocked" title="lock unlocked" aria-hidden="true"></span>
+                    </BSNavLink>
+                </BSNavItem>
+            }
+            else
+            {
+                <BSNavItem>
+                    <BSNavLink href="/user/login" @onclick="closeNav">
+                        Login
+                        <span class="oi oi-lock-locked" title="lock locked" aria-hidden="true"></span>
+                    </BSNavLink>
+                </BSNavItem>
+            }
+        </BSNav>
+    </BSCollapse>
+</BSNavbar>
+
+@code {
+    private bool IsOpen { get; set; } = false;
+
+    void openNav(MouseEventArgs e)
+    {
+        IsOpen = !IsOpen;
+        StateHasChanged();
+    }
+
+    void closeNav(MouseEventArgs e)
+    {
+        IsOpen = !IsOpen;
+        StateHasChanged();
+    }
+
+    protected bool isLoggedOn()
+    {
+        return (Storage.GetItem("JWT-Token") != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage.GetItem("JWT-Time-Expire")));
+    }
+}

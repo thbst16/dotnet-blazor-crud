@@ -1,0 +1,62 @@
+﻿@page "/user/login"
+@inject HttpClient Http
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
+
+@if (Storage.GetItem("Transaction") == "invalid")
+{
+    Toaster.Error("Invalid username and/or password. Please retry your credentials.", "Invalid Credentials");
+    Storage.RemoveItem("Transaction");
+}
+
+<div class="form-signin">
+    <div class="text-center">
+        <img src="img/blazorbrand.png" />
+    </div>
+    <EditForm Model="@login" OnValidSubmit="LogonUser">
+        <DataAnnotationsValidator />
+
+        <h1 class="h3 mb-3 text-center">Please sign in</h1>
+        <div class="form-group">
+            <InputText id="Username" class="form-control" placeholder="User name" @bind-Value="login.Username" />
+            <ValidationMessage For="@(() => login.Username)" />
+        </div>
+        <div class="form-group">
+            <InputText id="Password" class="form-control" type="password" placeholder="Password" @bind-Value="login.Password" />
+            <ValidationMessage For="@(() => login.Password)" />
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-lg btn-primary btn-block">Sign in</button>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    Login login = new Login();
+
+    protected async Task LogonUser()
+    {
+        var response = await Http.PostJsonAsync<JwtToken>(Storage.GetItem("environment_uri") + "/user/logon", login);
+        Storage.SetItem("JWT-Token", response.token);
+        Storage.SetItem("JWT-Time-Expire", (DateTime.Now.Ticks + 432000000000).ToString()); // Add 750 minutes to current time
+
+        login.Username = string.Empty;
+        login.Password = string.Empty;
+
+        if (response.token == string.Empty)
+        {
+            Storage.SetItem("Transaction", "invalid");
+            UriHelper.NavigateTo("/user/login");
+        }
+        else
+        {
+            UriHelper.NavigateTo("/");
+        }
+    }
+
+    void cancel()
+    {
+        UriHelper.NavigateTo("/");
+    }
+}

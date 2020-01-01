@@ -1,0 +1,136 @@
+﻿@page "/claim/list/{Page}"
+@inject HttpClient Http
+@inject LocalStorage Storage
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Sotsera.Blazor.Toaster.IToaster Toaster
+
+@if (Storage.GetItem("Transaction") == "modified")
+{
+    Toaster.Success("Claim successfully updated in the system.", "Claim Updated");
+    Storage.RemoveItem("Transaction");
+}
+@if (Storage.GetItem("Transaction") == "cancelled")
+{
+    Toaster.Warning("Claim transaction has been cancelled.", "Transaction Cancelled");
+    Storage.RemoveItem("Transaction");
+}
+
+<h1>Claim Data</h1>
+
+<div class="row mb-3">
+    <div class="col-md-7">
+        @if (isLoggedOn())
+        {
+            <a href="/claim/new" class="btn btn-primary">Add New Claim</a>
+        }
+    </div>
+    <div class="input-group col-md-5 text-md-right">
+        <input name="ClaimSearchInput" type="text" class="form-control" placeholder="Patient or Organization" @bind="this.SearchTerm" @onkeyup="SearchBoxKeyPress" />
+        <div class="input-group-btn">
+            <button name="ClaimSearchButton" class="btn btn-default" @onclick="SearchClick">
+                <i class="oi oi-magnifying-glass" title="search" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="input-group-btn">
+            <button name="ClaimSearchClear" class="btn btn-default" @onclick="ClearSearch">
+                <i class="oi oi-x" title="clear" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+@if (Claims == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <BSTable IsResponsive="true" class='table'>
+        <thead class="thead-light">
+            <tr>
+                <th>ID</th>
+                <th>Patient</th>
+                <th>Organization</th>
+                <th>Status</th>
+                <th>Type</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var claim in Claims.Results)
+            {
+                <tr>
+                    <td>@claim.Id</td>
+                    <td>@claim.Patient</td>
+                    <td>@claim.Organization</td>
+                    <td>@claim.Status</td>
+                    <td>@claim.Type</td>
+                    <td>
+                        <ActionLinkButton Action="view" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
+                        @if (isLoggedOn())
+                        {
+                            <ActionLinkButton Action="edit" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
+                            <ActionLinkButton Action="delete" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </BSTable>
+    <Pager Result=@Claims PageChanged=PagerPageChanged />
+}
+
+
+@code {
+    [Parameter]
+    public string Page { get; set; } = "1";
+    [Parameter]
+    public string Transaction { get; set; }
+    [Parameter]
+    public string SearchTerm { get; set; } = string.Empty;
+
+    protected PagedResult<Claim> Claims;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        Claims = await Http.GetJsonAsync<PagedResult<Claim>>(Storage["environment_uri"] + "/claim/?name=" + SearchTerm + "&page=" + Page);
+    }
+
+    protected bool isLoggedOn()
+    {
+        return (Storage.GetItem("JWT-Token") != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage.GetItem("JWT-Time-Expire")));
+    }
+
+    protected async Task SearchBoxKeyPress(KeyboardEventArgs ev)
+    {
+        if (ev.Key == "Enter")
+        {
+            await SearchClick();
+        }
+    }
+
+    protected async Task SearchClick()
+    {
+        if (string.IsNullOrEmpty(SearchTerm))
+        {
+            Claims = await Http.GetJsonAsync<PagedResult<Claim>>(Storage.GetItem("environment_uri") + "/claim/?name=" + SearchTerm + "&page=1");
+            return;
+        }
+
+        Claims = await Http.GetJsonAsync<PagedResult<Claim>>(Storage.GetItem("environment_uri") + "/claim/?name=" + SearchTerm + "&page=1");
+        StateHasChanged();
+    }
+
+    protected async Task ClearSearch()
+    {
+        SearchTerm = string.Empty;
+        Claims = await Http.GetJsonAsync<PagedResult<Claim>>(Storage.GetItem("environment_uri") + "/claim/?page=1");
+        StateHasChanged();
+    }
+
+    protected void PagerPageChanged(int page)
+    {
+        Transaction = string.Empty;
+        UriHelper.NavigateTo("/claim/list/" + page);
+    }
+}
