@@ -59,6 +59,7 @@ namespace BlazorCrud.Tests.E2E
                 driver.FindElement(By.PartialLinkText("Login")).Click();
                 var waitClick = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 waitClick.Until(d => d.Url.Equals(ENV_URL+ "/user/login"));
+                System.Threading.Thread.Sleep(1000);
                 Assert.AreEqual(driver.Url, ENV_URL + "/user/login");
             }
         }
@@ -74,6 +75,7 @@ namespace BlazorCrud.Tests.E2E
                 driver.FindElement(By.PartialLinkText("Dashboard")).Click();
                 var waitClick = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 waitClick.Until(d => d.Url.Equals(ENV_URL + "/dashboard"));
+                System.Threading.Thread.Sleep(1000);
                 Assert.AreEqual(driver.Url, ENV_URL + "/dashboard");
             }
         }
@@ -93,6 +95,7 @@ namespace BlazorCrud.Tests.E2E
                 driver.FindElement(By.Name("PatientSearchButton")).Click();
                 var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 waitTest.Until(d => d.PageSource.Contains("<td>Velma Bradtke</td>"));
+                System.Threading.Thread.Sleep(1000);
                 Assert.IsTrue(driver.PageSource.Contains("<td>Bradly Legros</td>"));
                 Assert.IsTrue(driver.PageSource.Contains("<td>Bridie Nader</td>"));
                 Assert.IsTrue(driver.PageSource.Contains("<td>Velma Bradtke</td>"));
@@ -114,6 +117,7 @@ namespace BlazorCrud.Tests.E2E
                 driver.FindElement(By.Name("OrganizationSearchButton")).Click();
                 var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 waitTest.Until(d => d.PageSource.Contains("<td>Walker - Feest</td>"));
+                System.Threading.Thread.Sleep(1000);
                 Assert.IsTrue(driver.PageSource.Contains("<td>Walker - Feest</td>"));
                 Assert.IsTrue(driver.PageSource.Contains("<td>Schowalter Group</td>"));
                 Assert.IsTrue(driver.PageSource.Contains("<td>Barrows, Legros and Waters</td>"));
@@ -135,6 +139,7 @@ namespace BlazorCrud.Tests.E2E
                 driver.FindElement(By.Name("ClaimSearchButton")).Click();
                 var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
                 waitTest.Until(d => d.PageSource.Contains("<td>Sawayn - Brekke</td>"));
+                System.Threading.Thread.Sleep(1000);
                 Assert.IsTrue(driver.PageSource.Contains("<td>Sawayn - Brekke</td>"));
                 Assert.IsTrue(driver.PageSource.Contains("<td>Brekke - Hickle</td>"));
                 Assert.IsTrue(driver.PageSource.Contains("<td>Tremayne Breitenberg</td>"));

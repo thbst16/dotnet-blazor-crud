@@ -52,7 +52,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        base.OnInitializedAsync();
+        await base.OnInitializedAsync();
         if (!(Storage.GetItem("JWT-Token") != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage.GetItem("JWT-Time-Expire")))) // not logged on
         {
             UriHelper.NavigateTo("/user/login");

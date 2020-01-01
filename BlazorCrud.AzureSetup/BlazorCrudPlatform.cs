@@ -11,7 +11,6 @@ namespace BlazorCrud.AzureSetup
     {
         static int Main(string[] args)
         {
-            Random rand = new Random();
             string BlazorCrudClient = "becksblazor";
             string BlazorCrudApi = "becksapi";
             string BlazorCrudResourceGroup = "blazor-crud-prod-reg";
@@ -36,7 +35,7 @@ namespace BlazorCrud.AzureSetup
             {
                 IAzure azure = GetAzureContext();
                 // Deletes Azure resource group, which removes all contained web apps
-                DeleteWebApps(azure, BlazorCrudClient, BlazorCrudApi, BlazorCrudResourceGroup);
+                DeleteWebApps(azure, BlazorCrudResourceGroup);
                 return 0;
             }
 
@@ -51,7 +50,6 @@ namespace BlazorCrud.AzureSetup
         private static IAzure GetAzureContext()
         {
             IAzure azure = Azure.Authenticate("my.azureauth").WithDefaultSubscription();
-            var currentSubscription = azure.GetCurrentSubscription();
             return azure;
         }
 
@@ -108,7 +106,7 @@ namespace BlazorCrud.AzureSetup
             }
         }
 
-        public static void DeleteWebApps(IAzure azure, string BlazorCrudClient, string BlazorCrudApi, string BlazorCrudResourceGroup)
+        public static void DeleteWebApps(IAzure azure, string BlazorCrudResourceGroup)
         {
             try
             {
