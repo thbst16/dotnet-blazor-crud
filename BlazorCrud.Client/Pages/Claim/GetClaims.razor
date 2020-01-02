@@ -176,8 +176,6 @@ else
     [Parameter]
     public string Page { get; set; } = "1";
     [Parameter]
-    public string Transaction { get; set; }
-    [Parameter]
     public string SearchTerm { get; set; } = string.Empty;
 
     protected PagedResult<Claim> Claims;
@@ -228,7 +226,6 @@ else
 
     protected void PagerPageChanged(int page)
     {
-        Transaction = string.Empty;
         UriHelper.NavigateTo("/claim/list/" + page);
     }
 

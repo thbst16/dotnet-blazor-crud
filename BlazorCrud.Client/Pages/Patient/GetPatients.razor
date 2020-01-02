@@ -9,11 +9,6 @@
     Toaster.Success("Patient successfully updated in the system.", "Patient Updated");
     Storage.RemoveItem("Transaction");
 }
-@if (Storage.GetItem("Transaction") == "cancelled")
-{
-    Toaster.Warning("Patient transaction has been cancelled.", "Transaction Cancelled");
-    Storage.RemoveItem("Transaction");
-}
 
 <h1>Patient Data</h1>
 
@@ -21,7 +16,7 @@
     <div class="col-md-7">
         @if (isLoggedOn())
         {
-            <a href="/patient/new" class="btn btn-primary">Add New Patient</a>
+        <BSButton Class="btn btn-primary" @onclick="AddPatient">Add New Patient</BSButton>
         }
     </div>
     <div class="input-group col-md-5 text-md-right">
@@ -67,11 +62,11 @@ else
                     <td>@patient.PrimaryCareProvider</td>
                     <td>@patient.State</td>
                     <td>
-                        <ActionLinkButton Action="view" Route="/patient" RouteValue="@patient.Id.ToString()"></ActionLinkButton>
+                        <BSButton ButtonType="ButtonType.Link" Color="Color.None" Class="oi oi-eye text-primary" @onclick="@(async () => await ViewPatient(patient.Id))"></BSButton>
                         @if (isLoggedOn())
                         {
-                            <ActionLinkButton Action="edit" Route="/patient" RouteValue="@patient.Id.ToString()"></ActionLinkButton>
-                            <ActionLinkButton Action="delete" Route="/patient" RouteValue="@patient.Id.ToString()"></ActionLinkButton>
+                            <BSButton ButtonType="ButtonType.Link" Color="Color.None" Class="oi oi-pencil text-warning" @onclick="@(async () => await UpdatePatient(patient.Id))"></BSButton>
+                            <BSButton ButtonType="ButtonType.Link" Color="Color.None" Class="oi oi-trash text-danger" @onclick="@(async () => await DeletePatient(patient.Id))"></BSButton>
                         }
                     </td>
                 </tr>
@@ -81,6 +76,170 @@ else
     <Pager Result=@Patients PageChanged=PagerPageChanged />
 }
 
+<div>
+    <BSModal @bind-IsOpen="@isAdd" Size="Size.Large" IgnoreEscape="true">
+        <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
+        <BSModalBody>
+            <div class="col-md-12">
+                <EditForm Model="@patient" OnValidSubmit="@CreatePatient">
+                    <FluentValidator TValidator="PatientValidator" />
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <InputText id="Name" class="form-control" placeholder="Name" @bind-Value="patient.Name" />
+                            <ValidationMessage For="@(() => patient.Name)" />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <InputSelect id="Gender" class="form-control" @bind-Value="patient.Gender">
+                                <option value="">-- Select Gender --</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </InputSelect>
+                            <ValidationMessage For="@(() => patient.Gender)" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-8">
+                            <InputText id="PrimaryCareProvider" class="form-control" placeholder="Primary Care Provider" @bind-Value="patient.PrimaryCareProvider" />
+                            <ValidationMessage For="@(() => patient.PrimaryCareProvider)" />
+                        </div>
+                        <div class="form-group col-md-4">
+                            <InputText id="State" class="form-control" placeholder="State Abbreviation" @bind-Value="patient.State" />
+                            <ValidationMessage For="@(() => patient.State)" />
+                        </div>
+                    </div>
+
+                    <hr />
+                    <h5>Contact Point</h5>
+                    <hr />
+
+                    <ValidationMessage For="@(() => patient.Contacts)" />
+                    @foreach (var contactPoint in patient.Contacts)
+                    {
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <InputSelect id="System" class="form-control" placeholder="System" @bind-Value="contactPoint.System">
+                                    <option value="">-- Select System --</option>
+                                    <option value="Phone">Phone</option>
+                                    <option value="Fax">Fax</option>
+                                    <option value="Email">Email</option>
+                                    <option value="Pager">Pager</option>
+                                    <option value="SMS">SMS</option>
+                                    <option value="Other">Other</option>
+                                </InputSelect>
+                                <ValidationMessage For="@(() => contactPoint.System)" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <InputText id="Value" class="form-control" placeholder="Value" @bind-Value="contactPoint.Value" />
+                                <ValidationMessage For="@(() => contactPoint.Value)" />
+                            </div>
+                            <div class="form-group col-md-3">
+                                <InputSelect id="Use" class="form-control" placeholder="Use" @bind-Value="contactPoint.Use">
+                                    <option value="">-- Select Use --</option>
+                                    <option value="Home">Home</option>
+                                    <option value="Work">Work</option>
+                                    <option value="Temp">Temp</option>
+                                    <option value="Old">Old</option>
+                                    <option value="Mobile">Mobile</option>
+                                </InputSelect>
+                                <ValidationMessage For="@(() => contactPoint.Use)" />
+                            </div>
+                            <div class="form-group col-md-1">
+                                <a href="javascript:void(0)" class="btn btn-danger" @onclick="@(()=>OnContactDelete(patient, contactPoint))">X</a>
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group">
+                        <a href="javascript:void(0)" class="btn btn-success" @onclick="@(()=>OnContactAdd(patient))">Add Contact</a>
+                    </div>
+                    <hr />
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Save</button>
+                        <button class="btn btn-primary" @onclick="CloseModal">Cancel</button>
+                    </div>
+                </EditForm>
+            </div>
+        </BSModalBody>
+    </BSModal>
+</div>
+
+<div>
+    <BSModal @bind-IsOpen="isView" Size="Size.Large" IgnoreEscape="true">
+        <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
+        <BSModalBody>
+            <div class="col-md-12">
+                @if (isDelete)
+                {
+                    <BSAlert Color="Color.Danger">Please review carefully before deleting.</BSAlert>
+                }
+                <hr />
+                <h5>Demographic Data</h5>
+                <hr />
+
+                <br />
+                <BSTable IsResponsive="true" class="table">
+                    <tr>
+                        <td>Id</td>
+                        <td>@patient.Id</td>
+                    </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td>@patient.Name</td>
+                    </tr>
+                    <tr>
+                        <td>Gender</td>
+                        <td>@patient.Gender</td>
+                    </tr>
+                    <tr>
+                        <td>Primary Care Provider</td>
+                        <td>@patient.PrimaryCareProvider</td>
+                    </tr>
+                    <tr>
+                        <td>State</td>
+                        <td>@patient.State</td>
+                    </tr>
+                </BSTable>
+
+                <hr />
+                <h5>Contact Points</h5>
+                <hr />
+
+                <BSTable IsResponsive="true" class='table'>
+                    <thead class="thead-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>System</th>
+                            <th>Value</th>
+                            <th>Use</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var contactPoint in patient.Contacts)
+                        {
+                            <tr>
+                                <td>@contactPoint.Id</td>
+                                <td>@contactPoint.System</td>
+                                <td>@contactPoint.Value</td>
+                                <td>@contactPoint.Use</td>
+                            </tr>
+                        }
+                    </tbody>
+                </BSTable>
+                <div class="form-group">
+                    @if (isDelete)
+                    {
+                        <button type="button" class="btn btn-danger" @onclick="(async () => await RemovePatient())">Delete</button>
+                        <button class="btn btn-primary" @onclick="CloseModal">Cancel</button>
+                    }
+                    @if (!isDelete)
+                    {
+                        <button class="btn btn-primary" @onclick="CloseModal">Back</button>
+                    }
+                </div>
+            </div>
+        </BSModalBody>
+    </BSModal>
+</div>
+
 @code {
     [Parameter]
     public string Page { get; set; } = "1";
@@ -88,6 +247,23 @@ else
     public string SearchTerm { get; set; } = string.Empty;
 
     protected PagedResult<Patient> Patients;
+    protected Patient patient = new Patient
+    {
+        Name = "",
+        PrimaryCareProvider = "",
+        Gender = "",
+        State = "",
+        Contacts = new List<ContactPoint>
+        {
+            new ContactPoint { System = "", Value = "", Use = "" }
+        }
+    };
+
+    protected int CurrentPatientId { get; set; }
+    protected string modalTitle { get; set; }
+    protected bool isAdd { get; set; }
+    protected bool isView { get; set; }
+    protected bool isDelete { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -129,5 +305,102 @@ else
     protected void PagerPageChanged(int page)
     {
         UriHelper.NavigateTo("/patient/list/" + page);
+    }
+
+    protected void AddPatient()
+    {
+        this.isAdd = true;
+        this.modalTitle = "Create Patient";
+    }
+
+    protected async Task UpdatePatient(int PatientId)
+    {
+        patient = await Http.GetJsonAsync<Patient>(Storage.GetItem("environment_uri") + "/patient/" + Convert.ToInt32(PatientId));
+        CurrentPatientId = PatientId;
+        this.isAdd = true;
+        this.modalTitle = "Edit Patient";
+    }
+
+    protected async Task ViewPatient(int PatientId)
+    {
+        patient = await Http.GetJsonAsync<Patient>(Storage.GetItem("environment_uri") + "/patient/" + Convert.ToInt32(PatientId));
+        CurrentPatientId = PatientId;
+        this.isView = true;
+        this.modalTitle = "View Patient";
+    }
+
+    protected async Task DeletePatient(int PatientId)
+    {
+        patient = await Http.GetJsonAsync<Patient>(Storage.GetItem("environment_uri") + "/patient/" + Convert.ToInt32(PatientId));
+        CurrentPatientId = PatientId;
+        this.isView = true;
+        this.isDelete = true;
+        this.modalTitle = "Delete Patient";
+    }
+
+    protected async Task CreatePatient()
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        if (CurrentPatientId == 0)
+        {
+            await Http.SendJsonAsync(HttpMethod.Post, Storage.GetItem("environment_uri") + "/patient", patient);
+        }
+        else
+        {
+            await Http.SendJsonAsync(HttpMethod.Put, Storage.GetItem("environment_uri") + "/patient/" + Convert.ToInt32(CurrentPatientId), patient);
+        }
+        this.isAdd = false;
+        patient = new Patient{
+            Name = "",
+            PrimaryCareProvider = "",
+            Gender = "",
+            State = "",
+            Contacts = new List<ContactPoint>
+            {
+              new ContactPoint { System = "", Value = "", Use = "" }
+            }
+        };
+        Storage.SetItem("Transaction", "modified");
+        await OnParametersSetAsync();
+    }
+
+    protected async Task RemovePatient()
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.DeleteAsync(Storage.GetItem("environment_uri") + "/patient/" + Convert.ToInt32(CurrentPatientId));
+        this.isView = false;
+        this.isDelete = false;
+        Storage.SetItem("Transaction", "modified");
+        await OnParametersSetAsync();
+    }
+
+    protected void CloseModal()
+    {
+        patient = new Patient{
+            Name = "",
+            PrimaryCareProvider = "",
+            Gender = "",
+            State = "",
+            Contacts = new List<ContactPoint>
+            {
+              new ContactPoint { System = "", Value = "", Use = "" }
+            }
+        };
+        CurrentPatientId = 0;
+        this.isAdd = false;
+        this.isView = false;
+        this.isDelete = false;
+    }
+
+    public void OnContactDelete(Patient patient, ContactPoint contactPoint)
+    {
+        patient.Contacts.Remove(contactPoint);
+    }
+
+    public void OnContactAdd(Patient patient)
+    {
+        patient.Contacts.Add(new ContactPoint { System = "", Value = "", Use = "" });
     }
 }
