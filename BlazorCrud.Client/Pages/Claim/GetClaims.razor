@@ -9,11 +9,6 @@
     Toaster.Success("Claim successfully updated in the system.", "Claim Updated");
     Storage.RemoveItem("Transaction");
 }
-@if (Storage.GetItem("Transaction") == "cancelled")
-{
-    Toaster.Warning("Claim transaction has been cancelled.", "Transaction Cancelled");
-    Storage.RemoveItem("Transaction");
-}
 
 <h1>Claim Data</h1>
 
@@ -21,7 +16,7 @@
     <div class="col-md-7">
         @if (isLoggedOn())
         {
-            <a href="/claim/new" class="btn btn-primary">Add New Claim</a>
+        <BSButton Class="btn btn-primary" @onclick="AddClaim">Add New Claim</BSButton>
         }
     </div>
     <div class="input-group col-md-5 text-md-right">
@@ -66,11 +61,11 @@ else
                     <td>@claim.Status</td>
                     <td>@claim.Type</td>
                     <td>
-                        <ActionLinkButton Action="view" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
+                        <BSButton ButtonType="ButtonType.Link" Color="Color.None" Class="oi oi-eye text-primary" @onclick="@(async () => await ViewClaim(claim.Id))"></BSButton>
                         @if (isLoggedOn())
                         {
-                            <ActionLinkButton Action="edit" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
-                            <ActionLinkButton Action="delete" Route="/claim" RouteValue="@claim.Id.ToString()"></ActionLinkButton>
+                            <BSButton ButtonType="ButtonType.Link" Color="Color.None" Class="oi oi-pencil text-warning" @onclick="@(async () => await UpdateClaim(claim.Id))"></BSButton>
+                            <BSButton ButtonType="ButtonType.Link" Color="Color.None" Class="oi oi-trash text-danger" @onclick="@(async () => await DeleteClaim(claim.Id))"></BSButton>
                         }
                     </td>
                 </tr>
@@ -80,6 +75,102 @@ else
     <Pager Result=@Claims PageChanged=PagerPageChanged />
 }
 
+<div>
+    <BSModal @bind-IsOpen="@isAdd" Size="Size.Large" IgnoreEscape="true">
+        <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
+        <BSModalBody>
+            <div class="col-md-9">
+                <EditForm Model="@claim" OnValidSubmit="@CreateClaim">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="Patient" class="control-label">Patient</label>
+                        <InputText id="Patient" class="form-control" @bind-Value="claim.Patient" />
+                        <ValidationMessage For="@(() => claim.Patient)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Organization" class="control-label">Organization</label>
+                        <InputText id="Organization" class="form-control" @bind-Value="claim.Organization" />
+                        <ValidationMessage For="@(() => claim.Organization)" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Status" class="control-label">Status</label>
+                        <InputSelect id="Status" class="form-control" @bind-Value="claim.Status">
+                            <option value="">-- Select Status --</option>
+                            <option value="Active">Active</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Draft">Draft</option>
+                            <option value="Entered-in-Error">Entered-in-Error</option>
+                        </InputSelect>
+                        <ValidationMessage For="@(() => claim.Status)" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Type" class="control-label">Type</label>
+                        <InputSelect id="Type" class="form-control" @bind-Value="claim.Type">
+                            <option value="">-- Select Type --</option>
+                            <option value="Institutional">Institutional</option>
+                            <option value="Oral">Oral</option>
+                            <option value="Pharmacy">Pharmacy</option>
+                            <option value="Professional">Professional</option>
+                            <option value="Vision">Vision</option>
+                        </InputSelect>
+                        <ValidationMessage For="@(() => claim.Type)" />
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Save</button>
+                        <button class="btn btn-primary" @onclick="CloseModal">Cancel</button>
+                    </div>
+                </EditForm>
+            </div>
+        </BSModalBody>
+    </BSModal>
+</div>
+
+<div>
+    <BSModal @bind-IsOpen="isView" Size="Size.Large" IgnoreEscape="true">
+        <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
+        <BSModalBody>
+            <div class="col-md-9">
+                @if (isDelete)
+                {
+                    <BSAlert Color="Color.Danger">Please review carefully before deleting.</BSAlert>
+                }
+            <BSTable IsResponsive="true" class="table">
+                <tr>
+                    <td>Id</td>
+                    <td>@claim.Id</td>
+                </tr>
+                <tr>
+                    <td>Patient</td>
+                    <td>@claim.Patient</td>
+                </tr>
+                <tr>
+                    <td>Organization</td>
+                    <td>@claim.Organization</td>
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td>@claim.Status</td>
+                </tr>
+                <tr>
+                    <td>Type</td>
+                    <td>@claim.Type</td>
+                </tr>
+            </BSTable>
+                <div class="form-group">
+                    @if (isDelete)
+                    {
+                        <button type="button" class="btn btn-danger" @onclick="(async () => await RemoveClaim())">Delete</button>
+                        <button class="btn btn-primary" @onclick="CloseModal">Cancel</button>
+                    }
+                    @if (!isDelete)
+                    {
+                        <button class="btn btn-primary" @onclick="CloseModal">Back</button>
+                    }
+                </div>
+            </div>
+        </BSModalBody>
+    </BSModal>
+</div>
 
 @code {
     [Parameter]
@@ -90,6 +181,13 @@ else
     public string SearchTerm { get; set; } = string.Empty;
 
     protected PagedResult<Claim> Claims;
+    protected Claim claim = new Claim();
+
+    protected int CurrentClaimId { get; set; }
+    protected string modalTitle { get; set; }
+    protected bool isAdd { get; set; }
+    protected bool isView { get; set; }
+    protected bool isDelete { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -132,5 +230,74 @@ else
     {
         Transaction = string.Empty;
         UriHelper.NavigateTo("/claim/list/" + page);
+    }
+
+    protected void AddClaim()
+    {
+        this.isAdd = true;
+        this.modalTitle = "Create Claim";
+    }
+
+    protected async Task UpdateClaim(int ClaimId)
+    {
+        claim = await Http.GetJsonAsync<Claim>(Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(ClaimId));
+        CurrentClaimId = ClaimId;
+        this.isAdd = true;
+        this.modalTitle = "Edit Claim";
+    }
+
+    protected async Task ViewClaim(int ClaimId)
+    {
+        claim = await Http.GetJsonAsync<Claim>(Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(ClaimId));
+        CurrentClaimId = ClaimId;
+        this.isView = true;
+        this.modalTitle = "View Claim";
+    }
+
+    protected async Task DeleteClaim(int ClaimId)
+    {
+        claim = await Http.GetJsonAsync<Claim>(Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(ClaimId));
+        CurrentClaimId = ClaimId;
+        this.isView = true;
+        this.isDelete = true;
+        this.modalTitle = "Delete Claim";
+    }
+
+    protected async Task CreateClaim()
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        if (CurrentClaimId == 0)
+        {
+            await Http.SendJsonAsync(HttpMethod.Post, Storage.GetItem("environment_uri") + "/claim", claim);
+        }
+        else
+        {
+            await Http.SendJsonAsync(HttpMethod.Put, Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(CurrentClaimId), claim);
+        }
+        this.isAdd = false;
+        claim = new Claim();
+        Storage.SetItem("Transaction", "modified");
+        await OnParametersSetAsync();
+    }
+
+    protected async Task RemoveClaim()
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.DeleteAsync(Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(CurrentClaimId));
+        this.isView = false;
+        this.isDelete = false;
+        Storage.SetItem("Transaction", "modified");
+        await OnParametersSetAsync();
+    }
+
+    protected void CloseModal()
+    {
+        claim = new Claim();
+        CurrentClaimId = 0;
+        this.isAdd = false;
+        this.isView = false;
+        this.isDelete = false;
     }
 }
