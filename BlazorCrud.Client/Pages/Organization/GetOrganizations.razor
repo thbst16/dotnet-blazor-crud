@@ -9,11 +9,6 @@
     Toaster.Success("Organization successfully updated in the system.", "Organization Updated");
     Storage.RemoveItem("Transaction");
 }
-@if (Storage.GetItem("Transaction") == "cancelled")
-{
-    Toaster.Warning("Organization transaction has been cancelled.", "Transaction Cancelled");
-    Storage.RemoveItem("Transaction");
-}
 
 <h1>Organization Data</h1>
 
@@ -21,7 +16,7 @@
     <div class="col-md-7">
         @if (isLoggedOn())
         {
-            <a href="/organization/new" class="btn btn-primary">Add New Organization</a>
+            <BSButton Class="btn btn-primary" @onclick="AddOrganization">Add New User</BSButton>
         }
     </div>
     <div class="input-group col-md-5 text-md-right">
@@ -64,11 +59,11 @@ else
                     <td>@organization.Type</td>
                     <td>@organization.IsActive</td>
                     <td>
-                        <ActionLinkButton Action="view" Route="/organization" RouteValue="@organization.Id.ToString()"></ActionLinkButton>
+                        <BSButton ButtonType="ButtonType.Link" Color="Color.None" Class="oi oi-eye text-primary" @onclick="@(async () => await ViewOrganization(organization.Id))"></BSButton>
                         @if (isLoggedOn())
                         {
-                            <ActionLinkButton Action="edit" Route="/organization" RouteValue="@organization.Id.ToString()"></ActionLinkButton>
-                            <ActionLinkButton Action="delete" Route="/organization" RouteValue="@organization.Id.ToString()"></ActionLinkButton>
+                            <BSButton ButtonType="ButtonType.Link" Color="Color.None" Class="oi oi-pencil text-warning" @onclick="@(async () => await UpdateOrganization(organization.Id))"></BSButton>
+                            <BSButton ButtonType="ButtonType.Link" Color="Color.None" Class="oi oi-trash text-danger" @onclick="@(async () => await DeleteOrganization(organization.Id))"></BSButton>
                         }
                     </td>
                 </tr>
@@ -78,6 +73,95 @@ else
     <Pager Result=@Organizations PageChanged=PagerPageChanged />
 }
 
+<div>
+    <BSModal @bind-IsOpen="@isAdd" Size="Size.Large" IgnoreEscape="true">
+        <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
+        <BSModalBody>
+            <div class="col-md-9">
+                <EditForm Model="@organization" OnValidSubmit="@CreateOrganization">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="Name" class="control-label">Name</label>
+                        <InputText id="Name" class="form-control" @bind-Value="organization.Name" />
+                        <ValidationMessage For="@(() => organization.Name)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Gender" class="control-label">Type</label>
+                        <InputSelect id="Gender" class="form-control" @bind-Value="organization.Type">
+                            <option value="">-- Select Type --</option>
+                            <option value="Healthcare Provider">Healthcare Provider</option>
+                            <option value="Hospital Department">Hospital Department</option>
+                            <option value="Organizational Team">Organizational Team</option>
+                            <option value="Government">Government</option>
+                            <option value="Insurance Company">Insurance Company</option>
+                            <option value="Educational Institute">Educational Institute</option>
+                            <option value="Religous Institution">Religous Institution</option>
+                            <option value="Clinical Research Sponsor">Clinical Research Sponsor</option>
+                            <option value="Community Group">Community Group</option>
+                            <option value="Non-Healthcare Business or Corporation">Non-Healthcare Business or Coporation</option>
+                            <option value="Other">Other</option>
+                        </InputSelect>
+                        <ValidationMessage For="@(() => organization.Type)" />
+                    </div>
+                    <div class="form-group">
+                        <div class="form-check">
+                            <InputCheckbox id="Active" class="form-check-input" @bind-Value="organization.IsActive" />
+                            <label for="Active" class="form-check-label">Active</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Save</button>
+                        <button class="btn btn-primary" @onclick="CloseModal">Cancel</button>
+                    </div>
+                </EditForm>
+            </div>
+        </BSModalBody>
+    </BSModal>
+</div>
+
+<div>
+    <BSModal @bind-IsOpen="isView" Size="Size.Large" IgnoreEscape="true">
+        <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
+        <BSModalBody>
+            <div class="col-md-9">
+                @if (isDelete)
+                {
+                    <BSAlert Color="Color.Danger">Please review carefully before deleting.</BSAlert>
+                }
+                <BSTable IsResponsive="true" class="table">
+                    <tr>
+                        <td>Id</td>
+                        <td>@organization.Id</td>
+                    </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td>@organization.Name</td>
+                    </tr>
+                    <tr>
+                        <td>Type</td>
+                        <td>@organization.Type</td>
+                    </tr>
+                    <tr>
+                        <td>Active</td>
+                        <td>@organization.IsActive</td>
+                    </tr>
+                </BSTable>
+                <div class="form-group">
+                    @if (isDelete)
+                    {
+                        <button type="button" class="btn btn-danger" @onclick="(async () => await RemoveOrganization())">Delete</button>
+                        <button class="btn btn-primary" @onclick="CloseModal">Cancel</button>
+                    }
+                    @if (!isDelete)
+                    {
+                        <button class="btn btn-primary" @onclick="CloseModal">Back</button>
+                    }
+                </div>
+            </div>
+        </BSModalBody>
+    </BSModal>
+</div>
+
 @code {
     [Parameter]
     public string Page { get; set; } = "1";
@@ -85,6 +169,13 @@ else
     public string SearchTerm { get; set; } = string.Empty;
 
     protected PagedResult<Organization> Organizations;
+    protected Organization organization = new Organization();
+
+    protected int CurrentOrganizationId { get; set; }
+    protected string modalTitle { get; set; }
+    protected bool isAdd { get; set; }
+    protected bool isView { get; set; }
+    protected bool isDelete { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -127,5 +218,74 @@ else
     protected void PagerPageChanged(int page)
     {
         UriHelper.NavigateTo("/organization/list/" + page);
+    }
+
+    protected void AddOrganization()
+    {
+        this.isAdd = true;
+        this.modalTitle = "Create Organization";
+    }
+
+    protected async Task UpdateOrganization(int OrganizationId)
+    {
+        organization = await Http.GetJsonAsync<Organization>(Storage.GetItem("environment_uri") + "/organization/" + Convert.ToInt32(OrganizationId));
+        CurrentOrganizationId = OrganizationId;
+        this.isAdd = true;
+        this.modalTitle = "Edit Organization";
+    }
+
+    protected async Task ViewOrganization(int OrganizationId)
+    {
+        organization = await Http.GetJsonAsync<Organization>(Storage.GetItem("environment_uri") + "/organization/" + Convert.ToInt32(OrganizationId));
+        CurrentOrganizationId = OrganizationId;
+        this.isView = true;
+        this.modalTitle = "View Organization";
+    }
+
+    protected async Task DeleteOrganization(int OrganizationId)
+    {
+        organization = await Http.GetJsonAsync<Organization>(Storage.GetItem("environment_uri") + "/organization/" + Convert.ToInt32(OrganizationId));
+        CurrentOrganizationId = OrganizationId;
+        this.isView = true;
+        this.isDelete = true;
+        this.modalTitle = "Delete Organization";
+    }
+
+    protected async Task CreateOrganization()
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        if (CurrentOrganizationId == 0)
+        {
+            await Http.SendJsonAsync(HttpMethod.Post, Storage.GetItem("environment_uri") + "/organization", organization);
+        }
+        else
+        {
+            await Http.SendJsonAsync(HttpMethod.Put, Storage.GetItem("environment_uri") + "/organization/" + Convert.ToInt32(CurrentOrganizationId), organization);
+        }
+        this.isAdd = false;
+        organization = new Organization();
+        Storage.SetItem("Transaction", "modified");
+        await OnParametersSetAsync();
+    }
+
+    protected async Task RemoveOrganization()
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.DeleteAsync(Storage.GetItem("environment_uri") + "/organization/" + Convert.ToInt32(CurrentOrganizationId));
+        this.isView = false;
+        this.isDelete = false;
+        Storage.SetItem("Transaction", "modified");
+        await OnParametersSetAsync();
+    }
+
+    protected void CloseModal()
+    {
+        organization = new Organization();
+        CurrentOrganizationId = 0;
+        this.isAdd = false;
+        this.isView = false;
+        this.isDelete = false;
     }
 }
