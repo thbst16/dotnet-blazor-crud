@@ -272,8 +272,7 @@ else
         {
             await Http.SendJsonAsync(HttpMethod.Put, Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(CurrentClaimId), claim);
         }
-        this.isAdd = false;
-        claim = new Claim();
+        CloseModal();
         Storage.SetItem("Transaction", "modified");
         await OnParametersSetAsync();
     }
@@ -283,8 +282,7 @@ else
         var token = Storage["JWT-Token"];
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         await Http.DeleteAsync(Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(CurrentClaimId));
-        this.isView = false;
-        this.isDelete = false;
+        CloseModal();
         Storage.SetItem("Transaction", "modified");
         await OnParametersSetAsync();
     }

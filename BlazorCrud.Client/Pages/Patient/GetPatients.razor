@@ -350,17 +350,7 @@ else
         {
             await Http.SendJsonAsync(HttpMethod.Put, Storage.GetItem("environment_uri") + "/patient/" + Convert.ToInt32(CurrentPatientId), patient);
         }
-        this.isAdd = false;
-        patient = new Patient{
-            Name = "",
-            PrimaryCareProvider = "",
-            Gender = "",
-            State = "",
-            Contacts = new List<ContactPoint>
-            {
-              new ContactPoint { System = "", Value = "", Use = "" }
-            }
-        };
+        CloseModal();
         Storage.SetItem("Transaction", "modified");
         await OnParametersSetAsync();
     }
@@ -370,8 +360,7 @@ else
         var token = Storage["JWT-Token"];
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         await Http.DeleteAsync(Storage.GetItem("environment_uri") + "/patient/" + Convert.ToInt32(CurrentPatientId));
-        this.isView = false;
-        this.isDelete = false;
+        CloseModal();
         Storage.SetItem("Transaction", "modified");
         await OnParametersSetAsync();
     }

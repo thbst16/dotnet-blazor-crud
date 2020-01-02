@@ -166,8 +166,7 @@ else
         var token = Storage["JWT-Token"];
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         await Http.SendJsonAsync(HttpMethod.Post, Storage.GetItem("environment_uri") + "/upload", upload);
-        this.isAdd = false;
-        upload = new Upload();
+        CloseModal();
         Storage.SetItem("Transaction", "modified");
         await OnParametersSetAsync();
     }
