@@ -9,18 +9,13 @@
     Toaster.Success("User successfully updated in the system.", "User Updated");
     Storage.RemoveItem("Transaction");
 }
-@if (Storage.GetItem("Transaction") == "cancelled")
-{
-    Toaster.Warning("User transaction has been cancelled.", "Transaction Cancelled");
-    Storage.RemoveItem("Transaction");
-}
 
 <h1>User Data</h1>
 
 @if (isLoggedOn())
 {
     <p>
-        <a href="/user/new" class="btn btn-primary">Add New User</a>
+        <BSButton Class="btn btn-primary" @onclick="AddUser">Add New User</BSButton>
     </p>
 }
 
@@ -51,11 +46,11 @@ else
                     <td>@user.FirstName</td>
                     <td>@user.Email</td>
                     <td>
-                        <ActionLinkButton Action="view" Route="/user" RouteValue="@user.Id.ToString()"></ActionLinkButton>
+                        <BSButton ButtonType="ButtonType.Link" Color="Color.None" Class="oi oi-eye text-primary" @onclick="@(async () => await ViewUser(user.Id))"></BSButton>
                         @if (isLoggedOn())
                         {
-                            <ActionLinkButton Action="edit" Route="/user" RouteValue="@user.Id.ToString()"></ActionLinkButton>
-                            <ActionLinkButton Action="delete" Route="/user" RouteValue="@user.Id.ToString()"></ActionLinkButton>
+                            <BSButton ButtonType="ButtonType.Link" Color="Color.None" Class="oi oi-pencil text-warning" @onclick="@(async () => await UpdateUser(user.Id))"></BSButton>
+                            <BSButton ButtonType="ButtonType.Link" Color="Color.None" Class="oi oi-trash text-danger" @onclick="@(async () => await DeleteUser(user.Id))"></BSButton>
                         }
                     </td>
                 </tr>
@@ -65,11 +60,107 @@ else
     <Pager Result=@Users PageChanged=PagerPageChanged />
 }
 
+<div>
+    <BSModal @bind-IsOpen="@isAdd" Size="Size.Large" IgnoreEscape="true">
+        <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
+        <BSModalBody>
+            <div class="col-md-9">
+                <EditForm Model="@user" OnValidSubmit="@CreateUser">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="Username" class="control-label">User Name</label>
+                        <InputText id="Username" class="form-control" @bind-Value="user.Username" />
+                        <ValidationMessage For="@(() => user.Username)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Lastname" class="control-label">Last Name</label>
+                        <InputText id="Lastname" class="form-control" @bind-Value="user.LastName" />
+                        <ValidationMessage For="@(() => user.LastName)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Firstname" class="control-label">First Name</label>
+                        <InputText id="Firstname" class="form-control" @bind-Value="user.FirstName" />
+                        <ValidationMessage For="@(() => user.FirstName)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="Email" class="control-label">Email</label>
+                        <InputText id="Email" class="form-control" @bind-Value="user.Email" />
+                        <ValidationMessage For="@(() => user.Email)" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label">Password</label>
+                        <InputText id="Password" class="form-control" type="password" @bind-Value="user.Password" />
+                        <ValidationMessage For="@(() => user.Password)" />
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Save</button>
+                        <button class="btn btn-primary" @onclick="CloseModal">Cancel</button>
+                    </div>
+                </EditForm>
+            </div>
+        </BSModalBody>
+    </BSModal>
+</div>
+
+<div>
+    <BSModal @bind-IsOpen="isView" Size="Size.Large" IgnoreEscape="true">
+        <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
+        <BSModalBody>
+            <div class="col-md-9">
+                @if (isDelete)
+                {
+                    <BSAlert Color="Color.Danger">Please review carefully before deleting.</BSAlert>
+                }
+                <BSTable IsResponsive="true" class="table">
+                    <tr>
+                        <td>Id</td>
+                        <td>@user.Id</td>
+                    </tr>
+                    <tr>
+                        <td>Username</td>
+                        <td>@user.Username</td>
+                    </tr>
+                    <tr>
+                        <td>Last Name</td>
+                        <td>@user.LastName</td>
+                    </tr>
+                    <tr>
+                        <td>First Name</td>
+                        <td>@user.FirstName</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>@user.Email</td>
+                    </tr>
+                </BSTable>
+                <div class="form-group">
+                    @if (isDelete)
+                    {
+                        <button type="button" class="btn btn-danger" @onclick="(async () => await RemoveUser())">Delete</button>
+                        <button class="btn btn-primary" @onclick="CloseModal">Cancel</button>
+                    }
+                    @if (!isDelete)
+                    {
+                        <button class="btn btn-primary" @onclick="CloseModal">Back</button>
+                    }
+                </div>
+            </div>
+        </BSModalBody>
+    </BSModal>
+</div>
+
 @code {
     [Parameter]
     public string Page { get; set; } = "1";
 
     protected PagedResult<User> Users;
+    protected User user = new User();
+
+    protected int CurrentUserId { get; set; }
+    protected string modalTitle { get; set; }
+    protected bool isAdd { get; set; }
+    protected bool isView { get; set; }
+    protected bool isDelete { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -84,5 +175,74 @@ else
     protected void PagerPageChanged(int page)
     {
         UriHelper.NavigateTo("/user/list/" + page);
+    }
+
+    protected void AddUser()
+    {
+        this.isAdd = true;
+        this.modalTitle = "Create User";
+    }
+
+    protected async Task UpdateUser(int UserId)
+    {
+        user = await Http.GetJsonAsync<User>(Storage.GetItem("environment_uri") + "/user/" + Convert.ToInt32(UserId));
+        CurrentUserId = UserId;
+        this.isAdd = true;
+        this.modalTitle = "Edit User";
+    }
+
+    protected async Task ViewUser(int UserId)
+    {
+        user = await Http.GetJsonAsync<User>(Storage.GetItem("environment_uri") + "/user/" + Convert.ToInt32(UserId));
+        CurrentUserId = UserId;
+        this.isView = true;
+        this.modalTitle = "View User";
+    }
+
+    protected async Task DeleteUser(int UserId)
+    {
+        user = await Http.GetJsonAsync<User>(Storage.GetItem("environment_uri") + "/user/" + Convert.ToInt32(UserId));
+        CurrentUserId = UserId;
+        this.isView = true;
+        this.isDelete = true;
+        this.modalTitle = "Delete User";
+    }
+
+    protected async Task CreateUser()
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        if (CurrentUserId == 0)
+        {
+            await Http.SendJsonAsync(HttpMethod.Post, Storage.GetItem("environment_uri") + "/user", user);
+        }
+        else
+        {
+            await Http.SendJsonAsync(HttpMethod.Put, Storage.GetItem("environment_uri") + "/user/" + Convert.ToInt32(CurrentUserId), user);
+        }
+        this.isAdd = false;
+        user = new User();
+        Storage.SetItem("Transaction", "modified");
+        await OnParametersSetAsync();
+    }
+
+    protected async Task RemoveUser()
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.DeleteAsync(Storage.GetItem("environment_uri") + "/user/" + Convert.ToInt32(CurrentUserId));
+        this.isView = false;
+        this.isDelete = false;
+        Storage.SetItem("Transaction", "modified");
+        await OnParametersSetAsync();
+    }
+
+    protected void CloseModal()
+    {
+        user = new User();
+        CurrentUserId = 0;
+        this.isAdd = false;
+        this.isView = false;
+        this.isDelete = false;
     }
 }
