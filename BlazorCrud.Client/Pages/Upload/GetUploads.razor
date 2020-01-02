@@ -1,5 +1,6 @@
 ﻿@page "/upload/list/{Page}"
 @inject HttpClient Http
+@inject IJSRuntime  JSRuntime
 @inject LocalStorage Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
@@ -9,18 +10,13 @@
     Toaster.Success("Upload successfully updated in the system.", "User Updated");
     Storage.RemoveItem("Transaction");
 }
-@if (Storage.GetItem("Transaction") == "cancelled")
-{
-    Toaster.Warning("Upload transaction has been cancelled.", "Transaction Cancelled");
-    Storage.RemoveItem("Transaction");
-}
 
 <h1>Upload Data</h1>
 
 @if (isLoggedOn())
 {
     <p>
-        <a href="/upload/new" class="btn btn-primary">Add New Upload</a>
+        <BSButton Class="btn btn-primary" @onclick="AddUpload">Add New Upload</BSButton>
     </p>
 }
 
@@ -49,7 +45,7 @@ else
                     <td>@upload.UploadTimestamp</td>
                     <td>@upload.ProcessedTimestamp</td>
                     <td>
-                        <ActionLinkButton Action="view" Route="/upload" RouteValue="@upload.Id.ToString()"></ActionLinkButton>
+                        <BSButton ButtonType="ButtonType.Link" Color="Color.None" Class="oi oi-eye text-primary" @onclick="@(async () => await ViewUpload(upload.Id))"></BSButton>
                     </td>
                 </tr>
             }
@@ -58,11 +54,83 @@ else
     <Pager Result=@Uploads PageChanged=PagerPageChanged />
 }
 
+<div>
+    <BSModal @bind-IsOpen="@isAdd" Size="Size.Large" IgnoreEscape="true">
+        <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
+        <BSModalBody>
+            <div class="col-md-9">
+                <EditForm Model="@upload" OnValidSubmit="@CreateUpload">
+                    <DataAnnotationsValidator />
+                    <div class="form-group">
+                        <label for="FileName" class="control-label">File Name</label>
+                        <InputText id="FileName" class="form-control" @bind-Value="upload.FileName" />
+                        <ValidationMessage For="@(() => upload.FileName)" />
+                    </div>
+                    <div class="form-group">
+                        <label for="FileContent" class="control-label">File</label>
+                        <InputFile class="form-control-file" type="file" OnChange="HandleSelection" />
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-success">Save</button>
+                        <button class="btn btn-primary" @onclick="CloseModal">Cancel</button>
+                    </div>
+                </EditForm>
+            </div>
+            <p>@status</p>
+        </BSModalBody>
+    </BSModal>
+</div>
+
+<div>
+    <BSModal @bind-IsOpen="isView" Size="Size.Large" IgnoreEscape="true">
+        <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
+        <BSModalBody>
+            <div class="col-md-9">
+                <BSTable IsResponsive="true" class="table">
+                    <tr>
+                        <td>Id</td>
+                        <td>@upload.Id</td>
+                    </tr>
+                    <tr>
+                        <td>Filename</td>
+                        <td>@upload.FileName</td>
+                    </tr>
+                    <tr>
+                        <td>Uploaded</td>
+                        <td>@upload.UploadTimestamp</td>
+                    </tr>
+                    <tr>
+                        <td>Processed</td>
+                        <td>@upload.ProcessedTimestamp</td>
+                    </tr>
+                    <tr>
+                        <td>File</td>
+                        <td>
+                            <button @onclick="DownloadFile">Download</button>
+                        </td>
+                    </tr>
+                </BSTable>
+                <div class="form-group">
+                    <button class="btn btn-primary" @onclick="CloseModal">Back</button>
+                </div>
+            </div>
+        </BSModalBody>
+    </BSModal>
+</div>
+
 @code {
     [Parameter]
     public string Page { get; set; } = "1";
 
     protected PagedResult<Upload> Uploads;
+    protected Upload upload = new Upload();
+
+    string status = "File pending upload...";
+
+    protected int CurrentUploadId { get; set; }
+    protected string modalTitle { get; set; }
+    protected bool isAdd { get; set; }
+    protected bool isView { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -77,5 +145,59 @@ else
     protected void PagerPageChanged(int page)
     {
         UriHelper.NavigateTo("/upload/list/" + page);
+    }
+
+    protected void AddUpload()
+    {
+        this.isAdd = true;
+        this.modalTitle = "Create Upload";
+    }
+
+    protected async Task ViewUpload(int UploadId)
+    {
+        upload = await Http.GetJsonAsync<Upload>(Storage.GetItem("environment_uri") + "/upload/" + Convert.ToInt32(UploadId));
+        CurrentUploadId = UploadId;
+        this.isView = true;
+        this.modalTitle = "View Upload";
+    }
+
+    protected async Task CreateUpload()
+    {
+        var token = Storage["JWT-Token"];
+        Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        await Http.SendJsonAsync(HttpMethod.Post, Storage.GetItem("environment_uri") + "/upload", upload);
+        this.isAdd = false;
+        upload = new Upload();
+        Storage.SetItem("Transaction", "modified");
+        await OnParametersSetAsync();
+    }
+
+    protected void CloseModal()
+    {
+        upload = new Upload();
+        CurrentUploadId = 0;
+        this.isAdd = false;
+        this.isView = false;
+    }
+
+    async Task HandleSelection(IFileListEntry[] files)
+    {
+        var file = files.FirstOrDefault();
+        if (file != null)
+        {
+            // Load into memory
+            var ms = new MemoryStream();
+            await file.Data.CopyToAsync(ms);
+            status = $"Finished loading {file.Size} bytes from {file.Name}";
+            upload.FileContent = Convert.ToBase64String(ms.ToArray());
+        }
+    }
+
+    void DownloadFile()
+    {
+        JSRuntime.InvokeAsync<object>(
+            "saveAsFile",
+            upload.FileName,
+            upload.FileContent);
     }
 }
