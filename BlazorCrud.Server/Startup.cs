@@ -91,6 +91,10 @@ namespace BlazorCrud.Server
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(HeatbeatJob),
                 cronExpression: "0/5 * * * * ?"));
+            services.AddSingleton<ProcessFileJob>();
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(ProcessFileJob),
+                cronExpression: "0 0/1 * * * ?"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
