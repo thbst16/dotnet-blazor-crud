@@ -46,7 +46,7 @@ namespace BlazorCrud.Tests.API
             Assert.AreEqual("Bradly Legros", patients[0].Name);
             Assert.AreEqual("Male", patients[0].Gender);
             Assert.AreEqual("Sporer - Schiller", patients[0].PrimaryCareProvider);
-            Assert.AreEqual("IL", patients[0].State);
+            Assert.AreEqual("Illinois", patients[0].State);
         }
 
         [TestMethod()]
