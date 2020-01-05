@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace BlazorCrud.Shared.Models
 {
@@ -12,5 +13,6 @@ namespace BlazorCrud.Shared.Models
         public string Type { get; set; }
         [Required]
         public bool IsActive { get; set; }
+        public DateTime ModifiedDate { get; set; }
     }
 }

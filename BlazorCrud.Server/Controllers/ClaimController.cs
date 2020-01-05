@@ -3,6 +3,7 @@ using BlazorCrud.Shared.Data;
 using BlazorCrud.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 
 namespace BlazorCrud.Server.Controllers
@@ -66,6 +67,7 @@ namespace BlazorCrud.Server.Controllers
         {
             if (ModelState.IsValid)
             {
+                claim.ModifiedDate = DateTime.Now;
                 _context.Claims.Add(claim);
                 _context.SaveChanges();
                 return CreatedAtRoute("GetClaim", new { id = claim.Id }, claim);
@@ -91,6 +93,7 @@ namespace BlazorCrud.Server.Controllers
                     return NotFound();
                 }
 
+                claim.ModifiedDate = DateTime.Now;
                 _mapper.Map(claim, cla);
                 _context.Claims.Update(cla);
                 _context.SaveChanges();

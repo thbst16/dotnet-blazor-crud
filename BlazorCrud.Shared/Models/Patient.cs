@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BlazorCrud.Shared.Models
@@ -12,6 +13,7 @@ namespace BlazorCrud.Shared.Models
         public string PrimaryCareProvider { get; set; }
         public string State { get; set; }
         public List<ContactPoint> Contacts { get; set; }
+        public DateTime ModifiedDate { get; set; }
     }
 
     public class ContactPoint

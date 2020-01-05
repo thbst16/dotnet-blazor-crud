@@ -29,6 +29,7 @@ namespace BlazorCrud.Shared.Data
                     .RuleFor(p => p.Gender, f => f.PickRandom(gender))
                     .RuleFor(p => p.PrimaryCareProvider, f => f.Company.CompanyName())
                     .RuleFor(p => p.State, f => f.PickRandom(state))
+                    .RuleFor(p => p.ModifiedDate, f => f.Date.Recent(7))
                     .RuleFor(p => p.Contacts, f => testContacts.Generate(2).ToList());
                 var patients = testPatients.Generate(200);
 
@@ -46,7 +47,8 @@ namespace BlazorCrud.Shared.Data
                 var testOrganizations = new Faker<Organization>()
                     .RuleFor(o => o.Name, f => f.Company.CompanyName())
                     .RuleFor(o => o.Type, f => f.PickRandom(orgType))
-                    .RuleFor(o => o.IsActive, f => f.Random.Bool());
+                    .RuleFor(o => o.IsActive, f => f.Random.Bool())
+                    .RuleFor(o => o.ModifiedDate, f => f.Date.Recent(7));
                 var organizations = testOrganizations.Generate(50);
 
                 foreach (Organization o in organizations)
@@ -65,7 +67,8 @@ namespace BlazorCrud.Shared.Data
                     .RuleFor(c => c.Patient, f => f.Name.FullName())
                     .RuleFor(c => c.Organization, f => f.Company.CompanyName())
                     .RuleFor(c => c.Status, f => f.PickRandom(status))
-                    .RuleFor(c => c.Type, f => f.PickRandom(type));
+                    .RuleFor(c => c.Type, f => f.PickRandom(type))
+                    .RuleFor(c => c.ModifiedDate, c => c.Date.Recent(7));
                 var claims = testClaims.Generate(500);
 
                 foreach (Claim c in claims)

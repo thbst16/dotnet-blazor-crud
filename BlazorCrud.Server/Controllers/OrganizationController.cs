@@ -3,6 +3,7 @@ using BlazorCrud.Shared.Data;
 using BlazorCrud.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
 
 namespace BlazorCrud.Server.Controllers
@@ -65,6 +66,7 @@ namespace BlazorCrud.Server.Controllers
         {
             if (ModelState.IsValid)
             {
+                organization.ModifiedDate = DateTime.Now;
                 _context.Organizations.Add(organization);
                 _context.SaveChanges();
                 return CreatedAtRoute("GetOrganization", new { id = organization.Id }, organization);
@@ -90,6 +92,7 @@ namespace BlazorCrud.Server.Controllers
                     return NotFound();
                 }
 
+                organization.ModifiedDate = DateTime.Now;
                 _mapper.Map(organization, org);
                 _context.Organizations.Update(org);
                 _context.SaveChanges();

@@ -4,6 +4,7 @@ using BlazorCrud.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 
 namespace BlazorCrud.Server.Controllers
@@ -69,6 +70,7 @@ namespace BlazorCrud.Server.Controllers
         {
             if (ModelState.IsValid)
             {
+                patient.ModifiedDate = DateTime.Now;
                 _context.Patients.Add(patient);
                 _context.SaveChanges();
                 return CreatedAtRoute("GetPatient", new { id = patient.Id }, patient);
@@ -98,6 +100,7 @@ namespace BlazorCrud.Server.Controllers
                     return NotFound();
                 }
 
+                patient.ModifiedDate = DateTime.Now;
                 _mapper.Map(patient, pat);
                 _context.Patients.Update(pat);
                 _context.SaveChanges();

@@ -128,24 +128,28 @@ else
                 {
                     <BSAlert Color="Color.Danger">Please review carefully before deleting.</BSAlert>
                 }
-                <BSTable IsResponsive="true" class="table">
-                    <tr>
-                        <td>Id</td>
-                        <td>@organization.Id</td>
-                    </tr>
-                    <tr>
-                        <td>Name</td>
-                        <td>@organization.Name</td>
-                    </tr>
-                    <tr>
-                        <td>Type</td>
-                        <td>@organization.Type</td>
-                    </tr>
-                    <tr>
-                        <td>Active</td>
-                        <td>@organization.IsActive</td>
-                    </tr>
-                </BSTable>
+            <BSTable IsResponsive="true" class="table">
+                <tr>
+                    <td>Id</td>
+                    <td>@organization.Id</td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>@organization.Name</td>
+                </tr>
+                <tr>
+                    <td>Type</td>
+                    <td>@organization.Type</td>
+                </tr>
+                <tr>
+                    <td>Active</td>
+                    <td>@organization.IsActive</td>
+                </tr>
+                <tr>
+                    <td>Date Modified</td>
+                    <td>@organization.ModifiedDate</td>
+                </tr>
+            </BSTable>
                 <div class="form-group">
                     @if (isDelete)
                     {
