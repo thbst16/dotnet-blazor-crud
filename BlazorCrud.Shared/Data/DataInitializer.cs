@@ -23,7 +23,7 @@ namespace BlazorCrud.Shared.Data
 
                 // Create new patients only if the collection is empty.
                 var gender = new[] { "Male", "Female" };
-                var state = new[] { "MI", "OH", "IL", "IN" };
+                var state = new[] { "Michigan", "Ohio", "Illinois", "Indiana" };
                 var testPatients = new Faker<Patient>()
                     .RuleFor(p => p.Name, f => f.Name.FullName())
                     .RuleFor(p => p.Gender, f => f.PickRandom(gender))

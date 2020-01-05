@@ -12,8 +12,7 @@ namespace BlazorCrud.Shared.Models
                 .WithMessage("Gender is a required field.");
             RuleFor(patient => patient.PrimaryCareProvider).NotEmpty().WithMessage("Name is a required field.")
                 .Length(5, 50).WithMessage("PCP must be between 5 and 50 characters.");
-            RuleFor(patient => patient.State).NotEmpty().WithMessage("State is a required field.")
-                .Length(2, 2).WithMessage("State must be 2 letters.");
+            RuleFor(patient => patient.State).NotEmpty().WithMessage("State is a required field.");
             RuleFor(patient => patient.Contacts).NotEmpty().WithMessage("Patient needs to have at least one contact point");
             RuleForEach(patient => patient.Contacts).SetValidator(new ContactPointValidator());
         }

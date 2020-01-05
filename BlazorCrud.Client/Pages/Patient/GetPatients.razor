@@ -103,7 +103,13 @@ else
                             <ValidationMessage For="@(() => patient.PrimaryCareProvider)" />
                         </div>
                         <div class="form-group col-md-4">
-                            <InputText id="State" class="form-control" placeholder="State Abbreviation" @bind-Value="patient.State" />
+                            <InputSelect id="State" class="form-control" @bind-Value="patient.State">
+                                <option value="">-- Select State --</option>
+                                <option value="Illinois">Illinois</option>
+                                <option value="Indiana">Indiana</option>
+                                <option value="Michigan">Michigan</option>
+                                <option value="Ohio">Ohio</option>
+                            </InputSelect>
                             <ValidationMessage For="@(() => patient.State)" />
                         </div>
                     </div>
