@@ -1,6 +1,7 @@
 ﻿using BlazorCrud.Shared.Data;
 using BlazorCrud.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -45,17 +46,80 @@ namespace BlazorCrud.Server.Controllers
                 .Select(g => new { type = g.Key, count = g.Count() })
                 .ToDictionary(k => k.type, i => i.count);
 
-            var query = _patientContext.Patients
+            var patientQuery = _patientContext.Patients
                 .GroupBy(p => p.ModifiedDate.Date)
                 .Select(g => new { date = g.Key, counter = g.Count() })
                 .ToDictionary(k => k.date, i => i.counter);
 
+            var organizationQuery = _organizationContext.Organizations
+                .GroupBy(o => o.ModifiedDate.Date)
+                .Select(g => new { date = g.Key, counter = g.Count() })
+                .ToDictionary(k => k.date, i => i.counter);
+
+            var claimQuery = _claimContext.Claims
+                .GroupBy(c => c.ModifiedDate.Date)
+                .Select(g => new { date = g.Key, counter = g.Count() })
+                .ToDictionary(k => k.date, i => i.counter);
+
+            int patientMinus3;
+            patientQuery.TryGetValue(DateTime.Today.AddDays(-3), out patientMinus3);
+            int organizationMinus3;
+            organizationQuery.TryGetValue(DateTime.Today.AddDays(-3), out organizationMinus3);
+            int claimMinus3;
+            claimQuery.TryGetValue(DateTime.Today.AddDays(-3), out claimMinus3);
+            int patientMinus2;
+            patientQuery.TryGetValue(DateTime.Today.AddDays(-2), out patientMinus2);
+            int organizationMinus2;
+            organizationQuery.TryGetValue(DateTime.Today.AddDays(-2), out organizationMinus2);
+            int claimMinus2;
+            claimQuery.TryGetValue(DateTime.Today.AddDays(-2), out claimMinus2);
+            int patientMinus1;
+            patientQuery.TryGetValue(DateTime.Today.AddDays(-1), out patientMinus1);
+            int organizationMinus1;
+            organizationQuery.TryGetValue(DateTime.Today.AddDays(-1), out organizationMinus1);
+            int claimMinus1;
+            claimQuery.TryGetValue(DateTime.Today.AddDays(-1), out claimMinus1);
+            int patientToday;
+            patientQuery.TryGetValue(DateTime.Today, out patientToday);
+            int organizationToday;
+            organizationQuery.TryGetValue(DateTime.Today, out organizationToday);
+            int claimToday;
+            claimQuery.TryGetValue(DateTime.Today, out claimToday);
+
             dashboard.UpdatedEntitiesByDate = new Dictionary<string, Dictionary<string, int>>
             {
-                { "1/2/2020", new Dictionary<string, int> { { "Patients", 8 }, { "Organizations", 2 }, { "Claims", 15} } },
-                { "1/3/2020", new Dictionary<string, int> { { "Patients", 5 }, { "Organizations", 3 }, { "Claims", 44} } },
-                { "1/4/2020", new Dictionary<string, int> { { "Patients", 3 }, { "Organizations", 1 }, { "Claims", 22} } },
-                { "1/5/2020", new Dictionary<string, int> { { "Patients", 9 }, { "Organizations", 2 }, { "Claims", 17} } }
+                { 
+                    DateTime.Today.AddDays(-3).ToString(), 
+                    new Dictionary<string, int> { 
+                        { "Patients", patientMinus3 }, 
+                        { "Organizations", organizationMinus3 }, 
+                        { "Claims", claimMinus3} 
+                    } 
+                },
+                { 
+                    DateTime.Today.AddDays(-2).ToString(), 
+                    new Dictionary<string, int> { 
+                        { "Patients", patientMinus2 }, 
+                        { "Organizations", organizationMinus2 }, 
+                        { "Claims", claimMinus2} 
+                    } 
+                },
+                { 
+                    DateTime.Today.AddDays(-1).ToString(), 
+                    new Dictionary<string, int> { 
+                        { "Patients", patientMinus1 }, 
+                        { "Organizations", organizationMinus1 }, 
+                        { "Claims", claimMinus1} 
+                    } 
+                },
+                { 
+                    DateTime.Today.ToString(), 
+                    new Dictionary<string, int> { 
+                        { "Patients", patientToday }, 
+                        { "Organizations", organizationToday }, 
+                        { "Claims",claimToday} 
+                    } 
+                }
             };
             return dashboard;
         }

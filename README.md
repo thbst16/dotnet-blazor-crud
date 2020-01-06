@@ -26,7 +26,7 @@ Blazor CRUD uses the following DevOps environment and tools to support a CI / CD
 # Open Source Used
 
 * [AutoMapper](https://github.com/AutoMapper/AutoMapper) for object-object mappings.
-* [Azure Fluent Management](https://github.com/Azure/azure-libraries-for-net) for Azure automation rom C#.
+* [Azure Fluent Management](https://github.com/Azure/azure-libraries-for-net) for Azure automation from C#.
 * [BlazorInputFile](https://github.com/SteveSandersonMS/BlazorInputFile) for file upload.
 * [BlazorStorage](https://github.com/cloudcrate/BlazorStorage) for local and session storage in the browser.
 * [BlazorStrap](https://github.com/chanan/BlazorStrap) Bootstrap 4 components for Blazor.
