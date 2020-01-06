@@ -44,7 +44,12 @@ namespace BlazorCrud.Server.Controllers
                 .GroupBy(c => c.Type)
                 .Select(g => new { type = g.Key, count = g.Count() })
                 .ToDictionary(k => k.type, i => i.count);
-            
+
+            var query = _patientContext.Patients
+                .GroupBy(p => p.ModifiedDate.Date)
+                .Select(g => new { date = g.Key, counter = g.Count() })
+                .ToDictionary(k => k.date, i => i.counter);
+
             dashboard.UpdatedEntitiesByDate = new Dictionary<string, Dictionary<string, int>>
             {
                 { "1/2/2020", new Dictionary<string, int> { { "Patients", 8 }, { "Organizations", 2 }, { "Claims", 15} } },

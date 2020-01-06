@@ -42,11 +42,11 @@ namespace BlazorCrud.Tests.API
             HttpResponseMessage response = await client.GetAsync(requestUri);
             var responseData = response.Content.ReadAsStringAsync();
             patients = JObject.Parse(responseData.Result).SelectToken("results").ToObject<List<Patient>>();
-            Assert.AreEqual(8, patients.Count);
-            Assert.AreEqual("Bradly Legros", patients[0].Name);
-            Assert.AreEqual("Male", patients[0].Gender);
-            Assert.AreEqual("Sporer - Schiller", patients[0].PrimaryCareProvider);
-            Assert.AreEqual("Illinois", patients[0].State);
+            Assert.AreEqual(9, patients.Count);
+            Assert.AreEqual("Broderick Shields", patients[0].Name);
+            Assert.AreEqual("Female", patients[0].Gender);
+            Assert.AreEqual("Mertz - Hessel", patients[0].PrimaryCareProvider);
+            Assert.AreEqual("Michigan", patients[0].State);
         }
 
         [TestMethod()]
@@ -57,9 +57,9 @@ namespace BlazorCrud.Tests.API
             HttpResponseMessage response = await client.GetAsync(requestUri);
             var responseData = response.Content.ReadAsStringAsync();
             organizations = JObject.Parse(responseData.Result).SelectToken("results").ToObject<List<Organization>>();
-            Assert.AreEqual(3, organizations.Count);
-            Assert.AreEqual("Walker - Feest", organizations[0].Name);
-            Assert.AreEqual("Healthcare Provider", organizations[0].Type);
+            Assert.AreEqual(1, organizations.Count);
+            Assert.AreEqual("Jones, Waelchi and Hagenes", organizations[0].Name);
+            Assert.AreEqual("Hospital Department", organizations[0].Type);
         }
 
         [TestMethod()]
@@ -71,8 +71,8 @@ namespace BlazorCrud.Tests.API
             var responseData = response.Content.ReadAsStringAsync();
             claims = JObject.Parse(responseData.Result).SelectToken("results").ToObject<List<Claim>>();
             Assert.AreEqual(10, claims.Count);
-            Assert.AreEqual("Auer, Hermiston and Buckridge", claims[0].Organization);
-            Assert.AreEqual("Conner Balistreri", claims[1].Patient);
+            Assert.AreEqual("Mohr - Stanton", claims[0].Organization);
+            Assert.AreEqual("Sister Senger", claims[1].Patient);
         }
 
         [TestMethod()]
@@ -83,10 +83,10 @@ namespace BlazorCrud.Tests.API
             HttpResponseMessage response = await client.GetAsync(requestUri);
             var responseData = response.Content.ReadAsStringAsync();
             claim = JsonConvert.DeserializeObject<Claim>(responseData.Result);
-            Assert.AreEqual("Lucio Watsica", claim.Patient);
-            Assert.AreEqual("McKenzie - Hettinger", claim.Organization);
-            Assert.AreEqual("Draft", claim.Status);
-            Assert.AreEqual("Vision", claim.Type);
+            Assert.AreEqual("Aida Senger", claim.Patient);
+            Assert.AreEqual("Runolfsdottir - Sawayn", claim.Organization);
+            Assert.AreEqual("Active", claim.Status);
+            Assert.AreEqual("Professional", claim.Type);
         }
 
         [TestCleanup()]
