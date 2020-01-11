@@ -70,6 +70,12 @@
     private ChartJsPieChart _doughnutChartJsClaim;
     private BarConfig _barChartConfig;
     private ChartJsBarChart _barChartJs;
+    private PieDataset _patientDataset;
+    private PieDataset _organizationDataset;
+    private PieDataset _claimsDataset;
+    private BarDataset<DoubleWrapper> _barSet1;
+    private BarDataset<DoubleWrapper> _barSet2;
+    private BarDataset<DoubleWrapper> _barSet3;
 
     protected BlazorCrud.Shared.Models.Dashboard dashboard = new BlazorCrud.Shared.Models.Dashboard();
 
@@ -84,6 +90,16 @@
         _doughnutChartConfigOrganization.Data.Labels.AddRange(dashboard.OrganizationsByType.Keys);
         _doughnutChartConfigClaim.Data.Labels.AddRange(dashboard.ClaimsByType.Keys);
         _barChartConfig.Data.Labels.AddRange(dashboard.UpdatedEntitiesByDate.Keys);
+
+        _patientDataset.Data.AddRange(dashboard.PatientsByState.Values);
+        _organizationDataset.Data.AddRange(dashboard.OrganizationsByType.Values);
+        _claimsDataset.Data.AddRange(dashboard.ClaimsByType.Values);
+
+        // Need a way to get the data out of the structure to prepare for biding
+        
+        _barSet1.AddRange(new double[] { 7, 5, 2, 9 }.Wrap());
+        _barSet2.AddRange(new double[] { 1, 3, 1, 2 }.Wrap());
+        _barSet3.AddRange(new double[] { 15, 44, 21, 17 }.Wrap());
     }
 
     protected override void OnInitialized()
@@ -164,7 +180,7 @@
             }
         };
 
-        var patientDataset = new PieDataset
+        _patientDataset = new PieDataset
         {
             BackgroundColor = new[] { "#1C4E80", "#A5D8DD", "#EA6A47", "#0091D5" },
             BorderWidth = 0,
@@ -174,7 +190,7 @@
             BorderColor = "#ffffff",
         };
 
-        var organizationDataset = new PieDataset
+        _organizationDataset = new PieDataset
         {
             BackgroundColor = new[] { "#1C4E80", "#A5D8DD", "#EA6A47", "#0091D5", "#7E909A" },
             BorderWidth = 0,
@@ -184,7 +200,7 @@
             BorderColor = "#ffffff",
         };
 
-        var claimsDataset = new PieDataset
+        _claimsDataset = new PieDataset
         {
             BackgroundColor = new[] { "#1C4E80", "#A5D8DD", "#EA6A47", "#0091D5", "#7E909A" },
             BorderWidth = 0,
@@ -194,7 +210,7 @@
             BorderColor = "#ffffff",
         };
 
-        var barSet1 = new BarDataset<DoubleWrapper>
+        _barSet1 = new BarDataset<DoubleWrapper>
         {
             Label = "Patients",
             BackgroundColor = "#0091D5",
@@ -205,7 +221,7 @@
             BorderColor = "#ffffff",
         };
 
-        var barSet2 = new BarDataset<DoubleWrapper>
+        _barSet2 = new BarDataset<DoubleWrapper>
         {
             Label = "Organizations",
             BackgroundColor = "#A5D8DD",
@@ -216,7 +232,7 @@
             BorderColor = "#ffffff",
         };
 
-        var barSet3 = new BarDataset<DoubleWrapper>
+        _barSet3 = new BarDataset<DoubleWrapper>
         {
             Label = "Claims",
             BackgroundColor = "#EA6A47",
@@ -227,17 +243,11 @@
             BorderColor = "#ffffff",
         };
 
-        patientDataset.Data.AddRange(new double[] { 170, 23, 10, 6 });
-        organizationDataset.Data.AddRange(new double[] { 23, 9, 6, 15, 7 });
-        claimsDataset.Data.AddRange(new double[] { 34, 15, 181, 316, 221 });
-        barSet1.AddRange(new double[] { 7, 5, 2, 9 }.Wrap());
-        barSet2.AddRange(new double[] { 1, 3, 1, 2 }.Wrap());
-        barSet3.AddRange(new double[] { 15, 44, 21, 17 }.Wrap());
-        _doughnutChartConfigPatient.Data.Datasets.Add(patientDataset);
-        _doughnutChartConfigOrganization.Data.Datasets.Add(organizationDataset);
-        _doughnutChartConfigClaim.Data.Datasets.Add(claimsDataset);
-        _barChartConfig.Data.Datasets.Add(barSet1);
-        _barChartConfig.Data.Datasets.Add(barSet2);
-        _barChartConfig.Data.Datasets.Add(barSet3);
+        _doughnutChartConfigPatient.Data.Datasets.Add(_patientDataset);
+        _doughnutChartConfigOrganization.Data.Datasets.Add(_organizationDataset);
+        _doughnutChartConfigClaim.Data.Datasets.Add(_claimsDataset);
+        _barChartConfig.Data.Datasets.Add(_barSet1);
+        _barChartConfig.Data.Datasets.Add(_barSet2);
+        _barChartConfig.Data.Datasets.Add(_barSet3);
     }
 }

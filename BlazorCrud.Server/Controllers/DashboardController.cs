@@ -34,17 +34,17 @@ namespace BlazorCrud.Server.Controllers
             dashboard.PatientsByState = _patientContext.Patients
                 .GroupBy(p => p.State)
                 .Select(g => new { state = g.Key, count = g.Count() })
-                .ToDictionary(k => k.state, i => i.count);
+                .ToDictionary(k => k.state, i => Convert.ToDouble(i.count));
 
             dashboard.OrganizationsByType = _organizationContext.Organizations
                 .GroupBy(o => o.Type)
                 .Select(g => new { type = g.Key, count = g.Count() })
-                .ToDictionary(k => k.type, i => i.count);
+                .ToDictionary(k => k.type, i => Convert.ToDouble(i.count));
 
             dashboard.ClaimsByType = _claimContext.Claims
                 .GroupBy(c => c.Type)
                 .Select(g => new { type = g.Key, count = g.Count() })
-                .ToDictionary(k => k.type, i => i.count);
+                .ToDictionary(k => k.type, i => Convert.ToDouble(i.count));
 
             var patientQuery = _patientContext.Patients
                 .GroupBy(p => p.ModifiedDate.Date)
