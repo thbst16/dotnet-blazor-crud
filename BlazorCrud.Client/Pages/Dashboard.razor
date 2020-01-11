@@ -7,6 +7,8 @@
 @using ChartJs.Blazor.ChartJS.Common.Wrappers
 @using ChartJs.Blazor.ChartJS.PieChart
 @using ChartJs.Blazor.Util
+@inject HttpClient Http
+@inject LocalStorage Storage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 
 <div class="row">
@@ -68,6 +70,21 @@
     private ChartJsPieChart _doughnutChartJsClaim;
     private BarConfig _barChartConfig;
     private ChartJsBarChart _barChartJs;
+
+    protected BlazorCrud.Shared.Models.Dashboard dashboard = new BlazorCrud.Shared.Models.Dashboard();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        dashboard = await Http.GetJsonAsync<BlazorCrud.Shared.Models.Dashboard>(Storage.GetItem("environment_uri") + "/dashboard/");
+    }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        _doughnutChartConfigPatient.Data.Labels.AddRange(dashboard.PatientsByState.Keys);
+        _doughnutChartConfigOrganization.Data.Labels.AddRange(dashboard.OrganizationsByType.Keys);
+        _doughnutChartConfigClaim.Data.Labels.AddRange(dashboard.ClaimsByType.Keys);
+        _barChartConfig.Data.Labels.AddRange(dashboard.UpdatedEntitiesByDate.Keys);
+    }
 
     protected override void OnInitialized()
     {
@@ -147,14 +164,9 @@
             }
         };
 
-        _doughnutChartConfigPatient.Data.Labels.AddRange(new[] { "Michigan", "Ohio", "Illinois", "Indiana" });
-        _doughnutChartConfigOrganization.Data.Labels.AddRange(new[] { "Healthcare Provider", "Hospital Department", "Government", "Insurance Company" });
-        _doughnutChartConfigClaim.Data.Labels.AddRange(new[] { "Institutional", "Oral", "Pharmacy", "Professional" });
-        _barChartConfig.Data.Labels.AddRange(new[] { "12/11/2019", "12/12/2019", "12/13/2019", "12/14/2019" });
-
         var patientDataset = new PieDataset
         {
-            BackgroundColor = new[] {"#1C4E80", "#A5D8DD", "#EA6A47", "#0091D5" },
+            BackgroundColor = new[] { "#1C4E80", "#A5D8DD", "#EA6A47", "#0091D5" },
             BorderWidth = 0,
             HoverBackgroundColor = "#7E909A",
             HoverBorderColor = "#202020",
@@ -164,7 +176,7 @@
 
         var organizationDataset = new PieDataset
         {
-            BackgroundColor = new[] {"#1C4E80", "#A5D8DD", "#EA6A47", "#0091D5" },
+            BackgroundColor = new[] { "#1C4E80", "#A5D8DD", "#EA6A47", "#0091D5", "#7E909A" },
             BorderWidth = 0,
             HoverBackgroundColor = "#7E909A",
             HoverBorderColor = "#202020",
@@ -174,7 +186,7 @@
 
         var claimsDataset = new PieDataset
         {
-            BackgroundColor = new[] {"#1C4E80", "#A5D8DD", "#EA6A47", "#0091D5" },
+            BackgroundColor = new[] { "#1C4E80", "#A5D8DD", "#EA6A47", "#0091D5", "#7E909A" },
             BorderWidth = 0,
             HoverBackgroundColor = "#7E909A",
             HoverBorderColor = "#202020",
@@ -182,42 +194,45 @@
             BorderColor = "#ffffff",
         };
 
-        var barSet1 = new BarDataset<DoubleWrapper> {
-			Label = "Patients",
-			BackgroundColor = "#0091D5",
-			BorderWidth = 1,
-			HoverBackgroundColor = ColorUtil.ColorString(0, 0, 0, 0.1),
-			HoverBorderColor = "#202020",
-			HoverBorderWidth = 1,
-			BorderColor = "#ffffff",
-		};
+        var barSet1 = new BarDataset<DoubleWrapper>
+        {
+            Label = "Patients",
+            BackgroundColor = "#0091D5",
+            BorderWidth = 1,
+            HoverBackgroundColor = ColorUtil.ColorString(0, 0, 0, 0.1),
+            HoverBorderColor = "#202020",
+            HoverBorderWidth = 1,
+            BorderColor = "#ffffff",
+        };
 
-        var barSet2 = new BarDataset<DoubleWrapper> {
-			Label = "Organizations",
-			BackgroundColor = "#A5D8DD",
-			BorderWidth = 1,
-			HoverBackgroundColor = ColorUtil.ColorString(0, 0, 0, 0.1),
-			HoverBorderColor = "#202020",
-			HoverBorderWidth = 1,
-			BorderColor = "#ffffff",
-		};
+        var barSet2 = new BarDataset<DoubleWrapper>
+        {
+            Label = "Organizations",
+            BackgroundColor = "#A5D8DD",
+            BorderWidth = 1,
+            HoverBackgroundColor = ColorUtil.ColorString(0, 0, 0, 0.1),
+            HoverBorderColor = "#202020",
+            HoverBorderWidth = 1,
+            BorderColor = "#ffffff",
+        };
 
-        var barSet3 = new BarDataset<DoubleWrapper> {
-			Label = "Claims",
-			BackgroundColor = "#EA6A47",
-			BorderWidth = 1,
-			HoverBackgroundColor = ColorUtil.ColorString(0, 0, 0, 0.1),
-			HoverBorderColor = "#202020",
-			HoverBorderWidth = 1,
-			BorderColor = "#ffffff",
-		};
+        var barSet3 = new BarDataset<DoubleWrapper>
+        {
+            Label = "Claims",
+            BackgroundColor = "#EA6A47",
+            BorderWidth = 1,
+            HoverBackgroundColor = ColorUtil.ColorString(0, 0, 0, 0.1),
+            HoverBorderColor = "#202020",
+            HoverBorderWidth = 1,
+            BorderColor = "#ffffff",
+        };
 
         patientDataset.Data.AddRange(new double[] { 170, 23, 10, 6 });
-        organizationDataset.Data.AddRange(new double[] { 23, 9, 6, 15 });
-        claimsDataset.Data.AddRange(new double[] { 34, 15, 181, 316 });
-        barSet1.AddRange(new double[] { 7, 5, 2, 9}.Wrap());
-        barSet2.AddRange(new double[] { 1, 3, 1, 2}.Wrap());
-        barSet3.AddRange(new double[] { 15, 44, 21, 17}.Wrap());
+        organizationDataset.Data.AddRange(new double[] { 23, 9, 6, 15, 7 });
+        claimsDataset.Data.AddRange(new double[] { 34, 15, 181, 316, 221 });
+        barSet1.AddRange(new double[] { 7, 5, 2, 9 }.Wrap());
+        barSet2.AddRange(new double[] { 1, 3, 1, 2 }.Wrap());
+        barSet3.AddRange(new double[] { 15, 44, 21, 17 }.Wrap());
         _doughnutChartConfigPatient.Data.Datasets.Add(patientDataset);
         _doughnutChartConfigOrganization.Data.Datasets.Add(organizationDataset);
         _doughnutChartConfigClaim.Data.Datasets.Add(claimsDataset);
