@@ -13,7 +13,7 @@ namespace BlazorCrud.Server.Controllers
     {
         private readonly PatientContext _patientContext;
         private readonly OrganizationContext _organizationContext;
-        private readonly ClaimContext _claimContext;
+        private readonly ClaimContext _claimContext; 
 
         public DashboardController(PatientContext patientContext, OrganizationContext organizationContext, ClaimContext claimContext)
         {
@@ -46,6 +46,16 @@ namespace BlazorCrud.Server.Controllers
                 .Select(g => new { type = g.Key, count = g.Count() })
                 .ToDictionary(k => k.type, i => Convert.ToDouble(i.count));
 
+            dashboard.UpdatedEntitiesByDate = CreateDashboardDataArray();
+
+            return dashboard;
+        }        
+
+        private Dictionary<string, Dictionary<string, double>> CreateDashboardDataArray()
+        {
+            Dashboard dashboard = new Dashboard();
+
+            // Select data from database by entities over ranges
             var patientQuery = _patientContext.Patients
                 .GroupBy(p => p.ModifiedDate.Date)
                 .Select(g => new { date = g.Key, counter = g.Count() })
@@ -61,6 +71,7 @@ namespace BlazorCrud.Server.Controllers
                 .Select(g => new { date = g.Key, counter = g.Count() })
                 .ToDictionary(k => k.date, i => i.counter);
 
+            // Augment query values with actual dates
             int patientMinus3;
             patientQuery.TryGetValue(DateTime.Today.AddDays(-3), out patientMinus3);
             int organizationMinus3;
@@ -86,42 +97,44 @@ namespace BlazorCrud.Server.Controllers
             int claimToday;
             claimQuery.TryGetValue(DateTime.Today, out claimToday);
 
-            dashboard.UpdatedEntitiesByDate = new Dictionary<string, Dictionary<string, int>>
+            // Associate date / value pairs back into Dictionary data structure
+            Dictionary<string, Dictionary<string, double>> UpdatedEntitiesCollection = new Dictionary<string, Dictionary<string, double>>
             {
-                { 
-                    DateTime.Today.AddDays(-3).ToString(), 
-                    new Dictionary<string, int> { 
-                        { "Patients", patientMinus3 }, 
-                        { "Organizations", organizationMinus3 }, 
-                        { "Claims", claimMinus3} 
-                    } 
+                {
+                    DateTime.Today.AddDays(-3).ToString(),
+                    new Dictionary<string, double> {
+                        { "Patients", Convert.ToDouble(patientMinus3) },
+                        { "Organizations", Convert.ToDouble(organizationMinus3) },
+                        { "Claims", Convert.ToDouble(claimMinus3)}
+                    }
                 },
-                { 
-                    DateTime.Today.AddDays(-2).ToString(), 
-                    new Dictionary<string, int> { 
-                        { "Patients", patientMinus2 }, 
-                        { "Organizations", organizationMinus2 }, 
-                        { "Claims", claimMinus2} 
-                    } 
+                {
+                    DateTime.Today.AddDays(-2).ToString(),
+                    new Dictionary<string, double> {
+                        { "Patients", Convert.ToDouble(patientMinus2) },
+                        { "Organizations", Convert.ToDouble(organizationMinus2) },
+                        { "Claims", Convert.ToDouble(claimMinus2)}
+                    }
                 },
-                { 
-                    DateTime.Today.AddDays(-1).ToString(), 
-                    new Dictionary<string, int> { 
-                        { "Patients", patientMinus1 }, 
-                        { "Organizations", organizationMinus1 }, 
-                        { "Claims", claimMinus1} 
-                    } 
+                {
+                    DateTime.Today.AddDays(-1).ToString(),
+                    new Dictionary<string, double> {
+                        { "Patients", Convert.ToDouble(patientMinus1) },
+                        { "Organizations", Convert.ToDouble(organizationMinus1) },
+                        { "Claims", Convert.ToDouble(claimMinus1)}
+                    }
                 },
-                { 
-                    DateTime.Today.ToString(), 
-                    new Dictionary<string, int> { 
-                        { "Patients", patientToday }, 
-                        { "Organizations", organizationToday }, 
-                        { "Claims",claimToday} 
-                    } 
+                {
+                    DateTime.Today.ToString(),
+                    new Dictionary<string, double> {
+                        { "Patients", Convert.ToDouble(patientToday) },
+                        { "Organizations", Convert.ToDouble(organizationToday) },
+                        { "Claims", Convert.ToDouble(claimToday) }
+                    }
                 }
             };
-            return dashboard;
+
+            return UpdatedEntitiesCollection;
         }
     }
 }

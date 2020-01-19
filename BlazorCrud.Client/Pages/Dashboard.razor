@@ -77,33 +77,10 @@
     private BarDataset<DoubleWrapper> _barSet2;
     private BarDataset<DoubleWrapper> _barSet3;
 
-    protected BlazorCrud.Shared.Models.Dashboard dashboard = new BlazorCrud.Shared.Models.Dashboard();
+    protected BlazorCrud.Shared.Models.Dashboard dashboard;
 
-    protected override async Task OnParametersSetAsync()
-    {
-        dashboard = await Http.GetJsonAsync<BlazorCrud.Shared.Models.Dashboard>(Storage.GetItem("environment_uri") + "/dashboard/");
-    }
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        _doughnutChartConfigPatient.Data.Labels.AddRange(dashboard.PatientsByState.Keys);
-        _doughnutChartConfigOrganization.Data.Labels.AddRange(dashboard.OrganizationsByType.Keys);
-        _doughnutChartConfigClaim.Data.Labels.AddRange(dashboard.ClaimsByType.Keys);
-        _barChartConfig.Data.Labels.AddRange(dashboard.UpdatedEntitiesByDate.Keys);
-
-        _patientDataset.Data.AddRange(dashboard.PatientsByState.Values);
-        _organizationDataset.Data.AddRange(dashboard.OrganizationsByType.Values);
-        _claimsDataset.Data.AddRange(dashboard.ClaimsByType.Values);
-
-        // Need a way to get the data out of the structure to prepare for biding
+    protected override async Task OnInitializedAsync(){
         
-        _barSet1.AddRange(new double[] { 7, 5, 2, 9 }.Wrap());
-        _barSet2.AddRange(new double[] { 1, 3, 1, 2 }.Wrap());
-        _barSet3.AddRange(new double[] { 15, 44, 21, 17 }.Wrap());
-    }
-
-    protected override void OnInitialized()
-    {
         _doughnutChartConfigPatient = new PieConfig
         {
             Options = new PieOptions(true)
@@ -249,5 +226,41 @@
         _barChartConfig.Data.Datasets.Add(_barSet1);
         _barChartConfig.Data.Datasets.Add(_barSet2);
         _barChartConfig.Data.Datasets.Add(_barSet3);
+
+        dashboard = await Http.GetJsonAsync<BlazorCrud.Shared.Models.Dashboard>(Storage.GetItem("environment_uri") + "/dashboard/");
+
+        _doughnutChartConfigPatient.Data.Labels.AddRange(dashboard.PatientsByState.Keys);
+        _doughnutChartConfigOrganization.Data.Labels.AddRange(dashboard.OrganizationsByType.Keys);
+        _doughnutChartConfigClaim.Data.Labels.AddRange(dashboard.ClaimsByType.Keys);
+        _barChartConfig.Data.Labels.AddRange(dashboard.UpdatedEntitiesByDate.Keys);
+
+        _patientDataset.Data.AddRange(dashboard.PatientsByState.Values);
+        _organizationDataset.Data.AddRange(dashboard.OrganizationsByType.Values);
+        _claimsDataset.Data.AddRange(dashboard.ClaimsByType.Values);
+
+        _barSet1.AddRange(new double[]
+            {
+                dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(0)].Values.ElementAt(0),
+                dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(1)].Values.ElementAt(0),
+                dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(2)].Values.ElementAt(0),
+                dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(3)].Values.ElementAt(0)
+            }
+            .Wrap());
+        _barSet2.AddRange(new double[]
+            {
+                dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(0)].Values.ElementAt(1),
+                dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(1)].Values.ElementAt(1),
+                dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(2)].Values.ElementAt(1),
+                dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(3)].Values.ElementAt(1)
+            }
+            .Wrap());
+        _barSet3.AddRange(new double[]
+            {
+                dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(0)].Values.ElementAt(2),
+                dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(1)].Values.ElementAt(2),
+                dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(2)].Values.ElementAt(2),
+                dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(3)].Values.ElementAt(2)
+            }
+            .Wrap());
     }
 }
