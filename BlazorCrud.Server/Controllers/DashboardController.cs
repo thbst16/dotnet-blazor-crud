@@ -101,7 +101,7 @@ namespace BlazorCrud.Server.Controllers
             Dictionary<string, Dictionary<string, double>> UpdatedEntitiesCollection = new Dictionary<string, Dictionary<string, double>>
             {
                 {
-                    DateTime.Today.AddDays(-3).ToString(),
+                    DateTime.Today.AddDays(-3).ToString("MM/dd/yyyy"),
                     new Dictionary<string, double> {
                         { "Patients", Convert.ToDouble(patientMinus3) },
                         { "Organizations", Convert.ToDouble(organizationMinus3) },
@@ -109,7 +109,7 @@ namespace BlazorCrud.Server.Controllers
                     }
                 },
                 {
-                    DateTime.Today.AddDays(-2).ToString(),
+                    DateTime.Today.AddDays(-2).ToString("MM/dd/yyyy"),
                     new Dictionary<string, double> {
                         { "Patients", Convert.ToDouble(patientMinus2) },
                         { "Organizations", Convert.ToDouble(organizationMinus2) },
@@ -117,7 +117,7 @@ namespace BlazorCrud.Server.Controllers
                     }
                 },
                 {
-                    DateTime.Today.AddDays(-1).ToString(),
+                    DateTime.Today.AddDays(-1).ToString("MM/dd/yyyy"),
                     new Dictionary<string, double> {
                         { "Patients", Convert.ToDouble(patientMinus1) },
                         { "Organizations", Convert.ToDouble(organizationMinus1) },
@@ -125,7 +125,7 @@ namespace BlazorCrud.Server.Controllers
                     }
                 },
                 {
-                    DateTime.Today.ToString(),
+                    DateTime.Today.ToString("MM/dd/yyyy"),
                     new Dictionary<string, double> {
                         { "Patients", Convert.ToDouble(patientToday) },
                         { "Organizations", Convert.ToDouble(organizationToday) },
