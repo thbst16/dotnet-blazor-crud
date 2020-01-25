@@ -61,7 +61,7 @@ else
 }
 
 <div>
-    <BSModal @bind-IsOpen="@isAdd" Size="Size.Large" IgnoreEscape="true">
+    <BSModal @bind-IsOpen="@isAdd" Size="Size.Large" IgnoreEscape="true" IgnoreClickOnBackdrop="true">
         <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
         <BSModalBody>
             <div class="col-md-9">
@@ -103,7 +103,7 @@ else
 </div>
 
 <div>
-    <BSModal @bind-IsOpen="isView" Size="Size.Large" IgnoreEscape="true">
+    <BSModal @bind-IsOpen="isView" Size="Size.Large" IgnoreEscape="true" IgnoreClickOnBackdrop="true">
         <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
         <BSModalBody>
             <div class="col-md-9">
@@ -242,5 +242,6 @@ else
         this.isAdd = false;
         this.isView = false;
         this.isDelete = false;
+        StateHasChanged();
     }
 }
