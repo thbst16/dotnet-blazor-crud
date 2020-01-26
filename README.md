@@ -11,8 +11,10 @@ Blazor CRUD uses the following DevOps environment and tools to support a CI / CD
 
 # Sample Files
 
-The Blazor CRUD application supports bulk-uploading entities via files. Use the following sample files to test this functionality.
-* 
+The Blazor CRUD application supports bulk-uploading entities via files. Download and try the following sample files to test this functionality:
+* [Patients](https://github.com/thbst16/BlazorCrud/blob/master/BlazorCrud.Shared/Data/SampleData/patients.json)
+* [Organizations](https://github.com/thbst16/BlazorCrud/blob/master/BlazorCrud.Shared/Data/SampleData/organizations.json)
+* [Claims](https://github.com/thbst16/BlazorCrud/blob/master/BlazorCrud.Shared/Data/SampleData/claims.json)
 
 # Features
 
