@@ -31,12 +31,13 @@ body {
 
 /* Spinner Style*/
 .grid {
-    width: 60vw;
-    height: 60vh;
+    width: 100%;
+    height: 100%;
     align-items: center;
     position: absolute;
-    left: 40%;
-    top: 15%;
+    left: 48%;
+    right: 48%;
+    top: 20%;
 }
 
 .spinner {
