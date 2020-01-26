@@ -9,6 +9,11 @@ Blazor CRUD uses the following DevOps environment and tools to support a CI / CD
 * [GitHub Source Code Repository](https://github.com/thbst16/BlazorCrud) - All source code is stored in the GitHub repository, which is where you currently find yourself.
 * [Azure DevOps for CI/CD](https://beckshome.visualstudio.com/BlazorCRUD/_build) - Azure DevOps is used for continunous integration and continuous delivery (CI/CD). Builds and deployments are initiated with every cheackin to the main brach of the solution in GitHub.
 
+# Sample Files
+
+The Blazor CRUD application supports bulk-uploading entities via files. Use the following sample files to test this functionality.
+* 
+
 # Features
 
 * Online Demo Site to Explore the Application

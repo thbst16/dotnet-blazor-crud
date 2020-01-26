@@ -1,0 +1,12 @@
+[
+	{
+		"Name": "Services Insurance",
+		"Type": "Insurance Company",
+		"IsActive": true
+	},
+	{
+		"Name": "Damage Incoporated",
+		"Type": "Healthcare Provider",
+		"IsActive": true
+	}
+]

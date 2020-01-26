@@ -1,0 +1,16 @@
+[
+	{
+		"Name": "Sammy Smut",
+		"Gender": "Male",
+		"PrimaryCareProvider": "White - Ward",
+		"State": "OH",
+		"Contacts": [ ]
+	},
+	{
+		"Name": "Sally Smuarny",
+		"Gender": "Female",
+		"PrimaryCareProvider": "Black - Guardstone",
+		"State": "MI",
+		"Contacts": [ ]
+	}
+]
