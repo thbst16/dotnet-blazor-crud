@@ -19,8 +19,8 @@ Blazor CRUD uses the following DevOps environment and tools to support a CI / CD
 * Complex Data Entry with Object Graph Validations
 * File Upload and Download Using JavaScript Interop
 * Batch processing of JSON files (
-[Patients](https://raw.githubusercontent.com/thbst16/BlazorCrud/master/BlazorCrud.Shared/Data/SampleData/patients.json),
-[Organizations](https://raw.githubusercontent.com/thbst16/BlazorCrud/master/BlazorCrud.Shared/Data/SampleData/organizations.json),
+[Patients](https://raw.githubusercontent.com/thbst16/BlazorCrud/master/BlazorCrud.Shared/Data/SampleData/patients.json), 
+[Organizations](https://raw.githubusercontent.com/thbst16/BlazorCrud/master/BlazorCrud.Shared/Data/SampleData/organizations.json), and
 [Claims](https://raw.githubusercontent.com/thbst16/BlazorCrud/master/BlazorCrud.Shared/Data/SampleData/claims.json)
 ) for data upload.
 * REST Interfaces with Swagger Documentation
