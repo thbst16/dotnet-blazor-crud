@@ -85,10 +85,12 @@ else
                     <FluentValidator TValidator="PatientValidator" />
                     <div class="form-row">
                         <div class="form-group col-md-8">
+                            <label for="Name" class="control-label">Name</label>
                             <InputText id="Name" class="form-control" placeholder="Name" @bind-Value="patient.Name" />
                             <ValidationMessage For="@(() => patient.Name)" />
                         </div>
                         <div class="form-group col-md-4">
+                            <label for="Gender" class="control-label">Gender</label>
                             <InputSelect id="Gender" class="form-control" @bind-Value="patient.Gender">
                                 <option value="">-- Select Gender --</option>
                                 <option value="Male">Male</option>
@@ -99,10 +101,12 @@ else
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-8">
+                            <label for="Primary Care Provider" class="control-label">Primary Care Provider</label>
                             <InputText id="PrimaryCareProvider" class="form-control" placeholder="Primary Care Provider" @bind-Value="patient.PrimaryCareProvider" />
                             <ValidationMessage For="@(() => patient.PrimaryCareProvider)" />
                         </div>
                         <div class="form-group col-md-4">
+                            <label for="State" class="control-label">State</label>
                             <InputSelect id="State" class="form-control" @bind-Value="patient.State">
                                 <option value="">-- Select State --</option>
                                 <option value="Illinois">Illinois</option>
@@ -117,6 +121,18 @@ else
                     <hr />
                     <h5>Contact Point</h5>
                     <hr />
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label class="control-label">System</label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Value</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Use</label>
+                        </div>
+                    </div>
 
                     <ValidationMessage For="@(() => patient.Contacts)" />
                     @foreach (var contactPoint in patient.Contacts)
