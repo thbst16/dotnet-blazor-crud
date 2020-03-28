@@ -67,7 +67,7 @@ namespace BlazorCrud.Server.Services
                 try
                 {
                     // Deserialize and process JSON file, persisting entities to database
-                    if (u.FileName.ToLower() == "patients")
+                    if (u.FileType.ToLower() == "patients")
                     {
                         List<Patient> patients = JsonSerializer.Deserialize<List<Patient>>(base64Decoded);
                         foreach (Patient p in patients)
@@ -78,7 +78,7 @@ namespace BlazorCrud.Server.Services
                         _patientContext.SaveChanges();
                     }
 
-                    if (u.FileName.ToLower() == "organizations")
+                    if (u.FileType.ToLower() == "organizations")
                     {
                         List<Organization> organizations = JsonSerializer.Deserialize<List<Organization>>(base64Decoded);
                         foreach (Organization o in organizations)
@@ -89,7 +89,7 @@ namespace BlazorCrud.Server.Services
                         _organizationContext.SaveChanges();
                     }
 
-                    if (u.FileName.ToLower() == "claims")
+                    if (u.FileType.ToLower() == "claims")
                     {
                         List<Claim> claims = JsonSerializer.Deserialize<List<Claim>>(base64Decoded);
                         foreach (Claim c in claims)
@@ -108,7 +108,7 @@ namespace BlazorCrud.Server.Services
 
                 // Update file processing status in the system
                 u.ProcessedTimestamp = DateTime.Now;
-                _logger.LogInformation("File Id: " + u.Id + " Name: " + u.FileName + " processed at " + DateTime.Now.ToString("dddd, MMMM dd, yyyy HH:mm:ss.fffK"));
+                _logger.LogInformation("File Id: " + u.Id + " Name: " + u.FileType + " processed at " + DateTime.Now.ToString("dddd, MMMM dd, yyyy HH:mm:ss.fffK"));
             }
             _uploadContext.SaveChanges();
         }

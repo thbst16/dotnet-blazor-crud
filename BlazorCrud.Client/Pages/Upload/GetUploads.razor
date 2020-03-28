@@ -30,7 +30,7 @@ else
         <thead class="thead-light">
             <tr>
                 <th>ID</th>
-                <th>Filename</th>
+                <th>Filetype</th>
                 <th>Upload Time</th>
                 <th>Processed Time</th>
                 <th>Actions</th>
@@ -41,7 +41,7 @@ else
             {
                 <tr>
                     <td>@upload.Id</td>
-                    <td>@upload.FileName</td>
+                    <td>@upload.FileType</td>
                     <td>@upload.UploadTimestamp</td>
                     <td>@upload.ProcessedTimestamp</td>
                     <td>
@@ -62,13 +62,19 @@ else
                 <EditForm Model="@upload" OnValidSubmit="@CreateUpload">
                     <DataAnnotationsValidator />
                     <div class="form-group">
-                        <label for="FileName" class="control-label">File Name</label>
-                        <InputText id="FileName" class="form-control" @bind-Value="upload.FileName" />
-                        <ValidationMessage For="@(() => upload.FileName)" />
+                        <label for="FileType" class="control-label">File Type</label>
+
+                        <InputSelect id="FileType" class="form-control" @bind-Value="upload.FileType">
+                            <option value="">-- Select File Type --</option>
+                            <option value="Patients">Patients</option>
+                            <option value="Organizations">Organizations</option>
+                            <option value="Claims">Claims</option>
+                        </InputSelect>
+                        <ValidationMessage For="@(() => upload.FileType)" />
                     </div>
                     <div class="form-group">
                         <label for="FileContent" class="control-label">File</label>
-                        <InputFile class="form-control-file" type="file" OnChange="HandleSelection" />
+                        <InputFile accept=".json" class="form-control-file" type="file" OnChange="HandleSelection" />
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-success">Save</button>
@@ -92,8 +98,8 @@ else
                         <td>@upload.Id</td>
                     </tr>
                     <tr>
-                        <td>Filename</td>
-                        <td>@upload.FileName</td>
+                        <td>File Type</td>
+                        <td>@upload.FileType</td>
                     </tr>
                     <tr>
                         <td>Uploaded</td>
@@ -197,7 +203,7 @@ else
     {
         JSRuntime.InvokeAsync<object>(
             "saveAsFile",
-            upload.FileName,
+            upload.FileType,
             upload.FileContent);
     }
 }
