@@ -116,10 +116,9 @@ namespace BlazorCrud.Tests.E2E
                 driver.FindElement(By.Name("OrganizationSearchInput")).SendKeys("sa");
                 driver.FindElement(By.Name("OrganizationSearchButton")).Click();
                 var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                waitTest.Until(d => d.PageSource.Contains("<td>Bashirian, Sauer and Okuneva</td>"));
+                waitTest.Until(d => d.PageSource.Contains("<td>Satterfield, Auer and Jast</td>"));
                 System.Threading.Thread.Sleep(1000);
-                Assert.IsTrue(driver.PageSource.Contains("<td>Bashirian, Sauer and Okuneva</td>"));
-                Assert.IsTrue(driver.PageSource.Contains("<td>Buckridge - Prosacco</td>"));
+                Assert.IsTrue(driver.PageSource.Contains("<td>Sauer Group</td>"));
             }
         }
 
@@ -137,11 +136,11 @@ namespace BlazorCrud.Tests.E2E
                 driver.FindElement(By.Name("ClaimSearchInput")).SendKeys("bre");
                 driver.FindElement(By.Name("ClaimSearchButton")).Click();
                 var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                waitTest.Until(d => d.PageSource.Contains("<td>Rasheed Breitenberg</td>"));
+                waitTest.Until(d => d.PageSource.Contains("<td>Carroll, Leffler and Brekke</td>"));
                 System.Threading.Thread.Sleep(1000);
-                Assert.IsTrue(driver.PageSource.Contains("<td>King, Breitenberg and Kessler</td>"));
-                Assert.IsTrue(driver.PageSource.Contains("<td>Breitenberg and Sons</td>"));
-                Assert.IsTrue(driver.PageSource.Contains("<td>Brenden Johnston</td>"));
+                Assert.IsTrue(driver.PageSource.Contains("<td>Breitenberg - DuBuque</td>"));
+                Assert.IsTrue(driver.PageSource.Contains("<td>Evans Brekke</td>"));
+                Assert.IsTrue(driver.PageSource.Contains("<td>Brett Fritsch</td>"));
             }
         }
 
