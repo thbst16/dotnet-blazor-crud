@@ -17,12 +17,7 @@ namespace BlazorCrud.Shared.Models
             validator = new TValidator();
             var messages = new ValidationMessageStore(EditContext);
 
-            // Revalidate when any field changes, or if the entire form requests validation
-            // (e.g., on submit)
-
-            EditContext.OnFieldChanged += (sender, eventArgs)
-                => ValidateModel((EditContext)sender, messages);
-
+            // Validate when the entire form requests submission
             EditContext.OnValidationRequested += (sender, eventArgs)
                 => ValidateModel((EditContext)sender, messages);
         }
@@ -37,6 +32,10 @@ namespace BlazorCrud.Shared.Models
                 messages.Add(fieldIdentifier, error.ErrorMessage);
             }
             editContext.NotifyValidationStateChanged();
+
+            // Validate on field changes only after initial submission
+            EditContext.OnFieldChanged += (sender, eventArgs)
+                => ValidateModel((EditContext)sender, messages);
         }
 
         private static FieldIdentifier ToFieldIdentifier(EditContext editContext, string propertyPath)
