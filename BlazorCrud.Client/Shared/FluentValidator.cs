@@ -20,8 +20,8 @@ namespace BlazorCrud.Shared.Models
             // Revalidate when any field changes, or if the entire form requests validation
             // (e.g., on submit)
 
-            //EditContext.OnFieldChanged += (sender, eventArgs)
-               // => ValidateModel((EditContext)sender, messages);
+            EditContext.OnFieldChanged += (sender, eventArgs)
+                => ValidateModel((EditContext)sender, messages);
 
             EditContext.OnValidationRequested += (sender, eventArgs)
                 => ValidateModel((EditContext)sender, messages);
