@@ -1,6 +1,7 @@
 ﻿using BlazorCrud.Shared.Data;
 using BlazorCrud.Shared.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,16 +35,19 @@ namespace BlazorCrud.Server.Controllers
             dashboard.PatientsByState = _patientContext.Patients
                 .GroupBy(p => p.State)
                 .Select(g => new { state = g.Key, count = g.Count() })
+                .AsNoTracking()
                 .ToDictionary(k => k.state, i => Convert.ToDouble(i.count));
 
             dashboard.OrganizationsByType = _organizationContext.Organizations
                 .GroupBy(o => o.Type)
                 .Select(g => new { type = g.Key, count = g.Count() })
+                .AsNoTracking()
                 .ToDictionary(k => k.type, i => Convert.ToDouble(i.count));
 
             dashboard.ClaimsByType = _claimContext.Claims
                 .GroupBy(c => c.Type)
                 .Select(g => new { type = g.Key, count = g.Count() })
+                .AsNoTracking()
                 .ToDictionary(k => k.type, i => Convert.ToDouble(i.count));
 
             dashboard.UpdatedEntitiesByDate = CreateDashboardDataArray();
@@ -59,16 +63,19 @@ namespace BlazorCrud.Server.Controllers
             var patientQuery = _patientContext.Patients
                 .GroupBy(p => p.ModifiedDate.Date)
                 .Select(g => new { date = g.Key, counter = g.Count() })
+                .AsNoTracking()
                 .ToDictionary(k => k.date, i => i.counter);
 
             var organizationQuery = _organizationContext.Organizations
                 .GroupBy(o => o.ModifiedDate.Date)
                 .Select(g => new { date = g.Key, counter = g.Count() })
+                .AsNoTracking()
                 .ToDictionary(k => k.date, i => i.counter);
 
             var claimQuery = _claimContext.Claims
                 .GroupBy(c => c.ModifiedDate.Date)
                 .Select(g => new { date = g.Key, counter = g.Count() })
+                .AsNoTracking()
                 .ToDictionary(k => k.date, i => i.counter);
 
             // Augment query values with actual dates

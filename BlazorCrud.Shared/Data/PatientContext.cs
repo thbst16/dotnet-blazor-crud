@@ -11,5 +11,6 @@ namespace BlazorCrud.Shared.Data
         }
 
         public DbSet<Patient> Patients { get; set; }
+        public DbSet<ContactPoint> ContactPoints { get; set; }
     }
 }

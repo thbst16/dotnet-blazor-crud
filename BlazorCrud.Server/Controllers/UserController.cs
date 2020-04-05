@@ -3,6 +3,7 @@ using BlazorCrud.Shared.Data;
 using BlazorCrud.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -41,6 +42,7 @@ namespace BlazorCrud.Server.Controllers
             }
             return _context.Users
                 .OrderBy(p => p.Id)
+                .AsNoTracking()
                 .GetPaged(page, pageSize);
         }
 

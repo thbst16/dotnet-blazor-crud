@@ -3,6 +3,7 @@ using BlazorCrud.Shared.Data;
 using BlazorCrud.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -33,6 +34,7 @@ namespace BlazorCrud.Server.Controllers
                 return _context.Organizations
                 .Where(o => o.Name.Contains(name, System.StringComparison.CurrentCultureIgnoreCase))
                 .OrderBy(o => o.Id)
+                .AsNoTracking()
                 .GetPaged(page, pageSize);
             }
             else

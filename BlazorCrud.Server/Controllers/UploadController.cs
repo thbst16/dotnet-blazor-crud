@@ -3,6 +3,7 @@ using BlazorCrud.Shared.Data;
 using BlazorCrud.Shared.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
@@ -38,6 +39,7 @@ namespace BlazorCrud.Server.Controllers
             }
             return _context.Uploads
                 .OrderBy(p => p.Id)
+                .AsNoTracking()
                 .GetPaged(page, pageSize);
         }
 

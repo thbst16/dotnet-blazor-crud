@@ -34,6 +34,7 @@ namespace BlazorCrud.Server.Controllers
                 return _context.Patients
                 .Where(p => p.Name.Contains(name, System.StringComparison.CurrentCultureIgnoreCase))
                 .OrderBy(p => p.Id)
+                .AsNoTracking()
                 .GetPaged(page, pageSize);
             }
             else
@@ -90,20 +91,48 @@ namespace BlazorCrud.Server.Controllers
         {
             if (ModelState.IsValid)
             {
-                // var pat = _context.Patients.Find(id);
-                var pat = _context.Patients
-                    .AsNoTracking()
+                var existingPatient = _context.Patients
                     .Include(pa => pa.Contacts)
                     .Single(p => p.Id == id);
-                if (pat == null)
+                if (existingPatient == null)
+                { 
+                    return NotFound(); 
+                }
+                
+                // Update Existing Patient
+                existingPatient.ModifiedDate = DateTime.Now;
+                _context.Entry(existingPatient).CurrentValues.SetValues(patient);
+
+                // Delete Contacts
+                foreach (var existingContact in existingPatient.Contacts.ToList())
                 {
-                    return NotFound();
+                    if (!patient.Contacts.Any(c => c.Id == existingContact.Id))
+                        _context.ContactPoints.Remove(existingContact);
                 }
 
-                patient.ModifiedDate = DateTime.Now;
-                _mapper.Map(patient, pat);
-                _context.Patients.Update(pat);
+                // Update and Insert Contacts
+                foreach (var contactModel in patient.Contacts)
+                {
+                    var existingContact = existingPatient.Contacts
+                        .Where(c => c.Id == contactModel.Id)
+                        .SingleOrDefault();
+                    if (existingContact != null)
+                        _context.Entry(existingContact).CurrentValues.SetValues(contactModel);
+                    else
+                    {
+                        var newContact = new ContactPoint
+                        {
+                            Id = contactModel.Id,
+                            System = contactModel.System,
+                            Use = contactModel.Use,
+                            Value = contactModel.Value
+                        };
+                        existingPatient.Contacts.Add(newContact);
+                    }
+                }
+
                 _context.SaveChanges();
+                
                 return NoContent();
             }
             else
