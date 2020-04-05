@@ -17,7 +17,7 @@
             <BSCard Color="Color.Light" IsOutline="true">
                 <BSCard CardType="CardType.Body">
                     <BSCard CardType="CardType.Title">Patients By State</BSCard>
-                    <ChartJsPieChart @ref="_doughnutChartJsPatient" Config="@_doughnutChartConfigPatient" />
+                    <ChartJsPieChart @ref="_doughnutChartJsPatient" Config="@_doughnutChartConfigPatient" Height="250" />
                     <a href="patient/list/1" class="btn btn-primary">View details &raquo;</a>
                 </BSCard>
             </BSCard>
@@ -28,7 +28,7 @@
             <BSCard Color="Color.Light" IsOutline="true">
                 <BSCard CardType="CardType.Body">
                     <BSCard CardType="CardType.Title">Organizations by Type</BSCard>
-                    <ChartJsPieChart @ref="_doughnutChartJsOrganization" Config="@_doughnutChartConfigOrganization" />
+                    <ChartJsPieChart @ref="_doughnutChartJsOrganization" Config="@_doughnutChartConfigOrganization" Height="250" />
                     <a href="organization/list/1" class="btn btn-primary">View details &raquo;</a>
                 </BSCard>
             </BSCard>
@@ -39,7 +39,7 @@
             <BSCard Color="Color.Light" IsOutline="true">
                 <BSCard CardType="CardType.Body">
                     <BSCard CardType="CardType.Title">Claims by Type</BSCard>
-                    <ChartJsPieChart @ref="_doughnutChartJsClaim" Config="@_doughnutChartConfigClaim" />
+                    <ChartJsPieChart @ref="_doughnutChartJsClaim" Config="@_doughnutChartConfigClaim" Height="250" />
                     <a href="claim/list/1" class="btn btn-primary">View details &raquo;</a>
                 </BSCard>
             </BSCard>
@@ -53,7 +53,7 @@
             <BSCard Color="Color.Light" IsOutline="true">
                 <BSCard CardType="CardType.Body">
                     <BSCard CardType="CardType.Title">Recently Created or Modified Patients, Organizations, and Claims</BSCard>
-                    <ChartJsBarChart @ref="_barChartJs" Config="@_barChartConfig" Width="600" Height="200" />
+                    <ChartJsBarChart @ref="_barChartJs" Config="@_barChartConfig" Width="600" Height="175" />
                 </BSCard>
             </BSCard>
         </BSCard>
