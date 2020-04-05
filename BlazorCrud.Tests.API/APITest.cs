@@ -58,8 +58,8 @@ namespace BlazorCrud.Tests.API
             var responseData = response.Content.ReadAsStringAsync();
             organizations = JObject.Parse(responseData.Result).SelectToken("results").ToObject<List<Organization>>();
             Assert.AreEqual(1, organizations.Count);
-            Assert.AreEqual("Jones, Waelchi and Hagenes", organizations[0].Name);
-            Assert.AreEqual("Hospital Department", organizations[0].Type);
+            Assert.AreEqual("Swaniawski, Collier and Hauck", organizations[0].Name);
+            Assert.AreEqual("Government", organizations[0].Type);
         }
 
         [TestMethod()]
@@ -71,8 +71,8 @@ namespace BlazorCrud.Tests.API
             var responseData = response.Content.ReadAsStringAsync();
             claims = JObject.Parse(responseData.Result).SelectToken("results").ToObject<List<Claim>>();
             Assert.AreEqual(10, claims.Count);
-            Assert.AreEqual("Mohr - Stanton", claims[0].Organization);
-            Assert.AreEqual("Sister Senger", claims[1].Patient);
+            Assert.AreEqual("Simonis and Sons", claims[0].Organization);
+            Assert.AreEqual("Ayden Satterfield", claims[1].Patient);
         }
 
         [TestMethod()]
@@ -83,10 +83,10 @@ namespace BlazorCrud.Tests.API
             HttpResponseMessage response = await client.GetAsync(requestUri);
             var responseData = response.Content.ReadAsStringAsync();
             claim = JsonConvert.DeserializeObject<Claim>(responseData.Result);
-            Assert.AreEqual("Aida Senger", claim.Patient);
-            Assert.AreEqual("Runolfsdottir - Sawayn", claim.Organization);
+            Assert.AreEqual("Royce Paucek", claim.Patient);
+            Assert.AreEqual("Bayer LLC", claim.Organization);
             Assert.AreEqual("Active", claim.Status);
-            Assert.AreEqual("Professional", claim.Type);
+            Assert.AreEqual("Vision", claim.Type);
         }
 
         [TestCleanup()]
