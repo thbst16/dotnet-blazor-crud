@@ -42,13 +42,21 @@ namespace BlazorCrud.Shared.Data
 
             if (organizationContext.Organizations.Count() == 0)
             {
+                // Create test addresses
+                var state = new[] { "Michigan", "Ohio", "Illinois", "Indiana" };
+                var testAddresses = new Faker<Address>()
+                    .RuleFor(a => a.Street, f => f.Address.StreetAddress())
+                    .RuleFor(a => a.City, f => f.Address.City())
+                    .RuleFor(a => a.State, f => f.PickRandom(state));
+                
                 // Create new organizations only if the collection is empty
                 var orgType = new[] { "Healthcare Provider", "Hospital Department", "Organizational Team", "Government", "Insurance Company" };
                 var testOrganizations = new Faker<Organization>()
                     .RuleFor(o => o.Name, f => f.Company.CompanyName())
                     .RuleFor(o => o.Type, f => f.PickRandom(orgType))
                     .RuleFor(o => o.IsActive, f => f.Random.Bool())
-                    .RuleFor(o => o.ModifiedDate, f => f.Date.Recent(7));
+                    .RuleFor(o => o.ModifiedDate, f => f.Date.Recent(7))
+                    .RuleFor(o => o.Addresses, f => testAddresses.Generate(3).ToList());
                 var organizations = testOrganizations.Generate(50);
 
                 foreach (Organization o in organizations)

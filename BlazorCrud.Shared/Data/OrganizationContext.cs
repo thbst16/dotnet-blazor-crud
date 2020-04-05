@@ -11,5 +11,6 @@ namespace BlazorCrud.Shared.Data
         }
 
         public DbSet<Organization> Organizations { get; set; }
+        public DbSet<Address> Addresses { get; set; }
     }
 }

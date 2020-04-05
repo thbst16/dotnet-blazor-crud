@@ -77,9 +77,9 @@ else
     <BSModal @bind-IsOpen="@isAdd" Size="Size.Large" IgnoreEscape="true" IgnoreClickOnBackdrop="true">
         <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
         <BSModalBody>
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <EditForm Model="@organization" OnValidSubmit="@CreateOrganization">
-                    <DataAnnotationsValidator />
+                    <FluentValidator TValidator="OrganizationValidator" />
                     <div class="form-group">
                         <label for="Name" class="control-label">Name</label>
                         <InputText id="Name" class="form-control" @bind-Value="organization.Name" />
@@ -109,6 +109,55 @@ else
                             <label for="Active" class="form-check-label">Active</label>
                         </div>
                     </div>
+
+                    <hr />
+                    <h5>Address</h5>
+                    <hr />
+
+                    <div class="form-row">
+                        <div class="form-group col-md-5">
+                            <label class="control-label">Street</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">City</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">State</label>
+                        </div>
+                    </div>
+
+                    <ValidationMessage For="@(() => organization.Addresses)" />
+                    @foreach (var address in organization.Addresses)
+                    {
+                        <div class="form-row">
+                            <div class="form-group col-md-5">
+                                <InputText id="Street and Number" class="form-control" placeholder="Name" @bind-Value="address.Street" />
+                                <ValidationMessage For="@(() => address.Street)" />
+                            </div>
+                            <div class="form-group col-md-3">
+                                <InputText id="City" class="form-control" placeholder="Name" @bind-Value="address.City" />
+                                <ValidationMessage For="@(() => address.City)" />
+                            </div>
+                            <div class="form-group col-md-3">
+                                <InputSelect id="State" class="form-control" @bind-Value="address.State">
+                                    <option value="">-- Select State --</option>
+                                    <option value="Illinois">Illinois</option>
+                                    <option value="Indiana">Indiana</option>
+                                    <option value="Michigan">Michigan</option>
+                                    <option value="Ohio">Ohio</option>
+                                </InputSelect>
+                                <ValidationMessage For="@(() => address.State)" />
+                            </div>
+                            <div class="form-group col-md-1">
+                                <a href="javascript:void(0)" class="btn btn-danger" @onclick="@(()=>OnAddressDelete(organization, address))">X</a>
+                            </div>
+                        </div>
+                    }
+                    <div class="form-group">
+                        <a href="javascript:void(0)" class="btn btn-success" @onclick="@(()=>OnAddressAdd(organization))">Add Address</a>
+                    </div>
+                    <hr />
+                    
                     <div class="form-group">
                         <button type="submit" class="btn btn-success">Save</button>
                         <button class="btn btn-primary" @onclick="CloseModal">Cancel</button>
@@ -123,33 +172,63 @@ else
     <BSModal @bind-IsOpen="isView" Size="Size.Large" IgnoreEscape="true" IgnoreClickOnBackdrop="true">
         <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
         <BSModalBody>
-            <div class="col-md-9">
+            <div class="col-md-12">
                 @if (isDelete)
                 {
                     <BSAlert Color="Color.Danger">Please review carefully before deleting.</BSAlert>
                 }
-            <BSTable IsResponsive="true" class="table">
-                <tr>
-                    <td>Id</td>
-                    <td>@organization.Id</td>
-                </tr>
-                <tr>
-                    <td>Name</td>
-                    <td>@organization.Name</td>
-                </tr>
-                <tr>
-                    <td>Type</td>
-                    <td>@organization.Type</td>
-                </tr>
-                <tr>
-                    <td>Active</td>
-                    <td>@organization.IsActive</td>
-                </tr>
-                <tr>
-                    <td>Date Modified</td>
-                    <td>@organization.ModifiedDate</td>
-                </tr>
-            </BSTable>
+                <hr />
+                <h5>Oranization Data</h5>
+                <hr />
+                <BSTable IsResponsive="true" class="table">
+                    <tr>
+                        <td>Id</td>
+                        <td>@organization.Id</td>
+                    </tr>
+                    <tr>
+                        <td>Name</td>
+                        <td>@organization.Name</td>
+                    </tr>
+                    <tr>
+                        <td>Type</td>
+                        <td>@organization.Type</td>
+                    </tr>
+                    <tr>
+                        <td>Active</td>
+                        <td>@organization.IsActive</td>
+                    </tr>
+                    <tr>
+                        <td>Date Modified</td>
+                        <td>@organization.ModifiedDate</td>
+                    </tr>
+                </BSTable>
+
+                <hr />
+                <h5>Addresses</h5>
+                <hr />
+
+                <BSTable IsResponsive="true" class='table'>
+                    <thead class="thead-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Street</th>
+                            <th>City</th>
+                            <th>State</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var address in organization.Addresses)
+                        {
+                            <tr>
+                                <td>@address.Id</td>
+                                <td>@address.Street</td>
+                                <td>@address.City</td>
+                                <td>@address.State</td>
+                            </tr>
+                        }
+                    </tbody>
+                </BSTable>
+
                 <div class="form-group">
                     @if (isDelete)
                     {
@@ -173,7 +252,16 @@ else
     public string SearchTerm { get; set; } = string.Empty;
 
     protected PagedResult<Organization> Organizations;
-    protected Organization organization = new Organization();
+    protected Organization organization = new Organization
+    {
+        Name = "",
+        Type = "",
+        IsActive = true,
+        Addresses = new List<Address>
+        {
+            new Address { Street="", City="", State=""}
+        }
+    };
 
     protected int CurrentOrganizationId { get; set; }
     protected string modalTitle { get; set; }
@@ -284,11 +372,30 @@ else
 
     protected void CloseModal()
     {
-        organization = new Organization();
+        organization = new Organization
+        {
+            Name = "",
+            Type = "",
+            IsActive = true,
+            Addresses = new List<Address>
+            {
+                new Address { Street="", City="", State=""}
+            }
+        };
         CurrentOrganizationId = 0;
         this.isAdd = false;
         this.isView = false;
         this.isDelete = false;
         StateHasChanged();
+    }
+
+    public void OnAddressDelete(Organization organization, Address address)
+    {
+        organization.Addresses.Remove(address);
+    }
+
+    public void OnAddressAdd(Organization organization)
+    {
+        organization.Addresses.Add(new Address { Street = "", City = "", State = "" });
     }
 }

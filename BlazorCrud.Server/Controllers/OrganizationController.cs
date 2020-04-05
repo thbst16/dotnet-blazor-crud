@@ -56,6 +56,9 @@ namespace BlazorCrud.Server.Controllers
             {
                 return NotFound();
             }
+            item = _context.Organizations
+                .Include(organization => organization.Addresses)
+                .Single(o => o.Id == id);
             return item;
         }
 
@@ -88,16 +91,48 @@ namespace BlazorCrud.Server.Controllers
         {
             if (ModelState.IsValid)
             {
-                var org = _context.Organizations.Find(id);
-                if (org == null)
+                var existingOrganization = _context.Organizations
+                    .Include(or => or.Addresses)
+                    .Single(or => or.Id == id);
+                if (existingOrganization == null)
                 {
                     return NotFound();
                 }
 
-                organization.ModifiedDate = DateTime.Now;
-                _mapper.Map(organization, org);
-                _context.Organizations.Update(org);
+                // Update Existing Organization
+                existingOrganization.ModifiedDate = DateTime.Now;
+                _context.Entry(existingOrganization).CurrentValues.SetValues(organization);
+
+                // Delete Addresses
+                foreach (var existingAddress in existingOrganization.Addresses.ToList())
+                {
+                    if (!organization.Addresses.Any(o => o.Id == existingAddress.Id))
+                        _context.Addresses.Remove(existingAddress);
+                }
+
+                // Update and Insert Addresses
+                foreach (var addressModel in organization.Addresses)
+                {
+                    var existingAddress = existingOrganization.Addresses
+                        .Where(a => a.Id == addressModel.Id)
+                        .SingleOrDefault();
+                    if (existingAddress != null)
+                        _context.Entry(existingAddress).CurrentValues.SetValues(addressModel);
+                    else
+                    {
+                        var newAddress = new Address
+                        {
+                            Id = addressModel.Id,
+                            Street = addressModel.Street,
+                            City = addressModel.City,
+                            State = addressModel.State
+                        };
+                        existingOrganization.Addresses.Add(newAddress);
+                    }
+                }
+
                 _context.SaveChanges();
+
                 return NoContent();
             }
             else
