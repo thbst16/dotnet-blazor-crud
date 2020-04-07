@@ -8,25 +8,27 @@ Blazor CRUD is a demo application built with the [Blazor](https://blazor.net) fr
 Blazor CRUD uses the following DevOps environment and tools to support a CI / CD process:
 * [GitHub Source Code Repository](https://github.com/thbst16/BlazorCrud) - All source code is stored in the GitHub repository, which is where you currently find yourself.
 * [Azure DevOps for CI/CD](https://beckshome.visualstudio.com/BlazorCRUD/_build) - Azure DevOps is used for continunous integration and continuous delivery (CI/CD). Builds and deployments are initiated with every cheackin to the main brach of the solution in GitHub.
+* [DockerHub for Container Storage](https://hub.docker.com/r/thbst16/blazor-crud) - DockerHub is where BlazorCrud tagged Docker images are stored after being created in the CI/CD pipeline. The can also be pulled and run locally by using the command "docker pull thbst16/blazor-crud".
 
 # Features
 
-* Online Demo Site to Explore the Application
+* Online demo site to explore the application
 * CI/CD Using Azure DevOps
-* Dashboard Page
-* Entity Lists with Pagination and Search
-* Modal Data Entry Forms with Validations
-* Complex Data Entry with Object Graph Validations
-* File Upload and Download Using JavaScript Interop
+* Docker container generation as a single deployable Docker image
+* Dashboard page
+* Entity lists with pagination and search
+* Modal data entry forms with validations
+* Complex data entry with object graph validations
+* File upload and download using JavaScript Interop
 * Batch processing of JSON files (
 [Patients](https://raw.githubusercontent.com/thbst16/BlazorCrud/master/BlazorCrud.Shared/Data/SampleData/patients.json), 
 [Organizations](https://raw.githubusercontent.com/thbst16/BlazorCrud/master/BlazorCrud.Shared/Data/SampleData/organizations.json), and
 [Claims](https://raw.githubusercontent.com/thbst16/BlazorCrud/master/BlazorCrud.Shared/Data/SampleData/claims.json)
 ) for data upload.
-* REST Interfaces with Swagger Documentation
-* Javascript Web Token (JWT) Authentication
+* REST interfaces with Swagger documentation
+* Javascript Web Token (JWT) authentication
 * Automation of Azure Infrastructure Setup
-* Data Generation to Pre-Populate Thousdands of Entity Records
+* Data generation to pre-populate thousdands of entity records
 
 # Open Source Used
 
