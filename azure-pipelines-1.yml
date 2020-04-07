@@ -1,4 +1,4 @@
-# Build a Docker image 
+# Build a Docker image, modified 
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
