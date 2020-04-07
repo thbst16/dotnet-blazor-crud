@@ -1,18 +1,29 @@
-# https://hub.docker.com/_/microsoft-dotnet-core
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+### PREPARE
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1.201 AS build
 WORKDIR /src
 
+# Copy csproj and sln and restore as distinct layers
+COPY BlazorCrud.AzureSetup/*.csproj BlazorCrud.AzureSetup/
+COPY BlazorCrud.Client/*.csproj BlazorCrud.Client/
+COPY BlazorCrud.Server/*.csproj BlazorCrud.Server/
+COPY BlazorCrud.Shared/*.csproj BlazorCrud.Shared/
+COPY BlazorCrud.Tests.API/*.csproj BlazorCrud.Tests.API/
+COPY BlazorCrud.Tests.E2E/*.csproj BlazorCrud.Tests.E2E/
+COPY BlazorCrud.sln .
+RUN dotnet restore
 
-
-COPY BlazorWasmDocker.csproj .
-RUN dotnet restore "BlazorWasmDocker.csproj"
+### BUILD
 COPY . .
-RUN dotnet build "BlazorWasmDocker.csproj" -c Release -o /app/build
+RUN dotnet build "BlazorCrud.sln" -c Release -o /app
 
-FROM build AS publish
-RUN dotnet publish "BlazorWasmDocker.csproj" -c Release -o /app/publish
+### PUBLISH
+FROM build as publish
+COPY . .
+RUN dotnet publish "BlazorCrud.sln" -c Release -o /app
 
-FROM nginx:alpine AS final
-WORKDIR /usr/share/nginx/html
-COPY --from=publish /app/publish/BlazorWasmDocker/dist .
-COPY nginx.conf /etc/nginx/nginx.conf
+### RUNTIME IMAGE
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS final
+WORKDIR /app
+COPY --from=publish /app .
+EXPOSE 80
+ENTRYPOINT ["dotnet", "BlazorCrud.Server.dll"]
