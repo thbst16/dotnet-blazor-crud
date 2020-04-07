@@ -27,3 +27,12 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/dockerfile'
         tags: |
           $(tag)
+    - task: Docker@2
+      displayName: Push image to container registry
+      inputs:
+        command: push
+        repository: thbst16/blazor-crud
+        containerRegistry: $(dockerHub)
+        tags: |
+          $(Build.BuildId)
+          latest
