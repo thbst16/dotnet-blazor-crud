@@ -24,8 +24,5 @@
   <ItemGroup>
     <ProjectReference Include="..\BlazorCrud.Shared\BlazorCrud.Shared.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="wwwroot\img\" />
-  </ItemGroup>
 
 </Project>
