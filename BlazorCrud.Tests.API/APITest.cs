@@ -71,8 +71,8 @@ namespace BlazorCrud.Tests.API
             var responseData = response.Content.ReadAsStringAsync();
             claims = JObject.Parse(responseData.Result).SelectToken("results").ToObject<List<Claim>>();
             Assert.AreEqual(10, claims.Count);
-            Assert.AreEqual("Simonis and Sons", claims[0].Organization);
-            Assert.AreEqual("Ayden Satterfield", claims[1].Patient);
+            Assert.AreEqual("Marquardt - Morissette", claims[0].Organization);
+            Assert.AreEqual("Chet Hermiston", claims[1].Patient);
         }
 
         [TestMethod()]
