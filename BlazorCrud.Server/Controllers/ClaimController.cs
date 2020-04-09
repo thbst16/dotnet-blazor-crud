@@ -57,6 +57,9 @@ namespace BlazorCrud.Server.Controllers
             {
                 return NotFound();
             }
+            item = _context.Claims
+                .Include(claim => claim.LineItems)
+                .Single(c => c.Id == id);
             return item;
         }
 
@@ -87,6 +90,60 @@ namespace BlazorCrud.Server.Controllers
         [Authorize]
         public IActionResult Update(int id, Claim claim)
         {
+            if (ModelState.IsValid)
+            {
+                var existingClaim = _context.Claims
+                    .Include(c => c.LineItems)
+                    .Single(c => c.Id == id);
+                if (existingClaim == null)
+                {
+                    return NotFound();
+                }
+
+                // Update Existing Claim
+                existingClaim.ModifiedDate = DateTime.Now;
+                _context.Entry(existingClaim).CurrentValues.SetValues(claim) ;
+
+                // Delete Line Items
+                foreach (var existingLineItem in existingClaim.LineItems.ToList())
+                {
+                    if (!claim.LineItems.Any(c => c.Id == existingLineItem.Id))
+                        _context.LineItems.Remove(existingLineItem);
+                }
+
+                // Update and Insert Line Items
+                foreach (var lineItemModel in claim.LineItems)
+                {
+                    var existingLineItem = existingClaim.LineItems
+                        .Where(c => c.Id == lineItemModel.Id)
+                        .SingleOrDefault();
+                    if (existingLineItem != null)
+                        _context.Entry(existingLineItem).CurrentValues.SetValues(lineItemModel);
+                    else
+                    {
+                        var newLineItem = new LineItem
+                        {
+                            Id = lineItemModel.Id,
+                            Service = lineItemModel.Service,
+                            Provider = lineItemModel.Provider,
+                            Amount = lineItemModel.Amount
+                        };
+                        existingClaim.LineItems.Add(newLineItem);
+                    }
+                }
+
+                _context.SaveChanges();
+
+                return NoContent();
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+
+
+
+
             if (ModelState.IsValid)
             {
                 var cla = _context.Claims.Find(id);

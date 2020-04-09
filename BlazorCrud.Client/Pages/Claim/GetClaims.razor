@@ -81,40 +81,94 @@ else
         <BSModalBody>
             <div class="col-md-9">
                 <EditForm Model="@claim" OnValidSubmit="@CreateClaim">
-                    <DataAnnotationsValidator />
-                    <div class="form-group">
-                        <label for="Patient" class="control-label">Patient</label>
-                        <InputText id="Patient" class="form-control" @bind-Value="claim.Patient" />
-                        <ValidationMessage For="@(() => claim.Patient)" />
+                    <FluentValidator TValidator="ClaimValidator" />
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="Patient" class="control-label">Patient</label>
+                            <InputText id="Patient" class="form-control" @bind-Value="claim.Patient" />
+                            <ValidationMessage For="@(() => claim.Patient)" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="Organization" class="control-label">Organization</label>
+                            <InputText id="Organization" class="form-control" @bind-Value="claim.Organization" />
+                            <ValidationMessage For="@(() => claim.Organization)" />
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="Organization" class="control-label">Organization</label>
-                        <InputText id="Organization" class="form-control" @bind-Value="claim.Organization" />
-                        <ValidationMessage For="@(() => claim.Organization)" />
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label asp-for="Status" class="control-label">Status</label>
+                            <InputSelect id="Status" class="form-control" @bind-Value="claim.Status">
+                                <option value="">-- Select Status --</option>
+                                <option value="Active">Active</option>
+                                <option value="Cancelled">Cancelled</option>
+                                <option value="Draft">Draft</option>
+                                <option value="Entered-in-Error">Entered-in-Error</option>
+                            </InputSelect>
+                            <ValidationMessage For="@(() => claim.Status)" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label asp-for="Type" class="control-label">Type</label>
+                            <InputSelect id="Type" class="form-control" @bind-Value="claim.Type">
+                                <option value="">-- Select Type --</option>
+                                <option value="Institutional">Institutional</option>
+                                <option value="Oral">Oral</option>
+                                <option value="Pharmacy">Pharmacy</option>
+                                <option value="Professional">Professional</option>
+                                <option value="Vision">Vision</option>
+                            </InputSelect>
+                            <ValidationMessage For="@(() => claim.Type)" />
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label asp-for="Status" class="control-label">Status</label>
-                        <InputSelect id="Status" class="form-control" @bind-Value="claim.Status">
-                            <option value="">-- Select Status --</option>
-                            <option value="Active">Active</option>
-                            <option value="Cancelled">Cancelled</option>
-                            <option value="Draft">Draft</option>
-                            <option value="Entered-in-Error">Entered-in-Error</option>
-                        </InputSelect>
-                        <ValidationMessage For="@(() => claim.Status)" />
+
+                    <hr />
+                    <h5>Claim Line Item</h5>
+                    <hr />
+
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Service</label>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label class="control-label">Provider</label>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label class="control-label">Amount</label>
+                        </div>
                     </div>
+
+                    <ValidationMessage For="@(() => claim.LineItems)" />
+                    @foreach (var lineItem in claim.LineItems)
+                    {
+                        <div class="form-row">
+                            <div class="form-group col-md-4">
+                                <InputSelect id="Service" class="form-control" placeholder="Service" @bind-Value="lineItem.Service">
+                                    <option value="">-- Select Service --</option>
+                                    <option value="Medical Care">Medical Care</option>
+                                    <option value="Surgery">Surgery</option>
+                                    <option value="Consultation">Consultation</option>
+                                    <option value="Diagnostic X-Ray">Diagnostic X-Ray</option>
+                                    <option value="Diagnostic Lab">Diagnostic Lab</option>
+                                    <option value="Radiation Therapy">Radiation Therapy</option>
+                                </InputSelect>
+                                <ValidationMessage For="@(() => lineItem.Service)" />
+                            </div>
+                            <div class="form-group col-md-4">
+                                <InputText id="Provider" class="form-control" placeholder="Provider" @bind-Value="lineItem.Provider" />
+                                <ValidationMessage For="@(() => lineItem.Provider)" />
+                            </div>
+                            <div class="form-group col-md-3">
+                                <InputNumber id="Amount" class="form-control" placeholder="Provider" @bind-Value="lineItem.Amount" />
+                                <ValidationMessage For="@(() => lineItem.Amount)" />
+                            </div>
+                            <div class="form-group col-md-1">
+                                <a href="javascript:void(0)" class="btn btn-danger" @onclick="@(()=>OnLineItemDelete(claim, lineItem))">X</a>
+                            </div>
+                        </div>
+                    }
                     <div class="form-group">
-                        <label asp-for="Type" class="control-label">Type</label>
-                        <InputSelect id="Type" class="form-control" @bind-Value="claim.Type">
-                            <option value="">-- Select Type --</option>
-                            <option value="Institutional">Institutional</option>
-                            <option value="Oral">Oral</option>
-                            <option value="Pharmacy">Pharmacy</option>
-                            <option value="Professional">Professional</option>
-                            <option value="Vision">Vision</option>
-                        </InputSelect>
-                        <ValidationMessage For="@(() => claim.Type)" />
+                        <a href="javascript:void(0)" class="btn btn-success" @onclick="@(()=>OnLineItemAdd(claim))">Add Line Item</a>
                     </div>
+                    <hr />
                     <div class="form-group">
                         <button type="submit" class="btn btn-success">Save</button>
                         <button class="btn btn-primary" @onclick="CloseModal">Cancel</button>
@@ -134,32 +188,64 @@ else
                 {
                     <BSAlert Color="Color.Danger">Please review carefully before deleting.</BSAlert>
                 }
-            <BSTable IsResponsive="true" class="table">
-                <tr>
-                    <td>Id</td>
-                    <td>@claim.Id</td>
-                </tr>
-                <tr>
-                    <td>Patient</td>
-                    <td>@claim.Patient</td>
-                </tr>
-                <tr>
-                    <td>Organization</td>
-                    <td>@claim.Organization</td>
-                </tr>
-                <tr>
-                    <td>Status</td>
-                    <td>@claim.Status</td>
-                </tr>
-                <tr>
-                    <td>Type</td>
-                    <td>@claim.Type</td>
-                </tr>
-                <tr>
-                    <td>Date Modified</td>
-                    <td>@claim.ModifiedDate</td>
-                </tr>
-            </BSTable>
+                <hr />
+                <h5>Claim Data</h5>
+                <hr />
+
+                <br />
+                <BSTable IsResponsive="true" class="table">
+                    <tr>
+                        <td>Id</td>
+                        <td>@claim.Id</td>
+                    </tr>
+                    <tr>
+                        <td>Patient</td>
+                        <td>@claim.Patient</td>
+                    </tr>
+                    <tr>
+                        <td>Organization</td>
+                        <td>@claim.Organization</td>
+                    </tr>
+                    <tr>
+                        <td>Status</td>
+                        <td>@claim.Status</td>
+                    </tr>
+                    <tr>
+                        <td>Type</td>
+                        <td>@claim.Type</td>
+                    </tr>
+                    <tr>
+                        <td>Date Modified</td>
+                        <td>@claim.ModifiedDate</td>
+                    </tr>
+                </BSTable>
+
+                <hr />
+                <h5>Line Items</h5>
+                <hr />
+
+                <BSTable IsResponsive="true" class='table'>
+                    <thead class="thead-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Service</th>
+                            <th>Provider</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var lineItem in claim.LineItems)
+                        {
+                            <tr>
+                                <td>@lineItem.Id</td>
+                                <td>@lineItem.Service</td>
+                                <td>@lineItem.Provider</td>
+                                <td>@string.Format("{0:C}", lineItem.Amount)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </BSTable>
+
                 <div class="form-group">
                     @if (isDelete)
                     {
@@ -183,7 +269,17 @@ else
     public string SearchTerm { get; set; } = string.Empty;
 
     protected PagedResult<Claim> Claims;
-    protected Claim claim = new Claim();
+    protected Claim claim = new Claim
+    {
+        Patient = "",
+        Organization = "",
+        Status = "",
+        Type = "",
+        LineItems = new List<LineItem>
+        {
+            new LineItem { Service = "", Provider ="", Amount = 0}
+        }
+    };
 
     protected int CurrentClaimId { get; set; }
     protected string modalTitle { get; set; }
@@ -293,11 +389,31 @@ else
 
     protected void CloseModal()
     {
-        claim = new Claim();
+        claim = new Claim
+        {
+            Patient = "",
+            Organization = "",
+            Status = "",
+            Type = "",
+            LineItems = new List<LineItem>
+            {
+                new LineItem { Service = "", Provider ="", Amount = 0}
+            }
+        };
         CurrentClaimId = 0;
         this.isAdd = false;
         this.isView = false;
         this.isDelete = false;
         StateHasChanged();
+    }
+
+    public void OnLineItemDelete(Claim claim, LineItem lineItem)
+    {
+        claim.LineItems.Remove(lineItem);
+    }
+
+    public void OnLineItemAdd(Claim claim)
+    {
+        claim.LineItems.Add(new LineItem { Service = "", Provider = "", Amount = 0 });
     }
 }

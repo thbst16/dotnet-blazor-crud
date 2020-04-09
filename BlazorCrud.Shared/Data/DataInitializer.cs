@@ -68,6 +68,13 @@ namespace BlazorCrud.Shared.Data
 
             if (claimContext.Claims.Count() == 0)
             {
+                // Create test claim line items
+                var service = new[] { "Medical Care", "Surgery", "Consultation", "Diagnostic X-Ray", "Diagnostic Lab", "Radiation Therapy" };
+                var testLineItems = new Faker<LineItem>()
+                    .RuleFor(li => li.Service, f => f.PickRandom(service))
+                    .RuleFor(li => li.Provider, (f, u) => "Dr. " + f.Name.LastName())
+                    .RuleFor(li => li.Amount, f => f.Finance.Amount(50, 1000, 2));
+
                 // Create new claims only if the collection is empty
                 var status = new[] { "Active", "Cancelled", "Draft" };
                 var type = new[] { "Institutional", "Oral", "Pharmacy", "Professional", "Vision" };
@@ -76,7 +83,8 @@ namespace BlazorCrud.Shared.Data
                     .RuleFor(c => c.Organization, f => f.Company.CompanyName())
                     .RuleFor(c => c.Status, f => f.PickRandom(status))
                     .RuleFor(c => c.Type, f => f.PickRandom(type))
-                    .RuleFor(c => c.ModifiedDate, c => c.Date.Recent(7));
+                    .RuleFor(c => c.ModifiedDate, f => f.Date.Recent(7))
+                    .RuleFor(c => c.LineItems, f => testLineItems.Generate(2).ToList());
                 var claims = testClaims.Generate(500);
 
                 foreach (Claim c in claims)
