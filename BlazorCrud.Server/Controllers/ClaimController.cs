@@ -140,28 +140,6 @@ namespace BlazorCrud.Server.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-
-
-
-            if (ModelState.IsValid)
-            {
-                var cla = _context.Claims.Find(id);
-                if (cla == null)
-                {
-                    return NotFound();
-                }
-
-                claim.ModifiedDate = DateTime.Now;
-                _mapper.Map(claim, cla);
-                _context.Claims.Update(cla);
-                _context.SaveChanges();
-                return NoContent();
-            }
-            else
-            {
-                return BadRequest(ModelState);
-            }
         }
 
         /// <summary>
