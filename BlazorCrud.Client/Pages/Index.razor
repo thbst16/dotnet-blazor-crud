@@ -36,7 +36,14 @@
         <BSImage IsResponsive="true" src=@_apiImage />
         <h2>API</h2>
         <p>Investigate our REST API, which you can use to integrate Blazor CRUD functionality and data into your application.</p>
-        <p><a class="btn btn-secondary" href="https://becksblazor.azurewebsites.net/swagger/index.html" target="_blank" role="button">View details &raquo;</a></p>
+        <p><a class="btn btn-secondary" href=@System.String.Concat(Storage.GetItem("environment_uri").Replace("/api",""),"/swagger/index.html") target="_blank" role="button">View details &raquo;</a></p>
+    </div>
+    <div class="col-md-1"></div>
+    <div class="col-md-3">
+        <BSImage IsResponsive="true" src=@_typeaheadImage />
+        <h2>Typeahead</h2>
+        <p>Preview our typeahead search functionality. Coming soon for all modal data entry pages to enable model linking.</p>
+        <p><a class="btn btn-secondary" href="claim/typeahead" role="button">View details &raquo;</a></p>
     </div>
     <div class="col-md-1"></div>
     <div class="col-md-3">
@@ -45,19 +52,13 @@
         <p>Install our Blazor CRUD provider app on your Alexa and ask Alexa about provider locations, services, and more.</p>
         <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
     </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-3">
-        <BSImage IsResponsive="true" src=@_automateImage />
-        <h2>Automate</h2>
-        <p>Enable our cognitive intelligence functions and on-demand workforce to do the heavy lifting for you!!!</p>
-        <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-    </div>
 </div>
 
 @code {
     private string _apiImage = @"..\img\apis.jpg";
+    private string _typeaheadImage = @"..\img\type-ahead.jpg";
     private string _alexaImage = @"..\img\alexa.jpg";
-    private string _automateImage = @"..\img\automate.jpg";
+    //private string _automateImage = @"..\img\automate.jpg";
 
     IList<Item> items = new List<Item>
     {
