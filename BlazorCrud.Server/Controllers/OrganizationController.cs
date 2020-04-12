@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BlazorCrud.Server.Controllers
@@ -42,6 +43,30 @@ namespace BlazorCrud.Server.Controllers
                 return _context.Organizations
                   .OrderBy(o => o.Id)
                   .GetPaged(page, pageSize);
+            }
+        }
+
+        /// <summary>
+        /// Returns top 10 results for type-ahead UI function
+        /// </summary>
+        [HttpGet]
+        [Route("TypeAhead")]
+        public IEnumerable<Organization> TypeAhead([FromQuery]string name)
+        {
+            if (name != null)
+            {
+                return _context.Organizations
+                .Where(p => p.Name.Contains(name, System.StringComparison.CurrentCultureIgnoreCase))
+                .OrderBy(p => p.Id)
+                .Take(10)
+                .AsNoTracking();
+            }
+            else
+            {
+                return _context.Organizations
+                  .OrderBy(p => p.Id)
+                  .Take(10)
+                  .AsNoTracking();
             }
         }
 

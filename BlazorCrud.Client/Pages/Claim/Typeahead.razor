@@ -30,7 +30,7 @@
     <p>
         <div>
             <label class="control-label">Provider</label>
-            <BlazoredTypeahead SearchMethod="GetProvidersLocal"
+            <BlazoredTypeahead SearchMethod="GetProviders"
                                @bind-Value="ClaimsModel.SelectedOrganization"
                                EnableDropDown="true"
                                class="form-control"
@@ -149,9 +149,10 @@
         return result;
     }
 
-    private async Task<IEnumerable<Organization>> GetProvidersLocal(string searchText)
+    private async Task<IEnumerable<Organization>> GetProviders(string searchText)
     {
-        return await Task.FromResult(Providers.Where(x => x.Name.ToLower().Contains(searchText.ToLower())).ToList());
+        var result = await httpClient.GetJsonAsync<List<Organization>>(Storage.GetItem("environment_uri") + "/organization/TypeAhead?name=" + searchText);
+        return result;
     }
 
     private void HandleFormSubmit()
