@@ -1,7 +1,77 @@
 ﻿@page "/claim/typeahead"
+@inject HttpClient httpClient
 
-<h3>Typeahead</h3>
+<h3>Blazored Typeahead - Local Form</h3>
 
-@code {
+<EditForm Model="FormModel" OnValidSubmit="HandleFormSubmit">
+    <DataAnnotationsValidator />
 
+    <p>
+        <div>
+            <label class="control-label">Patient</label>
+            <BlazoredTypeahead SearchMethod="GetPatientsLocal"
+                               @bind-Value="FormModel.SelectedPatient"
+                               EnableDropDown="true"
+                               class="form-control"
+                               placeholder="Search by patient name...">
+                <SelectedTemplate Context="patient">
+                    @patient.Name
+                </SelectedTemplate>
+                <ResultTemplate Context="patient">
+                    @patient.Name (@patient.Location)
+                </ResultTemplate>
+            </BlazoredTypeahead>
+            <ValidationMessage For="@(() => FormModel.SelectedPatient)" />
+        </div>
+    </p>
+    <p>
+        <div>
+            <label class="control-label">Status</label>
+            <InputSelect id="Status" class="form-control" @bind-Value="FormModel.Status">
+                <option value="">-- Select Status --</option>
+                <option value="Active">Active</option>
+                <option value="Cancelled">Cancelled</option>
+                <option value="Draft">Draft</option>
+                <option value="Entered-in-Error">Entered-in-Error</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => FormModel.Status)" />
+        </div>
+    </p>
+
+        <button class="btn btn-primary" type="submit" style="margin-top: 20px;">Submit</button>
+</EditForm>
+
+@code{
+    private FormMapper FormModel = new FormMapper();
+
+    private async Task<IEnumerable<_Patient>> GetPatientsLocal(string searchText)
+    {
+        return await Task.FromResult(Patients.Where(x => x.Name.ToLower().Contains(searchText.ToLower())).ToList());
+    }
+
+    private void HandleFormSubmit()
+    {
+        Console.WriteLine("Form Submitted Successfully!");
+        Console.WriteLine("Patient Name: " + FormModel.SelectedPatient.Name);
+        Console.WriteLine("Status: " + FormModel.Status);
+    }
+
+    private List<_Patient> Patients = new List<_Patient>();
+    protected override void OnInitialized()
+    {
+        Patients.AddRange(new List<_Patient>() {
+            new _Patient() {Id = 1, Name = "Thomas Beck", Location = "Michigan"},
+            new _Patient() {Id = 2, Name = "Simian Beyer", Location = "Ohio"},
+            new _Patient() {Id = 3, Name = "Sally Smits", Location = "Illinois"},
+            new _Patient() {Id = 4, Name = "Otto Van Buren", Location = "Ohio"},
+            new _Patient() {Id = 5, Name = "Jon Snodgrass", Location = "Michigan"},
+            new _Patient() {Id = 6, Name = "Steven James", Location = "Ohio"},
+            new _Patient() {Id = 7, Name = "Werner Voggs", Location = "Illinois"},
+            new _Patient() {Id = 8, Name = "Andrew Lusterberg", Location = "Ohio"},
+            new _Patient() {Id = 9, Name = "Mario Andreos", Location = "Michigan"},
+            new _Patient() {Id = 10, Name = "Lucy Limpara", Location = "Ohio"},
+            new _Patient() {Id = 11, Name = "Ellen Degrasa", Location = "Illinois"},
+            new _Patient() {Id = 12, Name = "Michele Smits", Location = "Ohio"}
+        });
+    }
 }

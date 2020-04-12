@@ -10,8 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazored.Typeahead" Version="4.3.0" />
     <PackageReference Include="BlazorInputFile" Version="0.1.0-preview-00002" />
-    <PackageReference Include="BlazorStrap" Version="1.3.0" />
+    <PackageReference Include="BlazorStrap" Version="1.3.1" />
     <PackageReference Include="ChartJs.Blazor" Version="1.1.0" />
     <PackageReference Include="Cloudcrate.AspNetCore.Blazor.Browser.Storage" Version="3.0.0" />
     <PackageReference Include="FluentValidation" Version="9.0.0-preview3" />
