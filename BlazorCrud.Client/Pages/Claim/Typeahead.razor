@@ -20,7 +20,7 @@
                     @patient.Name
                 </SelectedTemplate>
                 <ResultTemplate Context="patient">
-                    @patient.Name (@patient.Location)
+                    @patient.Name (@patient.State)
                 </ResultTemplate>
             </BlazoredTypeahead>
             <ValidationMessage For="@(() => ClaimsModel.SelectedPatient)" />
@@ -30,18 +30,18 @@
         <div>
             <label class="control-label">Provider</label>
             <BlazoredTypeahead SearchMethod="GetProvidersLocal"
-                               @bind-Value="ClaimsModel.SelectedProvider"
+                               @bind-Value="ClaimsModel.SelectedOrganization"
                                EnableDropDown="true"
                                class="form-control"
                                placeholder="Search by provider name...">
-                <SelectedTemplate Context="provider">
-                    @provider.Name
+                <SelectedTemplate Context="organization">
+                    @organization.Name
                 </SelectedTemplate>
-                <ResultTemplate Context="provider">
-                    @provider.Name (@provider.Location)
+                <ResultTemplate Context="organization">
+                    @organization.Name (@organization.Type)
                 </ResultTemplate>
             </BlazoredTypeahead>
-            <ValidationMessage For="@(() => ClaimsModel.SelectedProvider)" />
+            <ValidationMessage For="@(() => ClaimsModel.SelectedOrganization)" />
         </div>
     </p>
     <p>
@@ -123,7 +123,7 @@
     private ClaimModelView ClaimsModel = new ClaimModelView
     {
         SelectedPatient = null,
-        SelectedProvider = null,
+        SelectedOrganization = null,
         Type = "",
         Status = "",
         LineItems = new List<_LineItem>
@@ -142,12 +142,12 @@
         claimModel.LineItems.Add(new _LineItem { Service = "", Amount = 0 });
     }
 
-    private async Task<IEnumerable<_Patient>> GetPatientsLocal(string searchText)
+    private async Task<IEnumerable<Patient>> GetPatientsLocal(string searchText)
     {
         return await Task.FromResult(Patients.Where(x => x.Name.ToLower().Contains(searchText.ToLower())).ToList());
     }
 
-    private async Task<IEnumerable<_Provider>> GetProvidersLocal(string searchText)
+    private async Task<IEnumerable<Organization>> GetProvidersLocal(string searchText)
     {
         return await Task.FromResult(Providers.Where(x => x.Name.ToLower().Contains(searchText.ToLower())).ToList());
     }
@@ -156,7 +156,7 @@
     {
         Console.WriteLine("Form Submitted Successfully!");
         Console.WriteLine("Patient Name: " + ClaimsModel.SelectedPatient.Name);
-        Console.WriteLine("Provider Name: " + ClaimsModel.SelectedProvider.Name);
+        Console.WriteLine("Provider Name: " + ClaimsModel.SelectedOrganization.Name);
         Console.WriteLine("Claim Type: " + ClaimsModel.Type);
         Console.WriteLine("Claim Status: " + ClaimsModel.Status);
         int i = 1;
@@ -167,38 +167,38 @@
         }
     }
 
-    private List<_Patient> Patients = new List<_Patient>();
-    private List<_Provider> Providers = new List<_Provider>();
+    private List<Patient> Patients = new List<Patient>();
+    private List<Organization> Providers = new List<Organization>();
     protected override void OnInitialized()
     {
-        Patients.AddRange(new List<_Patient>() {
-            new _Patient() {Id = 1, Name = "Thomas Beck", Location = "Michigan"},
-            new _Patient() {Id = 2, Name = "Simian Beyer", Location = "Ohio"},
-            new _Patient() {Id = 3, Name = "Sally Smits", Location = "Illinois"},
-            new _Patient() {Id = 4, Name = "Otto Van Buren", Location = "Ohio"},
-            new _Patient() {Id = 5, Name = "Jon Snodgrass", Location = "Michigan"},
-            new _Patient() {Id = 6, Name = "Steven James", Location = "Ohio"},
-            new _Patient() {Id = 7, Name = "Werner Voggs", Location = "Illinois"},
-            new _Patient() {Id = 8, Name = "Andrew Lusterberg", Location = "Ohio"},
-            new _Patient() {Id = 9, Name = "Mario Andreos", Location = "Michigan"},
-            new _Patient() {Id = 10, Name = "Lucy Limpara", Location = "Ohio"},
-            new _Patient() {Id = 11, Name = "Ellen Degrasa", Location = "Illinois"},
-            new _Patient() {Id = 12, Name = "Michele Smits", Location = "Ohio"}
+        Patients.AddRange(new List<Patient>() {
+            new Patient() {Id = 1, Name = "Thomas Beck", State = "Michigan"},
+            new Patient() {Id = 2, Name = "Simian Beyer", State = "Ohio"},
+            new Patient() {Id = 3, Name = "Sally Smits", State = "Illinois"},
+            new Patient() {Id = 4, Name = "Otto Van Buren", State = "Ohio"},
+            new Patient() {Id = 5, Name = "Jon Snodgrass", State = "Michigan"},
+            new Patient() {Id = 6, Name = "Steven James", State = "Ohio"},
+            new Patient() {Id = 7, Name = "Werner Voggs", State = "Illinois"},
+            new Patient() {Id = 8, Name = "Andrew Lusterberg", State = "Ohio"},
+            new Patient() {Id = 9, Name = "Mario Andreos", State = "Michigan"},
+            new Patient() {Id = 10, Name = "Lucy Limpara", State = "Ohio"},
+            new Patient() {Id = 11, Name = "Ellen Degrasa", State = "Illinois"},
+            new Patient() {Id = 12, Name = "Michele Smits", State = "Ohio"}
         });
 
-        Providers.AddRange(new List<_Provider>() {
-            new _Provider() {Id = 1, Name = "Barbarossa Services", Location = "Michigan"},
-            new _Provider() {Id = 2, Name = "Hanseatic Inc.", Location = "Ohio"},
-            new _Provider() {Id = 3, Name = "Lake Orion Clinical", Location = "Illinois"},
-            new _Provider() {Id = 4, Name = "Greater Bloomberg Clinic", Location = "Michigan"},
-            new _Provider() {Id = 5, Name = "Inner City Inc.", Location = "Ohio"},
-            new _Provider() {Id = 6, Name = "Plasma Services Ltd.", Location = "Illinois"},
-            new _Provider() {Id = 7, Name = "Amalgamated Services Ltd.", Location = "Michigan"},
-            new _Provider() {Id = 8, Name = "Papaioa Medical Services", Location = "Ohio"},
-            new _Provider() {Id = 9, Name = "Smith & Sons Practices", Location = "Illinois"},
-            new _Provider() {Id = 10, Name = "Medical Enclave Services Ltd.", Location = "Michigan"},
-            new _Provider() {Id = 11, Name = "Smith and Restugian Surgery", Location = "Ohio"},
-            new _Provider() {Id = 12, Name = "Ottos Outpatient Inc.", Location = "Illinois"}
+        Providers.AddRange(new List<Organization>() {
+            new Organization() {Id = 1, Name = "Barbarossa Services", Type = "Insurance Company"},
+            new Organization() {Id = 2, Name = "Hanseatic Inc.", Type = "Hospital Department"},
+            new Organization() {Id = 3, Name = "Lake Orion Clinical", Type = "Healthcare Provider"},
+            new Organization() {Id = 4, Name = "Greater Bloomberg Clinic", Type = "Insurance Company"},
+            new Organization() {Id = 5, Name = "Inner City Inc.", Type = "Hospital Department"},
+            new Organization() {Id = 6, Name = "Plasma Services Ltd.", Type = "Organizational Team"},
+            new Organization() {Id = 7, Name = "Amalgamated Services Ltd.", Type = "Healthcare Provider"},
+            new Organization() {Id = 8, Name = "Papaioa Medical Services", Type = "Healthcare Provider"},
+            new Organization() {Id = 9, Name = "Smith & Sons Practices", Type = "Organizational Team"},
+            new Organization() {Id = 10, Name = "Medical Enclave Services Ltd.", Type = "Healthcare Provider"},
+            new Organization() {Id = 11, Name = "Smith and Restugian Surgery", Type = "Insurance Company"},
+            new Organization() {Id = 12, Name = "Ottos Outpatient Inc.", Type = "Healthcare Provider"}
         });
     }
 }
