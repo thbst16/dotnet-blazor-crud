@@ -5,6 +5,9 @@
 
 <EditForm Model="ClaimsModel" OnValidSubmit="HandleFormSubmit">
     <FluentValidator TValidator="ClaimModelViewValidator" />
+    <br />
+    <h5>Claim Details</h5>
+    <hr />
     <p>
         <div>
             <label class="control-label">Patient</label>
@@ -68,11 +71,76 @@
             <ValidationMessage For="@(() => ClaimsModel.Status)" />
         </div>
     </p>
-    <button class="btn btn-primary" type="submit" style="margin-top: 20px;">Submit</button>
+    <br />
+    <h5>Claim Line Item</h5>
+    <hr />
+
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label class="control-label">Service</label>
+        </div>
+        <div class="form-group col-md-5">
+            <label class="control-label">Amount</label>
+        </div>
+    </div>
+
+    <ValidationMessage For="@(() => ClaimsModel.LineItems)" />
+    @foreach (var lineItem in ClaimsModel.LineItems)
+    {
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <InputSelect id="Service" class="form-control" placeholder="Service" @bind-Value="lineItem.Service">
+                    <option value="">-- Select Service --</option>
+                    <option value="Medical Care">Medical Care</option>
+                    <option value="Surgery">Surgery</option>
+                    <option value="Consultation">Consultation</option>
+                    <option value="Diagnostic X-Ray">Diagnostic X-Ray</option>
+                    <option value="Diagnostic Lab">Diagnostic Lab</option>
+                    <option value="Radiation Therapy">Radiation Therapy</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => lineItem.Service)" />
+            </div>
+            <div class="form-group col-md-5">
+                <InputNumber id="Amount" class="form-control" placeholder="Provider" @bind-Value="lineItem.Amount" />
+                <ValidationMessage For="@(() => lineItem.Amount)" />
+            </div>
+            <div class="form-group col-md-1">
+                <a href="javascript:void(0)" class="btn btn-danger" @onclick="@(()=>OnLineItemDelete(ClaimsModel, lineItem))">X</a>
+            </div>
+        </div>
+    }
+
+    <div class="form-group">
+        <a href="javascript:void(0)" class="btn btn-success" @onclick="@(()=>OnLineItemAdd(ClaimsModel))">Add Line Item</a>
+    </div>
+    <hr />
+    <div class="form-group">
+        <button type="submit" class="btn btn-success">Save</button>
+    </div>
 </EditForm>
 
 @code{
-    private ClaimModelView ClaimsModel = new ClaimModelView();
+    private ClaimModelView ClaimsModel = new ClaimModelView
+    {
+        SelectedPatient = null,
+        SelectedProvider = null,
+        Type = "",
+        Status = "",
+        LineItems = new List<_LineItem>
+        {
+            new _LineItem {Service="", Amount=0}
+        }
+    };
+
+    public void OnLineItemDelete(ClaimModelView claimModel, _LineItem lineItem)
+    {
+        claimModel.LineItems.Remove(lineItem);
+    }
+
+    public void OnLineItemAdd(ClaimModelView claimModel)
+    {
+        claimModel.LineItems.Add(new _LineItem { Service = "", Amount = 0 });
+    }
 
     private async Task<IEnumerable<_Patient>> GetPatientsLocal(string searchText)
     {
@@ -91,6 +159,12 @@
         Console.WriteLine("Provider Name: " + ClaimsModel.SelectedProvider.Name);
         Console.WriteLine("Claim Type: " + ClaimsModel.Type);
         Console.WriteLine("Claim Status: " + ClaimsModel.Status);
+        int i = 1;
+        foreach(_LineItem li in ClaimsModel.LineItems)
+        {
+            Console.WriteLine("Claim Line Item " + i + " --> " + "Service: " + li.Service + ", Amount: " + li.Amount);
+            i++;
+        }
     }
 
     private List<_Patient> Patients = new List<_Patient>();
