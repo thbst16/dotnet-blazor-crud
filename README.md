@@ -29,6 +29,7 @@ Blazor CRUD uses the following DevOps environment and tools to support a CI / CD
 * Javascript Web Token (JWT) authentication
 * Automation of Azure Infrastructure Setup
 * Data generation to pre-populate thousdands of entity records
+* Typeahead for entity lookup on modal data entry screens (preview functionality)
 
 # Open Source Used
 
@@ -42,3 +43,4 @@ Blazor CRUD uses the following DevOps environment and tools to support a CI / CD
 * [ChartJs.Blazor](https://github.com/mariusmuntean/ChartJs.Blazor) Blazor component that wraps ChartJs widgets for dashboard.
 * [FluentValidation](https://github.com/JeremySkinner/FluentValidation) For entity validation, including complex object graph validations. 
 * [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle) for Swagger document generation.
+* [Typeahead](https://github.com/Blazored/Typeahead) for typeahead lookup of key entities.
