@@ -1,16 +1,15 @@
 ﻿@page "/claim/typeahead"
 @inject HttpClient httpClient
 
-<h3>Blazored Typeahead - Local Form</h3>
+<h3>Blazored Typeahead - Claims Page Prototype</h3>
 
-<EditForm Model="FormModel" OnValidSubmit="HandleFormSubmit">
-    <DataAnnotationsValidator />
-
+<EditForm Model="ClaimsModel" OnValidSubmit="HandleFormSubmit">
+    <FluentValidator TValidator="ClaimModelViewValidator" />
     <p>
         <div>
             <label class="control-label">Patient</label>
             <BlazoredTypeahead SearchMethod="GetPatientsLocal"
-                               @bind-Value="FormModel.SelectedPatient"
+                               @bind-Value="ClaimsModel.SelectedPatient"
                                EnableDropDown="true"
                                class="form-control"
                                placeholder="Search by patient name...">
@@ -21,42 +20,81 @@
                     @patient.Name (@patient.Location)
                 </ResultTemplate>
             </BlazoredTypeahead>
-            <ValidationMessage For="@(() => FormModel.SelectedPatient)" />
+            <ValidationMessage For="@(() => ClaimsModel.SelectedPatient)" />
+        </div>
+    </p>
+    <p>
+        <div>
+            <label class="control-label">Provider</label>
+            <BlazoredTypeahead SearchMethod="GetProvidersLocal"
+                               @bind-Value="ClaimsModel.SelectedProvider"
+                               EnableDropDown="true"
+                               class="form-control"
+                               placeholder="Search by provider name...">
+                <SelectedTemplate Context="provider">
+                    @provider.Name
+                </SelectedTemplate>
+                <ResultTemplate Context="provider">
+                    @provider.Name (@provider.Location)
+                </ResultTemplate>
+            </BlazoredTypeahead>
+            <ValidationMessage For="@(() => ClaimsModel.SelectedProvider)" />
+        </div>
+    </p>
+    <p>
+        <div>
+            <label class="control-label">Type</label>
+            <InputSelect id="Type" class="form-control" @bind-Value="ClaimsModel.Type">
+                <option value="">-- Select Type --</option>
+                <option value="Institutional">Institutional</option>
+                <option value="Oral">Oral</option>
+                <option value="Pharmacy">Pharmacy</option>
+                <option value="Professional">Professional</option>
+                <option value="Vision">Vision</option>
+            </InputSelect>
+            <ValidationMessage For="@(() => ClaimsModel.Type)" />
         </div>
     </p>
     <p>
         <div>
             <label class="control-label">Status</label>
-            <InputSelect id="Status" class="form-control" @bind-Value="FormModel.Status">
+            <InputSelect id="Status" class="form-control" @bind-Value="ClaimsModel.Status">
                 <option value="">-- Select Status --</option>
                 <option value="Active">Active</option>
                 <option value="Cancelled">Cancelled</option>
                 <option value="Draft">Draft</option>
                 <option value="Entered-in-Error">Entered-in-Error</option>
             </InputSelect>
-            <ValidationMessage For="@(() => FormModel.Status)" />
+            <ValidationMessage For="@(() => ClaimsModel.Status)" />
         </div>
     </p>
-
-        <button class="btn btn-primary" type="submit" style="margin-top: 20px;">Submit</button>
+    <button class="btn btn-primary" type="submit" style="margin-top: 20px;">Submit</button>
 </EditForm>
 
 @code{
-    private FormMapper FormModel = new FormMapper();
+    private ClaimModelView ClaimsModel = new ClaimModelView();
 
     private async Task<IEnumerable<_Patient>> GetPatientsLocal(string searchText)
     {
         return await Task.FromResult(Patients.Where(x => x.Name.ToLower().Contains(searchText.ToLower())).ToList());
     }
 
+    private async Task<IEnumerable<_Provider>> GetProvidersLocal(string searchText)
+    {
+        return await Task.FromResult(Providers.Where(x => x.Name.ToLower().Contains(searchText.ToLower())).ToList());
+    }
+
     private void HandleFormSubmit()
     {
         Console.WriteLine("Form Submitted Successfully!");
-        Console.WriteLine("Patient Name: " + FormModel.SelectedPatient.Name);
-        Console.WriteLine("Status: " + FormModel.Status);
+        Console.WriteLine("Patient Name: " + ClaimsModel.SelectedPatient.Name);
+        Console.WriteLine("Provider Name: " + ClaimsModel.SelectedProvider.Name);
+        Console.WriteLine("Claim Type: " + ClaimsModel.Type);
+        Console.WriteLine("Claim Status: " + ClaimsModel.Status);
     }
 
     private List<_Patient> Patients = new List<_Patient>();
+    private List<_Provider> Providers = new List<_Provider>();
     protected override void OnInitialized()
     {
         Patients.AddRange(new List<_Patient>() {
@@ -72,6 +110,21 @@
             new _Patient() {Id = 10, Name = "Lucy Limpara", Location = "Ohio"},
             new _Patient() {Id = 11, Name = "Ellen Degrasa", Location = "Illinois"},
             new _Patient() {Id = 12, Name = "Michele Smits", Location = "Ohio"}
+        });
+
+        Providers.AddRange(new List<_Provider>() {
+            new _Provider() {Id = 1, Name = "Barbarossa Services", Location = "Michigan"},
+            new _Provider() {Id = 2, Name = "Hanseatic Inc.", Location = "Ohio"},
+            new _Provider() {Id = 3, Name = "Lake Orion Clinical", Location = "Illinois"},
+            new _Provider() {Id = 4, Name = "Greater Bloomberg Clinic", Location = "Michigan"},
+            new _Provider() {Id = 5, Name = "Inner City Inc.", Location = "Ohio"},
+            new _Provider() {Id = 6, Name = "Plasma Services Ltd.", Location = "Illinois"},
+            new _Provider() {Id = 7, Name = "Amalgamated Services Ltd.", Location = "Michigan"},
+            new _Provider() {Id = 8, Name = "Papaioa Medical Services", Location = "Ohio"},
+            new _Provider() {Id = 9, Name = "Smith & Sons Practices", Location = "Illinois"},
+            new _Provider() {Id = 10, Name = "Medical Enclave Services Ltd.", Location = "Michigan"},
+            new _Provider() {Id = 11, Name = "Smith and Restugian Surgery", Location = "Ohio"},
+            new _Provider() {Id = 12, Name = "Ottos Outpatient Inc.", Location = "Illinois"}
         });
     }
 }
