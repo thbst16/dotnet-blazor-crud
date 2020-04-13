@@ -26,8 +26,6 @@ namespace BlazorCrud.Shared.Models
             CascadeMode = CascadeMode.StopOnFirstFailure;
 
             RuleFor(lineitem => lineitem.Service).NotEmpty().WithMessage("Service is a required field.");
-            RuleFor(lineitem => lineitem.Provider).NotEmpty().WithMessage("Provider is a required field.")
-                .Length(5, 50).WithMessage("Provider must be between 5 and 50 characters.");
             RuleFor(lineitem => lineitem.Amount).NotEmpty().WithMessage("Amount is a required field.");
         }
     }

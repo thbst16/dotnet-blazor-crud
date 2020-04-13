@@ -73,6 +73,7 @@ namespace BlazorCrud.Server
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
+                c.CustomSchemaIds(r => r.FullName);
             });
 
             services.AddResponseCompression(opts =>
@@ -117,7 +118,7 @@ namespace BlazorCrud.Server
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blazore CRUD API v1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blazor CRUD API v1");
             });
 
             app.UseAuthentication();

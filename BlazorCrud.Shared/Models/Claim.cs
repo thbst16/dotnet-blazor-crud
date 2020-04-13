@@ -19,7 +19,6 @@ namespace BlazorCrud.Shared.Models
     {
         public int Id { get; set; }
         public string Service { get; set; }
-        public string Provider { get; set; }
         public decimal Amount { get; set; }
     }
 }

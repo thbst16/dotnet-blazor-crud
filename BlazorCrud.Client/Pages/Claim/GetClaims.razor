@@ -79,36 +79,47 @@ else
     <BSModal @bind-IsOpen="@isAdd" Size="Size.Large" IgnoreEscape="true" IgnoreClickOnBackdrop="true">
         <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
         <BSModalBody>
-            <div class="col-md-9">
-                <EditForm Model="@claim" OnValidSubmit="@CreateClaim">
-                    <FluentValidator TValidator="ClaimValidator" />
+            <div class="col-md-12">
+                <EditForm Model="ClaimsModel" OnValidSubmit="CreateClaim">
+                    <FluentValidator TValidator="ClaimViewModelValidator" />
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label for="Patient" class="control-label">Patient</label>
-                            <InputText id="Patient" class="form-control" @bind-Value="claim.Patient" />
-                            <ValidationMessage For="@(() => claim.Patient)" />
+                            <label class="control-label">Patient</label>
+                            <BlazoredTypeahead SearchMethod="GetPatients"
+                                               @bind-Value="ClaimsModel.SelectedPatient"
+                                               EnableDropDown="true"
+                                               class="form-control"
+                                               placeholder="Search by patient name...">
+                                <SelectedTemplate Context="patient">
+                                    @patient.Name
+                                </SelectedTemplate>
+                                <ResultTemplate Context="patient">
+                                    @patient.Name (@patient.State)
+                                </ResultTemplate>
+                            </BlazoredTypeahead>
+                            <ValidationMessage For="@(() => ClaimsModel.SelectedPatient)" />
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="Organization" class="control-label">Organization</label>
-                            <InputText id="Organization" class="form-control" @bind-Value="claim.Organization" />
-                            <ValidationMessage For="@(() => claim.Organization)" />
+                            <label class="control-label">Provider</label>
+                            <BlazoredTypeahead SearchMethod="GetProviders"
+                                               @bind-Value="ClaimsModel.SelectedOrganization"
+                                               EnableDropDown="true"
+                                               class="form-control"
+                                               placeholder="Search by provider name...">
+                                <SelectedTemplate Context="organization">
+                                    @organization.Name
+                                </SelectedTemplate>
+                                <ResultTemplate Context="organization">
+                                    @organization.Name (@organization.Type)
+                                </ResultTemplate>
+                            </BlazoredTypeahead>
+                            <ValidationMessage For="@(() => ClaimsModel.SelectedOrganization)" />
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label asp-for="Status" class="control-label">Status</label>
-                            <InputSelect id="Status" class="form-control" @bind-Value="claim.Status">
-                                <option value="">-- Select Status --</option>
-                                <option value="Active">Active</option>
-                                <option value="Cancelled">Cancelled</option>
-                                <option value="Draft">Draft</option>
-                                <option value="Entered-in-Error">Entered-in-Error</option>
-                            </InputSelect>
-                            <ValidationMessage For="@(() => claim.Status)" />
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Type" class="control-label">Type</label>
-                            <InputSelect id="Type" class="form-control" @bind-Value="claim.Type">
+                            <label class="control-label">Type</label>
+                            <InputSelect id="Type" class="form-control" @bind-Value="ClaimsModel.Type">
                                 <option value="">-- Select Type --</option>
                                 <option value="Institutional">Institutional</option>
                                 <option value="Oral">Oral</option>
@@ -116,7 +127,18 @@ else
                                 <option value="Professional">Professional</option>
                                 <option value="Vision">Vision</option>
                             </InputSelect>
-                            <ValidationMessage For="@(() => claim.Type)" />
+                            <ValidationMessage For="@(() => ClaimsModel.Type)" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Status</label>
+                            <InputSelect id="Status" class="form-control" @bind-Value="ClaimsModel.Status">
+                                <option value="">-- Select Status --</option>
+                                <option value="Active">Active</option>
+                                <option value="Cancelled">Cancelled</option>
+                                <option value="Draft">Draft</option>
+                                <option value="Entered-in-Error">Entered-in-Error</option>
+                            </InputSelect>
+                            <ValidationMessage For="@(() => ClaimsModel.Status)" />
                         </div>
                     </div>
 
@@ -125,22 +147,19 @@ else
                     <hr />
 
                     <div class="form-row">
-                        <div class="form-group col-md-4">
+                        <div class="form-group col-md-6">
                             <label class="control-label">Service</label>
                         </div>
-                        <div class="form-group col-md-4">
-                            <label class="control-label">Provider</label>
-                        </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-5">
                             <label class="control-label">Amount</label>
                         </div>
                     </div>
 
-                    <ValidationMessage For="@(() => claim.LineItems)" />
-                    @foreach (var lineItem in claim.LineItems)
+                    <ValidationMessage For="@(() => ClaimsModel.LineItems)" />
+                    @foreach (var lineItem in ClaimsModel.LineItems)
                     {
                         <div class="form-row">
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-6">
                                 <InputSelect id="Service" class="form-control" placeholder="Service" @bind-Value="lineItem.Service">
                                     <option value="">-- Select Service --</option>
                                     <option value="Medical Care">Medical Care</option>
@@ -152,21 +171,17 @@ else
                                 </InputSelect>
                                 <ValidationMessage For="@(() => lineItem.Service)" />
                             </div>
-                            <div class="form-group col-md-4">
-                                <InputText id="Provider" class="form-control" placeholder="Provider" @bind-Value="lineItem.Provider" />
-                                <ValidationMessage For="@(() => lineItem.Provider)" />
-                            </div>
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-5">
                                 <InputNumber id="Amount" class="form-control" placeholder="Provider" @bind-Value="lineItem.Amount" />
                                 <ValidationMessage For="@(() => lineItem.Amount)" />
                             </div>
                             <div class="form-group col-md-1">
-                                <a href="javascript:void(0)" class="btn btn-danger" @onclick="@(()=>OnLineItemDelete(claim, lineItem))">X</a>
+                                <a href="javascript:void(0)" class="btn btn-danger" @onclick="@(()=>OnLineItemDelete(ClaimsModel, lineItem))">X</a>
                             </div>
                         </div>
                     }
                     <div class="form-group">
-                        <a href="javascript:void(0)" class="btn btn-success" @onclick="@(()=>OnLineItemAdd(claim))">Add Line Item</a>
+                        <a href="javascript:void(0)" class="btn btn-success" @onclick="@(()=>OnLineItemAdd(ClaimsModel))">Add Line Item</a>
                     </div>
                     <hr />
                     <div class="form-group">
@@ -183,7 +198,7 @@ else
     <BSModal @bind-IsOpen="isView" Size="Size.Large" IgnoreEscape="true" IgnoreClickOnBackdrop="true">
         <BSModalHeader @onclick="CloseModal">@modalTitle</BSModalHeader>
         <BSModalBody>
-            <div class="col-md-9">
+            <div class="col-md-12">
                 @if (isDelete)
                 {
                     <BSAlert Color="Color.Danger">Please review carefully before deleting.</BSAlert>
@@ -229,7 +244,6 @@ else
                         <tr>
                             <th>ID</th>
                             <th>Service</th>
-                            <th>Provider</th>
                             <th>Amount</th>
                         </tr>
                     </thead>
@@ -239,7 +253,6 @@ else
                             <tr>
                                 <td>@lineItem.Id</td>
                                 <td>@lineItem.Service</td>
-                                <td>@lineItem.Provider</td>
                                 <td>@string.Format("{0:C}", lineItem.Amount)</td>
                             </tr>
                         }
@@ -269,15 +282,28 @@ else
     public string SearchTerm { get; set; } = string.Empty;
 
     protected PagedResult<Claim> Claims;
+
+    private ClaimViewModel ClaimsModel = new ClaimViewModel
+    {
+        SelectedPatient = null,
+        SelectedOrganization = null,
+        Type = "",
+        Status = "",
+        LineItems = new List<BlazorCrud.Shared.ViewModels.LineItem>
+        {
+            new BlazorCrud.Shared.ViewModels.LineItem {Service="", Amount=0}
+        }
+    };
+
     protected Claim claim = new Claim
     {
         Patient = "",
         Organization = "",
         Status = "",
         Type = "",
-        LineItems = new List<LineItem>
+        LineItems = new List<BlazorCrud.Shared.Models.LineItem>
         {
-            new LineItem { Service = "", Provider ="", Amount = 0}
+            new BlazorCrud.Shared.Models.LineItem { Service = "", Amount = 0}
         }
     };
 
@@ -329,6 +355,18 @@ else
         UriHelper.NavigateTo("/claim/list/" + page);
     }
 
+    private async Task<IEnumerable<Patient>> GetPatients(string searchText)
+    {
+        var result = await Http.GetJsonAsync<List<Patient>>(Storage.GetItem("environment_uri") + "/patient/TypeAhead?name=" + searchText);
+        return result;
+    }
+
+    private async Task<IEnumerable<Organization>> GetProviders(string searchText)
+    {
+        var result = await Http.GetJsonAsync<List<Organization>>(Storage.GetItem("environment_uri") + "/organization/TypeAhead?name=" + searchText);
+        return result;
+    }
+
     protected void AddClaim()
     {
         this.isAdd = true;
@@ -337,7 +375,7 @@ else
 
     protected async Task UpdateClaim(int ClaimId)
     {
-        claim = await Http.GetJsonAsync<Claim>(Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(ClaimId));
+        ClaimsModel = await Http.GetJsonAsync<ClaimViewModel>(Storage.GetItem("environment_uri") + "/claimviewmodel/" + Convert.ToInt32(ClaimId));
         CurrentClaimId = ClaimId;
         this.isAdd = true;
         this.modalTitle = "Edit Claim";
@@ -364,13 +402,14 @@ else
     {
         var token = Storage["JWT-Token"];
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
         if (CurrentClaimId == 0)
         {
-            await Http.SendJsonAsync(HttpMethod.Post, Storage.GetItem("environment_uri") + "/claim", claim);
+            await Http.SendJsonAsync(HttpMethod.Post, Storage.GetItem("environment_uri") + "/claim", ClaimsModel);
         }
         else
         {
-            await Http.SendJsonAsync(HttpMethod.Put, Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(CurrentClaimId), claim);
+            await Http.SendJsonAsync(HttpMethod.Put, Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(CurrentClaimId), ClaimsModel);
         }
         CloseModal();
         Storage.SetItem("Transaction", "modified");
@@ -395,9 +434,9 @@ else
             Organization = "",
             Status = "",
             Type = "",
-            LineItems = new List<LineItem>
+            LineItems = new List<BlazorCrud.Shared.Models.LineItem>
             {
-                new LineItem { Service = "", Provider ="", Amount = 0}
+                new BlazorCrud.Shared.Models.LineItem { Service = "", Amount = 0}
             }
         };
         CurrentClaimId = 0;
@@ -407,13 +446,13 @@ else
         StateHasChanged();
     }
 
-    public void OnLineItemDelete(Claim claim, LineItem lineItem)
+    public void OnLineItemDelete(ClaimViewModel claimModel, BlazorCrud.Shared.ViewModels.LineItem lineItem)
     {
-        claim.LineItems.Remove(lineItem);
+        claimModel.LineItems.Remove(lineItem);
     }
 
-    public void OnLineItemAdd(Claim claim)
+    public void OnLineItemAdd(ClaimViewModel claimModel)
     {
-        claim.LineItems.Add(new LineItem { Service = "", Provider = "", Amount = 0 });
+        claimModel.LineItems.Add(new BlazorCrud.Shared.ViewModels.LineItem { Service = "", Amount = 0 });
     }
 }

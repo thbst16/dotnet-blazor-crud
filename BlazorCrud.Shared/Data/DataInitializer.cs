@@ -72,7 +72,6 @@ namespace BlazorCrud.Shared.Data
                 var service = new[] { "Medical Care", "Surgery", "Consultation", "Diagnostic X-Ray", "Diagnostic Lab", "Radiation Therapy" };
                 var testLineItems = new Faker<LineItem>()
                     .RuleFor(li => li.Service, f => f.PickRandom(service))
-                    .RuleFor(li => li.Provider, (f, u) => "Dr. " + f.Name.LastName())
                     .RuleFor(li => li.Amount, f => f.Finance.Amount(50, 1000, 2));
 
                 // Create new claims only if the collection is empty

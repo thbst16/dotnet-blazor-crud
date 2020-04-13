@@ -5,7 +5,7 @@
 <h3>Blazored Typeahead - Claims Page Prototype</h3>
 
 <EditForm Model="ClaimsModel" OnValidSubmit="HandleFormSubmit">
-    <FluentValidator TValidator="ClaimModelViewValidator" />
+    <FluentValidator TValidator="ClaimViewModelValidator" />
     <br />
     <h5>Claim Details</h5>
     <hr />
@@ -121,26 +121,26 @@
 </EditForm>
 
 @code{
-    private ClaimModelView ClaimsModel = new ClaimModelView
+    private ClaimViewModel ClaimsModel = new ClaimViewModel
     {
         SelectedPatient = null,
         SelectedOrganization = null,
         Type = "",
         Status = "",
-        LineItems = new List<_LineItem>
+        LineItems = new List<BlazorCrud.Shared.ViewModels.LineItem>
     {
-            new _LineItem {Service="", Amount=0}
+            new BlazorCrud.Shared.ViewModels.LineItem {Service="", Amount=0}
         }
     };
 
-    public void OnLineItemDelete(ClaimModelView claimModel, _LineItem lineItem)
+    public void OnLineItemDelete(ClaimViewModel claimModel, BlazorCrud.Shared.ViewModels.LineItem lineItem)
     {
         claimModel.LineItems.Remove(lineItem);
     }
 
-    public void OnLineItemAdd(ClaimModelView claimModel)
+    public void OnLineItemAdd(ClaimViewModel claimModel)
     {
-        claimModel.LineItems.Add(new _LineItem { Service = "", Amount = 0 });
+        claimModel.LineItems.Add(new BlazorCrud.Shared.ViewModels.LineItem { Service = "", Amount = 0 });
     }
 
     private async Task<IEnumerable<Patient>> GetPatients(string searchText)
@@ -163,45 +163,10 @@
         Console.WriteLine("Claim Type: " + ClaimsModel.Type);
         Console.WriteLine("Claim Status: " + ClaimsModel.Status);
         int i = 1;
-        foreach (_LineItem li in ClaimsModel.LineItems)
+        foreach (BlazorCrud.Shared.ViewModels.LineItem li in ClaimsModel.LineItems)
         {
             Console.WriteLine("Claim Line Item " + i + " --> " + "Service: " + li.Service + ", Amount: " + li.Amount);
             i++;
         }
-    }
-
-    private List<Patient> Patients = new List<Patient>();
-    private List<Organization> Providers = new List<Organization>();
-    protected override void OnInitialized()
-    {
-        Patients.AddRange(new List<Patient>() {
-            new Patient() {Id = 1, Name = "Thomas Beck", State = "Michigan"},
-            new Patient() {Id = 2, Name = "Simian Beyer", State = "Ohio"},
-            new Patient() {Id = 3, Name = "Sally Smits", State = "Illinois"},
-            new Patient() {Id = 4, Name = "Otto Van Buren", State = "Ohio"},
-            new Patient() {Id = 5, Name = "Jon Snodgrass", State = "Michigan"},
-            new Patient() {Id = 6, Name = "Steven James", State = "Ohio"},
-            new Patient() {Id = 7, Name = "Werner Voggs", State = "Illinois"},
-            new Patient() {Id = 8, Name = "Andrew Lusterberg", State = "Ohio"},
-            new Patient() {Id = 9, Name = "Mario Andreos", State = "Michigan"},
-            new Patient() {Id = 10, Name = "Lucy Limpara", State = "Ohio"},
-            new Patient() {Id = 11, Name = "Ellen Degrasa", State = "Illinois"},
-            new Patient() {Id = 12, Name = "Michele Smits", State = "Ohio"}
-        });
-
-        Providers.AddRange(new List<Organization>() {
-            new Organization() {Id = 1, Name = "Barbarossa Services", Type = "Insurance Company"},
-            new Organization() {Id = 2, Name = "Hanseatic Inc.", Type = "Hospital Department"},
-            new Organization() {Id = 3, Name = "Lake Orion Clinical", Type = "Healthcare Provider"},
-            new Organization() {Id = 4, Name = "Greater Bloomberg Clinic", Type = "Insurance Company"},
-            new Organization() {Id = 5, Name = "Inner City Inc.", Type = "Hospital Department"},
-            new Organization() {Id = 6, Name = "Plasma Services Ltd.", Type = "Organizational Team"},
-            new Organization() {Id = 7, Name = "Amalgamated Services Ltd.", Type = "Healthcare Provider"},
-            new Organization() {Id = 8, Name = "Papaioa Medical Services", Type = "Healthcare Provider"},
-            new Organization() {Id = 9, Name = "Smith & Sons Practices", Type = "Organizational Team"},
-            new Organization() {Id = 10, Name = "Medical Enclave Services Ltd.", Type = "Healthcare Provider"},
-            new Organization() {Id = 11, Name = "Smith and Restugian Surgery", Type = "Insurance Company"},
-            new Organization() {Id = 12, Name = "Ottos Outpatient Inc.", Type = "Healthcare Provider"}
-        });
     }
 }

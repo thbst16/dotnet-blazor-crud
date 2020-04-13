@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace BlazorCrud.Client.Shared
+namespace BlazorCrud.Shared.ViewModels
 {
-    public class ClaimModelViewValidator : AbstractValidator<ClaimModelView>
+    public class ClaimViewModelValidator : AbstractValidator<ClaimViewModel>
     {
-        public ClaimModelViewValidator()
+        public ClaimViewModelValidator()
         {
             CascadeMode = CascadeMode.StopOnFirstFailure;
 
@@ -17,7 +17,7 @@ namespace BlazorCrud.Client.Shared
         }
     }
 
-    public class LineItemValidator : AbstractValidator<_LineItem>
+    public class LineItemValidator : AbstractValidator<LineItem>
     {
         public LineItemValidator()
         {

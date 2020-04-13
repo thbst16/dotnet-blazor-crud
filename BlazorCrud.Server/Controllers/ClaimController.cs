@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using BlazorCrud.Shared.Data;
 using BlazorCrud.Shared.Models;
+using BlazorCrud.Shared.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -68,14 +69,29 @@ namespace BlazorCrud.Server.Controllers
         /// </summary>
         [HttpPost]
         [Authorize]
-        public IActionResult Create(Claim claim)
+        public IActionResult Create(ClaimViewModel claim)
         {
+            // Map to ViewModel - Replace with Automapper
+            Claim _claim = new Claim();
+            _claim.LineItems = new System.Collections.Generic.List<Shared.Models.LineItem>();
+            _claim.Patient = claim.SelectedPatient.Name;
+            _claim.Organization = claim.SelectedOrganization.Name;
+            _claim.Type = claim.Type;
+            _claim.Status = claim.Status;
+            foreach (Shared.ViewModels.LineItem li in claim.LineItems)
+            {
+                Shared.Models.LineItem _li = new Shared.Models.LineItem();
+                _li.Service = li.Service;
+                _li.Amount = li.Amount;
+                _claim.LineItems.Add(_li);
+            }
+
             if (ModelState.IsValid)
             {
-                claim.ModifiedDate = DateTime.Now;
-                _context.Claims.Add(claim);
+                _claim.ModifiedDate = DateTime.Now;
+                _context.Claims.Add(_claim);
                 _context.SaveChanges();
-                return CreatedAtRoute("GetClaim", new { id = claim.Id }, claim);
+                return CreatedAtRoute("GetClaim", new { id = _claim.Id }, _claim);
             }
             else
             {
@@ -88,8 +104,25 @@ namespace BlazorCrud.Server.Controllers
         /// </summary>
         [HttpPut("{id}")]
         [Authorize]
-        public IActionResult Update(int id, Claim claim)
+        public IActionResult Update(int id, ClaimViewModel claim)
         {
+            // Map to ViewModel - Replace with Automapper
+            Claim _claim = new Claim();
+            _claim.LineItems = new System.Collections.Generic.List<Shared.Models.LineItem>();
+            _claim.Id = claim.Id;
+            _claim.Patient = claim.SelectedPatient.Name;
+            _claim.Organization = claim.SelectedOrganization.Name;
+            _claim.Type = claim.Type;
+            _claim.Status = claim.Status;
+            foreach (BlazorCrud.Shared.ViewModels.LineItem li in claim.LineItems)
+            {
+                BlazorCrud.Shared.Models.LineItem _li = new Shared.Models.LineItem();
+                _li.Id = li.Id;
+                _li.Service = li.Service;
+                _li.Amount = li.Amount;
+                _claim.LineItems.Add(_li);
+            }
+
             if (ModelState.IsValid)
             {
                 var existingClaim = _context.Claims
@@ -121,11 +154,10 @@ namespace BlazorCrud.Server.Controllers
                         _context.Entry(existingLineItem).CurrentValues.SetValues(lineItemModel);
                     else
                     {
-                        var newLineItem = new LineItem
+                        var newLineItem = new Shared.Models.LineItem
                         {
                             Id = lineItemModel.Id,
                             Service = lineItemModel.Service,
-                            Provider = lineItemModel.Provider,
                             Amount = lineItemModel.Amount
                         };
                         existingClaim.LineItems.Add(newLineItem);
