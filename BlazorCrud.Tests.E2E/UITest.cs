@@ -136,11 +136,11 @@ namespace BlazorCrud.Tests.E2E
                 driver.FindElement(By.Name("ClaimSearchInput")).SendKeys("bre");
                 driver.FindElement(By.Name("ClaimSearchButton")).Click();
                 var waitTest = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                waitTest.Until(d => d.PageSource.Contains("<td>Joel Brekke</td>"));
+                waitTest.Until(d => d.PageSource.Contains("<td>Brekke, Yundt and Spencer</td>"));
                 System.Threading.Thread.Sleep(1000);
-                Assert.IsTrue(driver.PageSource.Contains("<td>Barrows, Sanford and Brekke</td>"));
-                Assert.IsTrue(driver.PageSource.Contains("<td>Aubree Barton</td>"));
-                Assert.IsTrue(driver.PageSource.Contains("<td>Breanne Schiller</td>"));
+                Assert.IsTrue(driver.PageSource.Contains("<td>Breitenberg Inc</td>"));
+                Assert.IsTrue(driver.PageSource.Contains("<td>Brent Tillman</td>"));
+                Assert.IsTrue(driver.PageSource.Contains("<td>Brenden Roob</td>"));
             }
         }
 

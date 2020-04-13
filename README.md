@@ -1,5 +1,8 @@
 # BlazorCrud
-[![Build Status](https://beckshome.visualstudio.com/BlazorCRUD/_apis/build/status/thbst16.BlazorCrud?branchName=master)](https://beckshome.visualstudio.com/BlazorCRUD/_build/latest?definitionId=4&branchName=master)
+![Build Status](https://beckshome.visualstudio.com/BlazorCRUD/_apis/build/status/thbst16.BlazorCrud?branchName=master)
+![Deployment Status](https://beckshome.vsrm.visualstudio.com/_apis/public/Release/badge/4205f4a9-c0ad-4900-aefd-9efecd2543bc/1/2)
+![Docker Image Version (latest by date)](https://img.shields.io/docker/v/thbst16/blazor-crud?logo=docker)
+![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m784732895-fc1b844a033d7645bb9eefe9?logo=http)
 
 Blazor CRUD is a demo application built with the [Blazor](https://blazor.net) framework using the client-side hosting model with WebAssembly in the browser invoking .NET Core REST APIs secured by a JWT service. To browse the two components of the application, follow the links below. For authenticated pages and APIs, use the credentials (user@beckshome.com / Password123).
 * [Blazor CRUD Application](https://becksblazor.azurewebsites.net/) - A client side hosted WASM application built using Blazor. The application highlights CRUD data entry for entities, data pagination, client-side validation using Data Annotations, and authentication and authorization using JWT tokens.

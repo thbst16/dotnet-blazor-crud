@@ -71,8 +71,8 @@ namespace BlazorCrud.Tests.API
             var responseData = response.Content.ReadAsStringAsync();
             claims = JObject.Parse(responseData.Result).SelectToken("results").ToObject<List<Claim>>();
             Assert.AreEqual(10, claims.Count);
-            Assert.AreEqual("Marquardt - Morissette", claims[0].Organization);
-            Assert.AreEqual("Chet Hermiston", claims[1].Patient);
+            Assert.AreEqual("Donnelly, Bosco and Schumm", claims[0].Organization);
+            Assert.AreEqual("Libby Rath", claims[1].Patient);
         }
 
         [TestMethod()]
@@ -86,7 +86,7 @@ namespace BlazorCrud.Tests.API
             Assert.AreEqual("Royce Paucek", claim.Patient);
             Assert.AreEqual("Bayer LLC", claim.Organization);
             Assert.AreEqual("Active", claim.Status);
-            Assert.AreEqual("Vision", claim.Type);
+            Assert.AreEqual("Oral", claim.Type);
         }
 
         [TestCleanup()]
