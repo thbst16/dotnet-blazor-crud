@@ -24,7 +24,9 @@ namespace BlazorCrud.Shared.Models
 
         private void ValidateModel(EditContext editContext, ValidationMessageStore messages)
         {
-            var validationResult = validator.Validate(editContext.Model);
+            // var validationResult = validator.Validate((IValidationContext)editContext.Model);
+            var context = new ValidationContext<object>(editContext.Model);
+            var validationResult = validator.Validate(context);
             messages.Clear();
             foreach (var error in validationResult.Errors)
             {
