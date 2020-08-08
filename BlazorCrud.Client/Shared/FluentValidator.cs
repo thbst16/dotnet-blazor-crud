@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System;
 
-namespace BlazorCrud.Shared.Models
+namespace BlazorCrud.Client.Shared
 {
     public class FluentValidator<TValidator> : ComponentBase where TValidator : IValidator, new()
     {
@@ -17,6 +17,10 @@ namespace BlazorCrud.Shared.Models
             validator = new TValidator();
             var messages = new ValidationMessageStore(EditContext);
 
+            // Validate on field changes only after initial submission
+            EditContext.OnFieldChanged += (sender, eventArgs)
+                => ValidateModel((EditContext)sender, messages);
+
             // Validate when the entire form requests submission
             EditContext.OnValidationRequested += (sender, eventArgs)
                 => ValidateModel((EditContext)sender, messages);
@@ -24,7 +28,6 @@ namespace BlazorCrud.Shared.Models
 
         private void ValidateModel(EditContext editContext, ValidationMessageStore messages)
         {
-            // var validationResult = validator.Validate((IValidationContext)editContext.Model);
             var context = new ValidationContext<object>(editContext.Model);
             var validationResult = validator.Validate(context);
             messages.Clear();
@@ -34,10 +37,6 @@ namespace BlazorCrud.Shared.Models
                 messages.Add(fieldIdentifier, error.ErrorMessage);
             }
             editContext.NotifyValidationStateChanged();
-
-            // Validate on field changes only after initial submission
-            EditContext.OnFieldChanged += (sender, eventArgs)
-                => ValidateModel((EditContext)sender, messages);
         }
 
         private static FieldIdentifier ToFieldIdentifier(EditContext editContext, string propertyPath)
