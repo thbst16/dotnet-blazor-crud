@@ -25,6 +25,7 @@ stages:
         command: buildAndPush
         dockerfile: '$(Build.SourcesDirectory)/dockerfile'
         repository: thbst16/blazor-crud
+        buildContext: $(Build.Repository.LocalPath)
         containerRegistry: dockerhub-connection
         tags: |
           $(Build.BuildId)
