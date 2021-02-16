@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,7 +27,7 @@ namespace BlazorCrud.Server.Controllers
         /// Returns a list of paginated patients with a default page size of 10.
         /// </summary>
         [HttpGet]
-        public PagedResult<Patient> GetAll([FromQuery]string name, int page)
+        public PagedResult<Patient> GetAll([FromQuery] string name, int page)
         {
             int pageSize = 10;
             if (name != null)
@@ -52,7 +51,7 @@ namespace BlazorCrud.Server.Controllers
         /// </summary>
         [HttpGet]
         [Route("TypeAhead")]
-        public IEnumerable<Patient> TypeAhead([FromQuery]string name)
+        public IEnumerable<Patient> TypeAhead([FromQuery] string name)
         {
             if (name != null)
             {
@@ -121,10 +120,10 @@ namespace BlazorCrud.Server.Controllers
                     .Include(pa => pa.Contacts)
                     .Single(p => p.Id == id);
                 if (existingPatient == null)
-                { 
-                    return NotFound(); 
+                {
+                    return NotFound();
                 }
-                
+
                 // Update Existing Patient
                 existingPatient.ModifiedDate = DateTime.Now;
                 _context.Entry(existingPatient).CurrentValues.SetValues(patient);
@@ -158,7 +157,7 @@ namespace BlazorCrud.Server.Controllers
                 }
 
                 _context.SaveChanges();
-                
+
                 return NoContent();
             }
             else

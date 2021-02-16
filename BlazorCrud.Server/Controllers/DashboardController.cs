@@ -14,7 +14,7 @@ namespace BlazorCrud.Server.Controllers
     {
         private readonly PatientContext _patientContext;
         private readonly OrganizationContext _organizationContext;
-        private readonly ClaimContext _claimContext; 
+        private readonly ClaimContext _claimContext;
 
         public DashboardController(PatientContext patientContext, OrganizationContext organizationContext, ClaimContext claimContext)
         {
@@ -53,7 +53,7 @@ namespace BlazorCrud.Server.Controllers
             dashboard.UpdatedEntitiesByDate = CreateDashboardDataArray();
 
             return dashboard;
-        }        
+        }
 
         private Dictionary<string, Dictionary<string, double>> CreateDashboardDataArray()
         {

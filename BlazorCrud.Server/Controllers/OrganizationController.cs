@@ -27,7 +27,7 @@ namespace BlazorCrud.Server.Controllers
         /// Returns a list of paginated organizations with a default page size of 10.
         /// </summary>
         [HttpGet]
-        public PagedResult<Organization> GetAll([FromQuery]string name, int page)
+        public PagedResult<Organization> GetAll([FromQuery] string name, int page)
         {
             int pageSize = 10;
             if (name != null)
@@ -51,7 +51,7 @@ namespace BlazorCrud.Server.Controllers
         /// </summary>
         [HttpGet]
         [Route("TypeAhead")]
-        public IEnumerable<Organization> TypeAhead([FromQuery]string name)
+        public IEnumerable<Organization> TypeAhead([FromQuery] string name)
         {
             if (name != null)
             {

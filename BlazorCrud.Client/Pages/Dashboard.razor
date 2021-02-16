@@ -8,7 +8,7 @@
 @using ChartJs.Blazor.ChartJS.PieChart
 @using ChartJs.Blazor.Util
 @inject HttpClient Http
-@inject LocalStorage Storage
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 
 <div class="row">
@@ -79,8 +79,9 @@
 
     protected BlazorCrud.Shared.Models.Dashboard dashboard;
 
-    protected override async Task OnInitializedAsync(){
-        
+    protected override async Task OnInitializedAsync()
+    {
+
         _doughnutChartConfigPatient = new PieConfig
         {
             Options = new PieOptions(true)
@@ -227,7 +228,7 @@
         _barChartConfig.Data.Datasets.Add(_barSet2);
         _barChartConfig.Data.Datasets.Add(_barSet3);
 
-        dashboard = await Http.GetJsonAsync<BlazorCrud.Shared.Models.Dashboard>(Storage.GetItem("environment_uri") + "/dashboard/");
+        dashboard = await Http.GetFromJsonAsync<BlazorCrud.Shared.Models.Dashboard>(localStorage.GetItem<string>("environment_uri") + "/dashboard/");
 
         _doughnutChartConfigPatient.Data.Labels.AddRange(dashboard.PatientsByState.Keys);
         _doughnutChartConfigOrganization.Data.Labels.AddRange(dashboard.OrganizationsByType.Keys);
@@ -244,7 +245,7 @@
                 dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(1)].Values.ElementAt(0),
                 dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(2)].Values.ElementAt(0),
                 dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(3)].Values.ElementAt(0)
-            }
+                    }
             .Wrap());
         _barSet2.AddRange(new double[]
             {
@@ -252,7 +253,7 @@
                 dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(1)].Values.ElementAt(1),
                 dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(2)].Values.ElementAt(1),
                 dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(3)].Values.ElementAt(1)
-            }
+                    }
             .Wrap());
         _barSet3.AddRange(new double[]
             {
@@ -260,7 +261,7 @@
                 dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(1)].Values.ElementAt(2),
                 dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(2)].Values.ElementAt(2),
                 dashboard.UpdatedEntitiesByDate[dashboard.UpdatedEntitiesByDate.Keys.ElementAt(3)].Values.ElementAt(2)
-            }
+                    }
             .Wrap());
     }
 }

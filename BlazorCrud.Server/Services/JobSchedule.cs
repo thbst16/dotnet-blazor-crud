@@ -14,3 +14,4 @@ namespace BlazorCrud.Server.Services
         public string CronExpression { get; }
     }
 }
+

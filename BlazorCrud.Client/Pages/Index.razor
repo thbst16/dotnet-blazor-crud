@@ -1,11 +1,11 @@
 ﻿@page "/"
-@inject LocalStorage Storage
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 
-@if (Storage.GetItem("Transaction") == "logout")
+@if (localStorage.GetItem<string>("Transaction") == "logout")
 {
     Toaster.Info("you have been successfully logged out of the system.", "Logged Out");
-    Storage.RemoveItem("Transaction");
+    localStorage.RemoveItem("Transaction");
 }
 
 <div class="row">
@@ -36,7 +36,7 @@
         <BSImage IsResponsive="true" src=@_apiImage />
         <h2>API</h2>
         <p>Investigate our REST API, which you can use to integrate Blazor CRUD functions and data into your application.</p>
-        <p><a class="btn btn-secondary" href=@System.String.Concat(Storage.GetItem("environment_uri").Replace("/api",""),"/swagger/index.html") target="_blank" role="button">View details &raquo;</a></p>
+        <p><a class="btn btn-secondary" href=@System.String.Concat(localStorage.GetItem<string>("environment_uri").Replace("/api",""),"/swagger/index.html") target="_blank" role="button">View details &raquo;</a></p>
     </div>
     <div class="col-md-1"></div>
     <div class="col-md-3">
@@ -58,10 +58,9 @@
     private string _apiImage = @"..\img\apis.jpg";
     private string _typeaheadImage = @"..\img\type-ahead.jpg";
     private string _alexaImage = @"..\img\alexa.jpg";
-    //private string _automateImage = @"..\img\automate.jpg";
 
     IList<Item> items = new List<Item>
-    {
+{
         new Item {
         Source = @"..\img\patients.jpg",
         Alt ="Patients",

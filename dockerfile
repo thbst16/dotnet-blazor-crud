@@ -1,5 +1,5 @@
 ### PREPARE
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1.201 AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 
 # Copy csproj and sln and restore as distinct layers
@@ -22,8 +22,9 @@ COPY . .
 RUN dotnet publish "BlazorCrud.sln" -c Release -o /app
 
 ### RUNTIME IMAGE
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS final
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS final
 WORKDIR /app
 COPY --from=publish /app .
+ENV ASPNETCORE_URLS=http://+:80
 EXPOSE 80
 ENTRYPOINT ["dotnet", "BlazorCrud.Server.dll"]

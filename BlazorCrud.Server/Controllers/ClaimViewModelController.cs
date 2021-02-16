@@ -46,7 +46,7 @@ namespace BlazorCrud.Server.Controllers
             ClaimViewModel _claim = new ClaimViewModel();
             _claim.LineItems = new System.Collections.Generic.List<Shared.ViewModels.LineItem>();
             _claim.Id = item.Id;
-            _claim.SelectedPatient = _patientContext.Patients.Find(random.Next(1,100));
+            _claim.SelectedPatient = _patientContext.Patients.Find(random.Next(1, 100));
             _claim.SelectedOrganization = _organizationContext.Organizations.Find(random.Next(1, 100));
             _claim.Type = item.Type;
             _claim.Status = item.Status;

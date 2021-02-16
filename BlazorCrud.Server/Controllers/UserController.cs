@@ -32,7 +32,7 @@ namespace BlazorCrud.Server.Controllers
         /// Returns a list of paginated users with a default page size of 10.
         /// </summary>
         [HttpGet]
-        public PagedResult<User> GetAll([FromQuery]int page)
+        public PagedResult<User> GetAll([FromQuery] int page)
         {
             int pageSize = 10;
             // Do not send password over webAPI GET
@@ -138,7 +138,7 @@ namespace BlazorCrud.Server.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("logon")]
-        public IActionResult LogOn([FromBody]Login login)
+        public IActionResult LogOn([FromBody] Login login)
         {
             // Removed unauthorized default since Blazor can't handle HTTP 403 respons
             // IActionResult response = Unauthorized();

@@ -1,6 +1,7 @@
 ﻿@inherits LayoutComponentBase
-@inject LocalStorage Storage
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+
 <ToastContainer />
 
 <div>
@@ -13,23 +14,14 @@
 
 <footer class="footer">
     <div class="container text-center">
-        <span class="text-muted">&copy; Beckshome.com 2020</span>
+        <span class="text-muted">&copy; Beckshome.com 2021</span>
     </div>
 </footer>
 
 @code {
     protected override void OnInitialized()
     {
-        Storage.SetItem("environment_uri", String.Empty);
-        Storage.SetItem("environment_uri", UriHelper.BaseUri + "api");
-        //if (UriHelper.BaseUri == "https://localhost:44377/")
-       // {
-       //     Storage.SetItem("environment_uri", "https://localhost:44377/api");
-       // }
-      //  else
-       // {
-       //     // Changed URI to reflect hosted environment, not seperate APIs
-       //     Storage.SetItem("environment_uri", "https://becksblazor.azurewebsites.net/api");
-       // }
+        localStorage.SetItem("environment_uri", String.Empty);
+        localStorage.SetItem("environment_uri", UriHelper.BaseUri + "api");
     }
 }

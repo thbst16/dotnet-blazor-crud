@@ -6,8 +6,8 @@ namespace BlazorCrud.Shared.Models
     {
         public PatientValidator()
         {
-            CascadeMode = CascadeMode.StopOnFirstFailure;
-            
+            CascadeMode = CascadeMode.Stop;
+
             RuleFor(patient => patient.Name).NotEmpty().WithMessage("Name is a required field.")
                 .Length(5, 50).WithMessage("Name must be between 5 and 50 characters.");
             RuleFor(patient => patient.Gender).NotEmpty()
@@ -24,7 +24,7 @@ namespace BlazorCrud.Shared.Models
     {
         public ContactPointValidator()
         {
-            CascadeMode = CascadeMode.StopOnFirstFailure;
+            CascadeMode = CascadeMode.Stop;
 
             RuleFor(contactPoint => contactPoint.System).NotEmpty()
                 .WithMessage("System is a required field");

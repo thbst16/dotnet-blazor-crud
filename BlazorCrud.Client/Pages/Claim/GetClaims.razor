@@ -1,13 +1,13 @@
 ﻿@page "/claim/list/{Page}"
 @inject HttpClient Http
-@inject LocalStorage Storage
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 
-@if (Storage.GetItem("Transaction") == "modified")
+@if (localStorage.GetItem<string>("Transaction") == "modified")
 {
     Toaster.Success("Claim successfully updated in the system.", "Claim Updated");
-    Storage.RemoveItem("Transaction");
+    localStorage.RemoveItem("Transaction");
 }
 
 <h1>Claim Data</h1>
@@ -16,7 +16,7 @@
     <div class="col-md-7">
         @if (isLoggedOn())
         {
-        <BSButton Class="btn btn-primary" @onclick="AddClaim">Add New Claim</BSButton>
+            <BSButton Class="btn btn-primary" @onclick="AddClaim">Add New Claim</BSButton>
         }
     </div>
     <div class="input-group col-md-5 text-md-right">
@@ -84,36 +84,14 @@ else
                     <FluentValidator TValidator="ClaimViewModelValidator" />
                     <div class="form-row">
                         <div class="form-group col-md-6">
-                            <label class="control-label">Patient</label>
-                            <BlazoredTypeahead SearchMethod="GetPatients"
-                                               @bind-Value="ClaimsModel.SelectedPatient"
-                                               EnableDropDown="true"
-                                               class="form-control"
-                                               placeholder="Search by patient name...">
-                                <SelectedTemplate Context="patient">
-                                    @patient.Name
-                                </SelectedTemplate>
-                                <ResultTemplate Context="patient">
-                                    @patient.Name (@patient.State)
-                                </ResultTemplate>
-                            </BlazoredTypeahead>
-                            <ValidationMessage For="@(() => ClaimsModel.SelectedPatient)" />
+                            <label for="Patient" class="control-label">Patient</label>
+                            <InputText id="Patient" class="form-control" @bind-Value="claim.Patient" />
+                            <ValidationMessage For="@(() => claim.Patient)" />
                         </div>
                         <div class="form-group col-md-6">
-                            <label class="control-label">Provider</label>
-                            <BlazoredTypeahead SearchMethod="GetProviders"
-                                               @bind-Value="ClaimsModel.SelectedOrganization"
-                                               EnableDropDown="true"
-                                               class="form-control"
-                                               placeholder="Search by provider name...">
-                                <SelectedTemplate Context="organization">
-                                    @organization.Name
-                                </SelectedTemplate>
-                                <ResultTemplate Context="organization">
-                                    @organization.Name (@organization.Type)
-                                </ResultTemplate>
-                            </BlazoredTypeahead>
-                            <ValidationMessage For="@(() => ClaimsModel.SelectedOrganization)" />
+                            <label for="Organization" class="control-label">Organization</label>
+                            <InputText id="Organization" class="form-control" @bind-Value="claim.Organization" />
+                            <ValidationMessage For="@(() => claim.Organization)" />
                         </div>
                     </div>
                     <div class="form-row">
@@ -290,7 +268,7 @@ else
         Type = "",
         Status = "",
         LineItems = new List<BlazorCrud.Shared.ViewModels.LineItem>
-        {
+{
             new BlazorCrud.Shared.ViewModels.LineItem {Service="", Amount=0}
         }
     };
@@ -302,7 +280,7 @@ else
         Status = "",
         Type = "",
         LineItems = new List<BlazorCrud.Shared.Models.LineItem>
-        {
+{
             new BlazorCrud.Shared.Models.LineItem { Service = "", Amount = 0}
         }
     };
@@ -315,12 +293,12 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        Claims = await Http.GetJsonAsync<PagedResult<Claim>>(Storage["environment_uri"] + "/claim/?name=" + SearchTerm + "&page=" + Page);
+        Claims = await Http.GetFromJsonAsync<PagedResult<Claim>>(localStorage.GetItem<string>("environment_uri") + "/claim/?name=" + SearchTerm + "&page=" + Page);
     }
 
     protected bool isLoggedOn()
     {
-        return (Storage.GetItem("JWT-Token") != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage.GetItem("JWT-Time-Expire")));
+        return (localStorage.GetItem<string>("JWT-Token") != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(localStorage.GetItem<string>("JWT-Time-Expire")));
     }
 
     protected async Task SearchBoxKeyPress(KeyboardEventArgs ev)
@@ -335,18 +313,18 @@ else
     {
         if (string.IsNullOrEmpty(SearchTerm))
         {
-            Claims = await Http.GetJsonAsync<PagedResult<Claim>>(Storage.GetItem("environment_uri") + "/claim/?name=" + SearchTerm + "&page=1");
+            Claims = await Http.GetFromJsonAsync<PagedResult<Claim>>(localStorage.GetItem<string>("environment_uri") + "/claim/?name=" + SearchTerm + "&page=1");
             return;
         }
 
-        Claims = await Http.GetJsonAsync<PagedResult<Claim>>(Storage.GetItem("environment_uri") + "/claim/?name=" + SearchTerm + "&page=1");
+        Claims = await Http.GetFromJsonAsync<PagedResult<Claim>>(localStorage.GetItem<string>("environment_uri") + "/claim/?name=" + SearchTerm + "&page=1");
         StateHasChanged();
     }
 
     protected async Task ClearSearch()
     {
         SearchTerm = string.Empty;
-        Claims = await Http.GetJsonAsync<PagedResult<Claim>>(Storage.GetItem("environment_uri") + "/claim/?page=1");
+        Claims = await Http.GetFromJsonAsync<PagedResult<Claim>>(localStorage.GetItem<string>("environment_uri") + "/claim/?page=1");
         StateHasChanged();
     }
 
@@ -357,13 +335,13 @@ else
 
     private async Task<IEnumerable<Patient>> GetPatients(string searchText)
     {
-        var result = await Http.GetJsonAsync<List<Patient>>(Storage.GetItem("environment_uri") + "/patient/TypeAhead?name=" + searchText);
+        var result = await Http.GetFromJsonAsync<List<Patient>>(localStorage.GetItem<string>("environment_uri") + "/patient/TypeAhead?name=" + searchText);
         return result;
     }
 
     private async Task<IEnumerable<Organization>> GetProviders(string searchText)
     {
-        var result = await Http.GetJsonAsync<List<Organization>>(Storage.GetItem("environment_uri") + "/organization/TypeAhead?name=" + searchText);
+        var result = await Http.GetFromJsonAsync<List<Organization>>(localStorage.GetItem<string>("environment_uri") + "/organization/TypeAhead?name=" + searchText);
         return result;
     }
 
@@ -375,7 +353,7 @@ else
 
     protected async Task UpdateClaim(int ClaimId)
     {
-        ClaimsModel = await Http.GetJsonAsync<ClaimViewModel>(Storage.GetItem("environment_uri") + "/claimviewmodel/" + Convert.ToInt32(ClaimId));
+        ClaimsModel = await Http.GetFromJsonAsync<ClaimViewModel>(localStorage.GetItem<string>("environment_uri") + "/claimviewmodel/" + Convert.ToInt32(ClaimId));
         CurrentClaimId = ClaimId;
         this.isAdd = true;
         this.modalTitle = "Edit Claim";
@@ -383,7 +361,7 @@ else
 
     protected async Task ViewClaim(int ClaimId)
     {
-        claim = await Http.GetJsonAsync<Claim>(Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(ClaimId));
+        claim = await Http.GetFromJsonAsync<Claim>(localStorage.GetItem<string>("environment_uri") + "/claim/" + Convert.ToInt32(ClaimId));
         CurrentClaimId = ClaimId;
         this.isView = true;
         this.modalTitle = "View Claim";
@@ -391,7 +369,7 @@ else
 
     protected async Task DeleteClaim(int ClaimId)
     {
-        claim = await Http.GetJsonAsync<Claim>(Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(ClaimId));
+        claim = await Http.GetFromJsonAsync<Claim>(localStorage.GetItem<string>("environment_uri") + "/claim/" + Convert.ToInt32(ClaimId));
         CurrentClaimId = ClaimId;
         this.isView = true;
         this.isDelete = true;
@@ -400,29 +378,29 @@ else
 
     protected async Task CreateClaim()
     {
-        var token = Storage["JWT-Token"];
+        var token = localStorage.GetItem<string>("JWT-Token");
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
         if (CurrentClaimId == 0)
         {
-            await Http.SendJsonAsync(HttpMethod.Post, Storage.GetItem("environment_uri") + "/claim", ClaimsModel);
+            await Http.PostAsJsonAsync(localStorage.GetItem<string>("environment_uri") + "/claim", ClaimsModel);
         }
         else
         {
-            await Http.SendJsonAsync(HttpMethod.Put, Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(CurrentClaimId), ClaimsModel);
+            await Http.PutAsJsonAsync(localStorage.GetItem<string>("environment_uri") + "/claim/" + Convert.ToInt32(CurrentClaimId), ClaimsModel);
         }
         CloseModal();
-        Storage.SetItem("Transaction", "modified");
+        localStorage.SetItem("Transaction", "modified");
         await OnParametersSetAsync();
     }
 
     protected async Task RemoveClaim()
     {
-        var token = Storage["JWT-Token"];
+        var token = localStorage.GetItem<string>("JWT-Token");
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        await Http.DeleteAsync(Storage.GetItem("environment_uri") + "/claim/" + Convert.ToInt32(CurrentClaimId));
+        await Http.DeleteAsync(localStorage.GetItem<string>("environment_uri") + "/claim/" + Convert.ToInt32(CurrentClaimId));
         CloseModal();
-        Storage.SetItem("Transaction", "modified");
+        localStorage.SetItem("Transaction", "modified");
         await OnParametersSetAsync();
     }
 
@@ -435,7 +413,7 @@ else
             Status = "",
             Type = "",
             LineItems = new List<BlazorCrud.Shared.Models.LineItem>
-            {
+    {
                 new BlazorCrud.Shared.Models.LineItem { Service = "", Amount = 0}
             }
         };

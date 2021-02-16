@@ -6,7 +6,7 @@ namespace BlazorCrud.Shared.Models
     {
         public ClaimValidator()
         {
-            CascadeMode = CascadeMode.StopOnFirstFailure;
+            CascadeMode = CascadeMode.Stop;
 
             RuleFor(claim => claim.Patient).NotEmpty().WithMessage("Patient is a required field.")
                 .Length(5, 50).WithMessage("Patient must be between 5 and 50 characters.");
@@ -23,7 +23,7 @@ namespace BlazorCrud.Shared.Models
     {
         public LineItemValidator()
         {
-            CascadeMode = CascadeMode.StopOnFirstFailure;
+            CascadeMode = CascadeMode.Stop;
 
             RuleFor(lineitem => lineitem.Service).NotEmpty().WithMessage("Service is a required field.");
             RuleFor(lineitem => lineitem.Amount).NotEmpty().WithMessage("Amount is a required field.");

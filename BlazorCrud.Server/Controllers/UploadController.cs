@@ -29,7 +29,7 @@ namespace BlazorCrud.Server.Controllers
         /// Returns a list of paginated uploads with a default page size of 10.
         /// </summary>
         [HttpGet]
-        public PagedResult<Upload> GetAll([FromQuery]int page)
+        public PagedResult<Upload> GetAll([FromQuery] int page)
         {
             int pageSize = 10;
             // Do not send file content for all files during search

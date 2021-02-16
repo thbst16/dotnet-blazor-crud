@@ -1,13 +1,13 @@
 ﻿@page "/user/login"
 @inject HttpClient Http
-@inject LocalStorage Storage
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 
-@if (Storage.GetItem("Transaction") == "invalid")
+@if (localStorage.GetItem<string>("Transaction") == "invalid")
 {
     Toaster.Error("Invalid username and/or password. Please retry your credentials.", "Invalid Credentials");
-    Storage.RemoveItem("Transaction");
+    localStorage.RemoveItem("Transaction");
 }
 
 <div class="form-signin">
@@ -37,16 +37,17 @@
 
     protected async Task LogonUser()
     {
-        var response = await Http.PostJsonAsync<JwtToken>(Storage.GetItem("environment_uri") + "/user/logon", login);
-        Storage.SetItem("JWT-Token", response.token);
-        Storage.SetItem("JWT-Time-Expire", (DateTime.Now.Ticks + 432000000000).ToString()); // Add 750 minutes to current time
+        var response = await Http.PostAsJsonAsync(localStorage.GetItem<string>("environment_uri") + "/user/logon", login);
+        JwtToken token = await response.Content.ReadFromJsonAsync<JwtToken>();
+        localStorage.SetItem("JWT-Token", token.token);
+        localStorage.SetItem("JWT-Time-Expire", (DateTime.Now.Ticks + 432000000000).ToString()); // Add 750 minutes to current time
 
         login.Username = string.Empty;
         login.Password = string.Empty;
 
-        if (response.token == string.Empty)
+        if (token.token == string.Empty)
         {
-            Storage.SetItem("Transaction", "invalid");
+            localStorage.SetItem("Transaction", "invalid");
             UriHelper.NavigateTo("/user/login");
         }
         else

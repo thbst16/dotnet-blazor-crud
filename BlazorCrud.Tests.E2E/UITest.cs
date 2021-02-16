@@ -13,9 +13,8 @@ namespace BlazorCrud.Tests.E2E
     {
         private IWebDriver driver;
         private TestContext testContextInstance;
-        // test change
-        // private const string ENV_URL = "https://localhost:44377";
-        private const string ENV_URL = "https://becksblazor.azurewebsites.net";
+        private const string ENV_URL = "https://localhost:44391";
+        //private const string ENV_URL = "https://becksblazor.azurewebsites.net";
 
         public UITest() { }
 
@@ -59,7 +58,7 @@ namespace BlazorCrud.Tests.E2E
                 waitLoad.Until(d => d.FindElement(By.PartialLinkText("Login")));
                 driver.FindElement(By.PartialLinkText("Login")).Click();
                 var waitClick = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-                waitClick.Until(d => d.Url.Equals(ENV_URL+ "/user/login"));
+                waitClick.Until(d => d.Url.Equals(ENV_URL + "/user/login"));
                 System.Threading.Thread.Sleep(1000);
                 Assert.AreEqual(driver.Url, ENV_URL + "/user/login");
             }

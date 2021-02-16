@@ -11,3 +11,4 @@ namespace BlazorCrud.Shared.Data
         public DbSet<User> Users { get; set; }
     }
 }
+

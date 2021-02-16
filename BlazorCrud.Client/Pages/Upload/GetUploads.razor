@@ -1,14 +1,14 @@
 ﻿@page "/upload/list/{Page}"
 @inject HttpClient Http
 @inject IJSRuntime  JSRuntime
-@inject LocalStorage Storage
+@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
 @inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
 @inject Sotsera.Blazor.Toaster.IToaster Toaster
 
-@if (Storage.GetItem("Transaction") == "modified")
+@if (localStorage.GetItem<string>("Transaction") == "modified")
 {
     Toaster.Success("Upload successfully updated in the system.", "User Updated");
-    Storage.RemoveItem("Transaction");
+    localStorage.RemoveItem("Transaction");
 }
 
 <h1>Upload Data</h1>
@@ -140,12 +140,12 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        Uploads = await Http.GetJsonAsync<PagedResult<Upload>>(Storage["environment_uri"] + "/upload/?page=" + Page);
+        Uploads = await Http.GetFromJsonAsync<PagedResult<Upload>>(localStorage.GetItem<string>("environment_uri") + "/upload/?page=" + Page);
     }
 
     protected bool isLoggedOn()
     {
-        return (Storage.GetItem("JWT-Token") != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(Storage.GetItem("JWT-Time-Expire")));
+        return (localStorage.GetItem<string>("JWT-Token") != String.Empty && DateTime.Now.Ticks < Convert.ToInt64(localStorage.GetItem<string>("JWT-Time-Expire")));
     }
 
     protected void PagerPageChanged(int page)
@@ -161,7 +161,7 @@ else
 
     protected async Task ViewUpload(int UploadId)
     {
-        upload = await Http.GetJsonAsync<Upload>(Storage.GetItem("environment_uri") + "/upload/" + Convert.ToInt32(UploadId));
+        upload = await Http.GetFromJsonAsync<Upload>(localStorage.GetItem<string>("environment_uri") + "/upload/" + Convert.ToInt32(UploadId));
         CurrentUploadId = UploadId;
         this.isView = true;
         this.modalTitle = "View Upload";
@@ -169,11 +169,11 @@ else
 
     protected async Task CreateUpload()
     {
-        var token = Storage["JWT-Token"];
+        var token = localStorage.GetItem<string>("JWT-Token");
         Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        await Http.SendJsonAsync(HttpMethod.Post, Storage.GetItem("environment_uri") + "/upload", upload);
+        await Http.PostAsJsonAsync(localStorage.GetItem<string>("environment_uri") + "/upload", upload);
         CloseModal();
-        Storage.SetItem("Transaction", "modified");
+        localStorage.SetItem("Transaction", "modified");
         await OnParametersSetAsync();
     }
 
@@ -186,16 +186,18 @@ else
         StateHasChanged();
     }
 
-    async Task HandleSelection(IFileListEntry[] files)
+    async Task HandleSelection(InputFileChangeEventArgs e)
     {
-        var file = files.FirstOrDefault();
+        var file = e.File;
         if (file != null)
         {
             // Load into memory
-            var ms = new MemoryStream();
-            await file.Data.CopyToAsync(ms);
+            //var ms = new MemoryStream();
+            var buffer = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffer);
+            //await file.Data.CopyToAsync(ms);
             status = $"Finished loading {file.Size} bytes from {file.Name}";
-            upload.FileContent = Convert.ToBase64String(ms.ToArray());
+            upload.FileContent = Convert.ToBase64String(buffer);
         }
     }
 

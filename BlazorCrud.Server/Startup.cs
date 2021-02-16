@@ -1,4 +1,3 @@
-using AutoMapper;
 using BlazorCrud.Server.Services;
 using BlazorCrud.Shared.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -58,8 +57,6 @@ namespace BlazorCrud.Server
                     };
                 });
 
-            services.AddMvc();
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
@@ -96,6 +93,9 @@ namespace BlazorCrud.Server
             services.AddSingleton(new JobSchedule(
                 jobType: typeof(ProcessFileJob),
                 cronExpression: "0 0/1 * * * ?"));
+
+            services.AddControllersWithViews();
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -106,11 +106,18 @@ namespace BlazorCrud.Server
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseBlazorDebugging();
-            }           
+                app.UseWebAssemblyDebugging();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
 
+            app.UseHttpsRedirection();
+            app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
-            app.UseClientSideBlazorFiles<Client.Program>();
 
             app.UseRouting();
 
@@ -126,8 +133,9 @@ namespace BlazorCrud.Server
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapDefaultControllerRoute();
-                endpoints.MapFallbackToClientSideBlazor<Client.Program>("index.html");
+                endpoints.MapRazorPages();
+                endpoints.MapControllers();
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }

@@ -27,3 +27,4 @@ namespace BlazorCrud.Shared.ViewModels
         public decimal Amount { get; set; }
     }
 }
+

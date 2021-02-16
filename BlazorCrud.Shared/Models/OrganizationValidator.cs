@@ -6,7 +6,7 @@ namespace BlazorCrud.Shared.Models
     {
         public OrganizationValidator()
         {
-            CascadeMode = CascadeMode.StopOnFirstFailure;
+            CascadeMode = CascadeMode.Stop;
 
             RuleFor(organization => organization.Name).NotEmpty().WithMessage("Name is a required field.")
                 .Length(5, 50).WithMessage("Name must be between 5 and 50 characters.");
@@ -20,7 +20,7 @@ namespace BlazorCrud.Shared.Models
     {
         public AddressValidator()
         {
-            CascadeMode = CascadeMode.StopOnFirstFailure;
+            CascadeMode = CascadeMode.Stop;
 
             RuleFor(address => address.Street).NotEmpty().WithMessage("Street is a required field.")
                 .Length(5, 50).WithMessage("Street must be between 5 and 50 characters.");

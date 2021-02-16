@@ -24,3 +24,4 @@ namespace BlazorCrud.Shared.Models
         public string Use { get; set; }
     }
 }
+

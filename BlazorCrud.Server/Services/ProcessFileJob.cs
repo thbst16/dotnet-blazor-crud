@@ -51,8 +51,8 @@ namespace BlazorCrud.Server.Services
         private List<Upload> GetUnprocessedUploads()
         {
             List<Upload> unprocessedUploads = (from u in _uploadContext.Uploads
-                                                   where u.ProcessedTimestamp.HasValue != true
-                                                   select u).ToList();
+                                               where u.ProcessedTimestamp.HasValue != true
+                                               select u).ToList();
             return unprocessedUploads;
         }
 
@@ -114,4 +114,3 @@ namespace BlazorCrud.Server.Services
         }
     }
 }
-

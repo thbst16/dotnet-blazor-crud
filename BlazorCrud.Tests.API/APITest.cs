@@ -13,8 +13,8 @@ namespace BlazorCrud.Tests.API
     {
         private TestContext testContextInstance;
         static HttpClient client = new HttpClient();
-        // private const string ENV_URL = "https://localhost:44377/api";
-        private const string ENV_URL = "https://becksblazor.azurewebsites.net/api";
+        private const string ENV_URL = "https://localhost:44391/api";
+        // private const string ENV_URL = "https://becksblazor.azurewebsites.net/api";
 
         public APITest() { }
 
@@ -86,10 +86,11 @@ namespace BlazorCrud.Tests.API
             Assert.AreEqual("Royce Paucek", claim.Patient);
             Assert.AreEqual("Bayer LLC", claim.Organization);
             Assert.AreEqual("Active", claim.Status);
-            Assert.AreEqual("Oral", claim.Type);
+            Assert.AreEqual("Vision", claim.Type);
         }
 
         [TestCleanup()]
         public void CleanupTest() { }
     }
 }
+

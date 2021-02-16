@@ -27,7 +27,7 @@ namespace BlazorCrud.Server.Controllers
         /// Returns a list of paginated claims with a default page size of 10.
         /// </summary>
         [HttpGet]
-        public PagedResult<Claim> GetAll([FromQuery]string name, int page)
+        public PagedResult<Claim> GetAll([FromQuery] string name, int page)
         {
             int pageSize = 10;
             if (name != null)
@@ -135,7 +135,7 @@ namespace BlazorCrud.Server.Controllers
 
                 // Update Existing Claim
                 existingClaim.ModifiedDate = DateTime.Now;
-                _context.Entry(existingClaim).CurrentValues.SetValues(claim) ;
+                _context.Entry(existingClaim).CurrentValues.SetValues(claim);
 
                 // Delete Line Items
                 foreach (var existingLineItem in existingClaim.LineItems.ToList())

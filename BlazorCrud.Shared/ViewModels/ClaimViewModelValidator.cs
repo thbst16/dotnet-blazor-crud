@@ -6,7 +6,7 @@ namespace BlazorCrud.Shared.ViewModels
     {
         public ClaimViewModelValidator()
         {
-            CascadeMode = CascadeMode.StopOnFirstFailure;
+            CascadeMode = CascadeMode.Stop;
 
             RuleFor(claim => claim.SelectedPatient).NotEmpty().WithMessage("Patient is a required field.");
             RuleFor(claim => claim.SelectedOrganization).NotEmpty().WithMessage("Provider is a required field.");
@@ -21,7 +21,7 @@ namespace BlazorCrud.Shared.ViewModels
     {
         public LineItemValidator()
         {
-            CascadeMode = CascadeMode.StopOnFirstFailure;
+            CascadeMode = CascadeMode.Stop;
 
             RuleFor(lineitem => lineitem.Service).NotEmpty().WithMessage("Service is a required field.");
             RuleFor(lineitem => lineitem.Amount).NotEmpty().WithMessage("Amount is a required field.");
