@@ -32,13 +32,11 @@ Blazor CRUD uses the following DevOps environment and tools to support a CI / CD
 * Javascript Web Token (JWT) authentication
 * Automation of Azure Infrastructure Setup
 * Data generation to pre-populate thousdands of entity records
-* Typeahead for entity lookup on modal data entry screens (preview functionality)
 
 # Open Source Used
 
 * [AutoMapper](https://github.com/AutoMapper/AutoMapper) for object-object mappings.
 * [Azure Fluent Management](https://github.com/Azure/azure-libraries-for-net) for Azure automation from C#.
-* [BlazorInputFile](https://github.com/SteveSandersonMS/BlazorInputFile) for file upload.
 * [BlazorStorage](https://github.com/cloudcrate/BlazorStorage) for local and session storage in the browser.
 * [BlazorStrap](https://github.com/chanan/BlazorStrap) Bootstrap 4 components for Blazor.
 * [Blazor.Toastr](https://github.com/sotsera/sotsera.blazor.toaster) for Toastr-style notifications.
@@ -46,4 +44,3 @@ Blazor CRUD uses the following DevOps environment and tools to support a CI / CD
 * [ChartJs.Blazor](https://github.com/mariusmuntean/ChartJs.Blazor) Blazor component that wraps ChartJs widgets for dashboard.
 * [FluentValidation](https://github.com/JeremySkinner/FluentValidation) For entity validation, including complex object graph validations. 
 * [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle) for Swagger document generation.
-* [Typeahead](https://github.com/Blazored/Typeahead) for typeahead lookup of key entities.

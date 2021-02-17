@@ -126,6 +126,7 @@ namespace BlazorCrud.Server
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Blazor CRUD API v1");
+                c.DefaultModelsExpandDepth(-1);
             });
 
             app.UseAuthentication();
