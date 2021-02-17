@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="Blazored.LocalStorage" Version="3.0.0" />
-    <PackageReference Include="Blazored.Typeahead" Version="4.5.1" />
     <PackageReference Include="BlazorStrap" Version="1.5.0" />
     <PackageReference Include="ChartJs.Blazor" Version="1.1.0" />
     <PackageReference Include="FluentValidation" Version="9.5.1" />
