@@ -1,0 +1,7 @@
+version: "3.9"
+services:
+  blazorcrud:
+    image: blazorcrud
+    build: .
+    ports:
+        - 8080:80
