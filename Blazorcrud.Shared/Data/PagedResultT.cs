@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace BlazorCrud.Shared.Data
+namespace Blazorcrud.Shared.Data
 {
     public class PagedResult<T> : PagedResultBase where T : class
     {

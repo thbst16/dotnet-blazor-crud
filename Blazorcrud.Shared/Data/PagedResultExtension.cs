@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace BlazorCrud.Shared.Data
+namespace Blazorcrud.Shared.Data
 {
     public static class PagedResultExtensions
     {

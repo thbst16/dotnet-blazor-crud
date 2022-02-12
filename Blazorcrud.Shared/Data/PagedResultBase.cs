@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BlazorCrud.Shared.Data
+namespace Blazorcrud.Shared.Data
 {
     public abstract class PagedResultBase
     {
