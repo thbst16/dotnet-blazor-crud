@@ -1,4 +1,4 @@
-# BlazorCrud
+# dotnet-blazor-crud
 ![Build Status](https://beckshome.visualstudio.com/BlazorCRUD/_apis/build/status/thbst16.BlazorCrud.docker?branchName=master)
 ![Deployment Status](https://beckshome.vsrm.visualstudio.com/_apis/public/Release/badge/4205f4a9-c0ad-4900-aefd-9efecd2543bc/1/2)
 ![Docker Image Version (latest by date)](https://img.shields.io/docker/v/thbst16/blazor-crud?logo=docker)
