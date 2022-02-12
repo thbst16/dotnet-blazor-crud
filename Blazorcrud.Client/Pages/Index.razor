@@ -1,98 +1,14 @@
 ﻿@page "/"
-@inject Blazored.LocalStorage.ISyncLocalStorageService localStorage
-@inject Sotsera.Blazor.Toaster.IToaster Toaster
 
-@if (localStorage.GetItem<string>("Transaction") == "logout")
-{
-    Toaster.Info("you have been successfully logged out of the system.", "Logged Out");
-    localStorage.RemoveItem("Transaction");
-}
-
-<div class="row">
-    <div class="col-md-11">
-        <BSCarousel NumberOfItems="@items.Count" bind-ActiveIndex="@SecondIndex" PauseOnHover="true">
-            <BSCarouselIndicators NumberOfItems="@items.Count" bind-ActiveIndex="@SecondIndex" />
-            <div class="carousel-inner" style="height:500px">
-                @for (int i = 0; i < items.Count; i++)
-                {
-                    Item item = items[i];
-                    <BSCarouselItem IsActive="@(SecondIndex == i)" src="@item.Source" alt="@item.Alt">
-                        <BSCarouselCaption Class="carousel-text" CaptionText="@item.Caption" HeaderText="@item.Header" />
-                    </BSCarouselItem>
-                }
-            </div>
-            <BSCarouselControl CarouselDirection="CarouselDirection.Previous" NumberOfItems="@items.Count" bind-ActiveIndex="@SecondIndex" />
-            <BSCarouselControl CarouselDirection="CarouselDirection.Next" NumberOfItems="@items.Count" bind-ActiveIndex="@SecondIndex" />
-        </BSCarousel>
-    </div>
+<div class="jumbotron">
+    <h1 class="display-4">Blazor CRUD</h1>
+    <p class="lead">A complete project framework that has everything you need to build your Blazor WASM enterprise application.</p>
+    <hr class="my-4">
+    <ul style="line-height:1.8;">
+        <li><b>Complex Data Entry</b> - Ability to support complex data entry on entities with child objects and validate both parent and child objects.</li>
+        <li><b>Data Tables</b> - Paginated data tables with search within the tables.</li>
+        <li><b>File Upload</b> - File upload / download and automated processing via CRON batch jobs.</li>
+        <li><b>Authentication</b> - JWT-based user authentication with page and service level access constraints. Try user ID and password of admin / admin to login.</li>
+        <li><b>API</b> - A full rest API with Swagger documentation.</li>
+    </ul>
 </div>
-
-<div class="row" style="height:10px;">
-    <div class="col-md-11"></div>
-</div>
-
-<div class="row">
-    <div class="col-md-3">
-        <BSImage IsResponsive="true" src=@_apiImage />
-        <h2>API</h2>
-        <p>Investigate our REST API, which you can use to integrate Blazor CRUD functions and data into your application.</p>
-        <p><a class="btn btn-secondary" href=@System.String.Concat(localStorage.GetItem<string>("environment_uri").Replace("/api",""),"/swagger/index.html") target="_blank" role="button">View details &raquo;</a></p>
-    </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-3">
-        <BSImage IsResponsive="true" src=@_typeaheadImage />
-        <h2>Typeahead</h2>
-        <p>Preview our typeahead search functionality. Coming soon for all modal data entry pages to enable model linking.</p>
-        <p><a class="btn btn-secondary" href="claim/typeahead" role="button">View details &raquo;</a></p>
-    </div>
-    <div class="col-md-1"></div>
-    <div class="col-md-3">
-        <BSImage IsResponsive="true" src=@_alexaImage />
-        <h2>Alexa App</h2>
-        <p>Install our Blazor CRUD provider app on your Alexa and ask Alexa about provider locations, services, and more.</p>
-        <p><a class="btn btn-secondary" href="#" role="button">View details &raquo;</a></p>
-    </div>
-</div>
-
-@code {
-    private string _apiImage = @"..\img\apis.jpg";
-    private string _typeaheadImage = @"..\img\type-ahead.jpg";
-    private string _alexaImage = @"..\img\alexa.jpg";
-
-    IList<Item> items = new List<Item>
-{
-        new Item {
-        Source = @"..\img\patients.jpg",
-        Alt ="Patients",
-        Header = "Patients",
-        Caption = "Locate patients and edit patient data."
-    },
-    new Item {
-        Source = @"..\img\providers.jpg",
-        Alt ="Provider Organizations",
-        Header = "Provider Organizations",
-        Caption = "Track and manage provider organizations."
-    },
-    new Item {
-        Source = @"..\img\claims.jpg",
-        Alt ="Claims",
-        Header = "Claims",
-        Caption = "Record and edit claims for services provided."
-    }
-    };
-
-    private int _secondIndex;
-    int SecondIndex
-    {
-        get => _secondIndex;
-        set { _secondIndex = value; StateHasChanged(); }
-    }
-
-    class Item
-    {
-        public string Source { get; set; }
-        public string Alt { get; set; }
-        public string Caption { get; set; }
-        public string Header { get; set; }
-    }
-}

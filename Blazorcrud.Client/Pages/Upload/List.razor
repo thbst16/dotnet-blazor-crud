@@ -1,0 +1,113 @@
+@page "/upload/{Page}"
+@inject Services.IUploadService UploadService
+@inject Services.IUserService UserService
+@inject Microsoft.AspNetCore.Components.NavigationManager UriHelper
+@inject Blazorcrud.Client.Shared.PageHistoryState PageHistoryState
+
+<h1>Uploads</h1>
+<br/>
+
+<div class="row mb-3">
+    <div class="col-md-7">
+        @if(LoggedIn)
+        {
+            <NavLink href="/upload/createupload" class="btn btn-sm btn-success mb-2">Add Upload</NavLink>
+        }
+    </div>
+    <div class="input-group col-md-5 text-md-right">
+        <input name="UploadSearchInput" type="text" class="form-control" placeholder="Upload Name" @bind="this.SearchTerm" @onkeyup="SearchBoxKeyPress" />
+        <div class="input-group-btn">
+            <button name="UploadSearchButton" class="btn btn-default" @onclick="SearchClick">
+                <i class="oi oi-magnifying-glass" title="search" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="input-group-btn">
+            <button name="UploadSearchClear" class="btn btn-default" @onclick="ClearSearch">
+                <i class="oi oi-x" title="clear" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
+</div>
+
+@if (uploads == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width:35%">File Name</th>
+                <th style="width:30%">Uploaded</th>
+                <th style="width:30%">Processed</th>
+                <th style="width:5%"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var upload in uploads.Results)
+            {
+                <tr>
+                    <td>@upload.FileName</td>
+                    <td>@upload.UploadTimestamp</td>
+                    <td>@upload.ProcessedTimestamp</td>
+                    <td style="white-space: nowrap">
+                        <NavLink href="@($"/upload/viewupload/{upload.Id}")" class="oi oi-eye text-primary mr-3 nounderline"></NavLink>
+                    </td>
+                </tr> 
+            }
+        </tbody>
+    </table>
+    <Pager Result=@uploads PageChanged=PagerPageChanged />
+}
+
+@code {
+    [Parameter]
+    public string Page { get; set;} = "1";
+    [Parameter]
+    public string SearchTerm { get; set; } = string.Empty;
+    protected PagedResult<Upload> uploads;
+
+    public bool LoggedIn
+    {
+        get {return UserService.User != null;}
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        uploads = await UploadService.GetUploads(null, Page);
+        PageHistoryState.AddPageToHistory(UriHelper.Uri);
+    }
+
+    protected async Task SearchBoxKeyPress(KeyboardEventArgs ev)
+    {
+        if (ev.Key == "Enter")
+        {
+            await SearchClick();
+        }
+    }
+
+    protected async Task SearchClick()
+    {
+        if (string.IsNullOrEmpty(SearchTerm))
+        {
+            uploads = await UploadService.GetUploads(null, Page);
+            return;
+        }
+        uploads = await UploadService.GetUploads(SearchTerm, Page);
+        StateHasChanged();
+    }
+
+    protected async Task ClearSearch()
+    {
+        SearchTerm = string.Empty;
+        uploads = await UploadService.GetUploads(SearchTerm, Page);
+        PageHistoryState.AddPageToHistory(UriHelper.Uri);
+        StateHasChanged();
+    }
+    protected void PagerPageChanged(int page)
+    {
+        UriHelper.NavigateTo("/upload/" + page);
+        PageHistoryState.AddPageToHistory(UriHelper.Uri);
+    }    
+}

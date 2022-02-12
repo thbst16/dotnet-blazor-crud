@@ -1,0 +1,40 @@
+@page "/user/createuser"
+@attribute [Authorize]
+@inject IAlertService AlertService
+@inject IUserService UserService
+@inject NavigationManager navManager
+@inject Blazorcrud.Client.Shared.PageHistoryState PageHistoryState
+
+<h1>Create User</h1>
+<br/>
+
+<Form ButtonText="Create User" user="@user" loading="@loading"
+            OnValidSubmit="@CreateUser" />
+
+@code {
+    bool loading = false;
+    
+    User user = new User();
+
+    async Task CreateUser()
+    {
+        loading = true;
+        try
+        {
+            await UserService.AddUser(user);
+            AlertService.Success("User added successfully", keepAfterRouteChange: true);
+            if (PageHistoryState.CanGoBack()){
+                navManager.NavigateTo(PageHistoryState.GetGoBackPage());
+            }
+            else{
+                navManager.NavigateTo("/user/1");
+            } 
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}

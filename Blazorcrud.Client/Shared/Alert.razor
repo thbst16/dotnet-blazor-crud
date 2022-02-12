@@ -1,0 +1,116 @@
+@implements IDisposable
+@inject IAlertService AlertService
+@inject NavigationManager NavigationManager
+
+@foreach (var alert in alerts)
+{
+    <div class="@CssClass(alert)">
+        <a class="close" @onclick="@(() => RemoveAlert(alert))">&times;</a>
+        <span>@alert.Message</span>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "default-alert";
+
+    [Parameter]
+    public bool Fade { get; set; } = true;
+
+    private List<AlertModel> alerts = new List<AlertModel>();
+
+    protected override void OnInitialized()
+    {
+        // subscribe to new alerts and location change events
+        AlertService.OnAlert += OnAlert;
+        NavigationManager.LocationChanged += OnLocationChange;
+    }
+
+    public void Dispose()
+    {
+        // unsubscribe from alerts and location change events
+        AlertService.OnAlert -= OnAlert;
+        NavigationManager.LocationChanged -= OnLocationChange;
+    }
+
+    private async void OnAlert(AlertModel alert)
+    {
+        // ignore alerts sent to other alert components
+        if (alert.Id != Id) 
+            return;
+
+        // clear alerts when an empty alert is received
+        if (alert.Message == null) 
+        {
+            // remove alerts without the 'KeepAfterRouteChange' flag set to true
+            alerts.RemoveAll(x => !x.KeepAfterRouteChange);
+
+            // set the 'KeepAfterRouteChange' flag to false for the 
+            // remaining alerts so they are removed on the next clear
+            alerts.ForEach(x => x.KeepAfterRouteChange = false);
+        }
+        else
+        {
+            // add alert to array
+            alerts.Add(alert);
+            StateHasChanged();
+
+            // auto close alert if required
+            if (alert.AutoClose)
+            {
+                await Task.Delay(3000);
+                RemoveAlert(alert);
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private void OnLocationChange(object sender, LocationChangedEventArgs e)
+    {
+        AlertService.Clear(Id);
+    }
+
+    private async void RemoveAlert(AlertModel alert)
+    {
+        // check if already removed to prevent error on auto close
+        if (!alerts.Contains(alert)) return;
+
+        if (Fade) 
+        {
+            // fade out alert
+            alert.Fade = true;
+
+            // remove alert after faded out
+            await Task.Delay(250);
+            alerts.Remove(alert);
+        } 
+        else 
+        {
+            // remove alert
+            alerts.Remove(alert);
+        }
+
+        StateHasChanged();
+    }
+
+    private string CssClass(AlertModel alert) 
+    {
+        if (alert == null) return null;
+
+        var classes = new List<string> { "alert", "alert-dismissable", "mt-4", "container" };
+
+        var alertTypeClass = new Dictionary<AlertType, string>();
+        alertTypeClass[AlertType.Success] = "alert-success";
+        alertTypeClass[AlertType.Error] = "alert-danger";
+        alertTypeClass[AlertType.Info] = "alert-info";
+        alertTypeClass[AlertType.Warning] = "alert-warning";
+
+        classes.Add(alertTypeClass[alert.Type]);
+
+        if (alert.Fade)
+            classes.Add("fade");
+
+        return string.Join(' ', classes);
+    }   
+}

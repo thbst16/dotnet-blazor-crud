@@ -1,0 +1,95 @@
+@page "/upload/createupload"
+@attribute [Authorize]
+@inject IAlertService AlertService
+@inject IUploadService UploadService
+@inject NavigationManager navManager
+@inject Blazorcrud.Client.Shared.PageHistoryState PageHistoryState
+
+<h1>Create Upload</h1>
+<br/>
+
+<EditForm Model="@upload" OnValidSubmit="@CreateUpload">
+    <FluentValidator TValidator="UploadValidator" />
+    <div class="form-group">
+        <label>File Name :</label>
+        <div>
+            <InputText @bind-Value="@upload.FileName" class="form-control col-sm-3" />
+            <ValidationMessage For="@(() => upload.FileName)" />
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>File:</label>
+            <div>
+                <InputFile accept=".json" class="form-control-file" type="file" OnChange="HandleSelection" />
+                <ValidationMessage For="@(() => upload.FileContent)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button disabled="@loading" class="btn btn-primary">
+            @if (loading) 
+            {
+                <span class="spinner-border spinner-border-sm mr-1"></span>
+            }
+            Save File
+        </button>
+        @if (PageHistoryState.CanGoBack()){
+            <NavLink href="@PageHistoryState.GetGoBackPage()" class="btn btn-link">Back</NavLink>
+        }
+        else{
+            <NavLink href="/upload/1" class="btn btn-link">Back</NavLink>
+        }
+    </div>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+    bool loading = false;
+    string status = "File pending upload...";
+    
+    Upload upload = new Upload
+    {
+        FileName = "",
+        UploadTimestamp = DateTime.Now,
+        ProcessedTimestamp = null
+    };
+
+    async Task HandleSelection(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            // Load into memory
+            var buffer = new byte[file.Size];
+            await file.OpenReadStream().ReadAsync(buffer);
+            status = $"Finished loading {file.Size} bytes from {file.Name}";
+            upload.FileContent = Convert.ToBase64String(buffer);
+        }
+    }
+
+    async Task CreateUpload()
+    {
+        loading = true;
+        try
+        {
+            await UploadService.AddUpload(upload);
+            AlertService.Success("Upload added successfully", keepAfterRouteChange: true);
+            if (PageHistoryState.CanGoBack()){
+                navManager.NavigateTo(PageHistoryState.GetGoBackPage());
+            }
+            else{
+                navManager.NavigateTo("/upload/1");
+            } 
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}

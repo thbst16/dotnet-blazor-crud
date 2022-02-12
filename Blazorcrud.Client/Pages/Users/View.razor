@@ -1,0 +1,49 @@
+@page "/user/viewuser/{id}"
+@inject IUserService UserService
+@inject NavigationManager navManager
+@inject Blazorcrud.Client.Shared.PageHistoryState PageHistoryState
+
+<h1>View User</h1>
+<br/>
+
+<table class="table col-md-6">
+    <tbody>
+        <tr>
+            <th scope="row">Id</th>
+            <td>@user.Id</td>
+        </tr>
+        <tr>
+            <th scope="row">First Name</th>
+            <td>@user.FirstName</td>
+        </tr>
+        <tr>
+            <th scope="row">Last Name</th>
+            <td>@user.LastName</td>
+        </tr>
+        <tr>
+            <th scope="row">User Name</th>
+            <td>@user.Username</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="form-group">
+    @if (PageHistoryState.CanGoBack()){
+        <NavLink href="@PageHistoryState.GetGoBackPage()" class="btn btn-link">Back</NavLink>
+    }
+    else{
+        <NavLink href="/user/1" class="btn btn-link">Back</NavLink>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    User user = new User();
+    
+    protected async override Task OnParametersSetAsync()
+    {
+       user = await UserService.GetUser(int.Parse(Id));
+    }
+}

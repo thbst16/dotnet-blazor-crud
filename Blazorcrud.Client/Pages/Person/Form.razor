@@ -1,0 +1,127 @@
+@inject Blazorcrud.Client.Shared.PageHistoryState PageHistoryState
+
+<EditForm Model="@person" OnValidSubmit="@OnValidSubmit">
+    <FluentValidator TValidator="PersonValidator" />
+    <div class="form-group">
+        <label>First Name :</label>
+        <div>
+            <InputText @bind-Value="@person.FirstName" class="form-control col-sm-3" />
+            <ValidationMessage For="@(() => person.FirstName)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Last Name :</label>
+        <div>
+            <InputText @bind-Value="@person.LastName" class="form-control col-sm-3" />
+            <ValidationMessage For="@(() => person.LastName)" />
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Gender :</label>
+            <div>
+                <InputSelect @bind-Value="@person.Gender" class="form-control col-sm-3"> 
+                   <option value="Select">--Select--</option>
+                   <option value="Male">Male</option>
+                   <option value="Female">Female</option>
+                   <option value="Other">Other</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => person.Gender)" />
+            </div>
+        </div>
+    </div>
+    <div class="form-group ">
+        <div>
+            <label>Phone Number :</label>
+            <div>
+                <InputText @bind-Value="@person.PhoneNumber" class="form-control col-sm-3" />
+                <ValidationMessage For="@(() => person.PhoneNumber)" />
+            </div>
+        </div>
+    </div>
+
+    <hr/>
+    <h3>Addresses</h3>
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            <label>Street</label>
+        </div>
+        <div class="form-group col-md-3">
+            <label>City</label>
+        </div>
+        <div class="form-group col-md-3">
+            <label>State</label>
+        </div>
+        <div class="form-group col-md-2">
+            <label>Zip Code</label>
+        </div>
+    </div>
+
+    <ValidationMessage For="@(() => person.Addresses)" />
+    @foreach (var address in person.Addresses)
+    {
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <InputText id="Street" class="form-control" placeholder="Street" @bind-Value="address.Street" />
+                <ValidationMessage For="@(() => address.Street)" />
+            </div>
+            <div class="form-group col-md-3">
+                <InputText id="City" class="form-control" placeholder="City" @bind-Value="address.City" />
+                <ValidationMessage For="@(() => address.City)" />
+            </div>
+            <div class="form-group col-md-3">
+                <InputText id="State" class="form-control" placeholder="State" @bind-Value="address.State" />
+                <ValidationMessage For="@(() => address.State)" />
+            </div>
+            <div class="form-group col-md-2">
+                <InputText id="ZipCode" class="form-control" placeholder="Zip Code" @bind-Value="address.ZipCode" />
+                <ValidationMessage For="@(() => address.ZipCode)" />
+            </div>
+            <div class="Form-group">
+                <a href="javascript:void(0)" class="btn btn-danger" @onclick="@(()=>OnAddressDelete(person, address))">X</a>
+            </div>
+        </div>
+    }
+    <div class="form-group">
+        <a href="javascript:void(0)" class="btn btn-success" @onclick="@(()=>OnAddressAdd(person))">Add Address</a>
+    </div>
+    <hr/>
+
+    <div class="form-group">
+        <button disabled="@loading" class="btn btn-primary">
+            @if (loading) 
+            {
+                <span class="spinner-border spinner-border-sm mr-1"></span>
+            }
+            @ButtonText
+        </button>
+        @if (PageHistoryState.CanGoBack()){
+            <NavLink href="@PageHistoryState.GetGoBackPage()" class="btn btn-link">Cancel</NavLink>
+        }
+        else{
+            <NavLink href="/person/1" class="btn btn-link">Back</NavLink>
+        }
+    </div>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public Person person { get; set; }
+    [Parameter]
+    public string ButtonText { get; set; } = "Save";
+    [Parameter]
+    public bool loading {get; set;} = false;
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+
+    public void OnAddressDelete(Person person, Address address)
+    {
+        person.Addresses.Remove(address);
+    }
+
+    public void OnAddressAdd(Person person)
+    {
+        person.Addresses.Add(new Address { Street = "", City = "", State = "", ZipCode="" });
+    }
+}

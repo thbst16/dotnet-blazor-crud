@@ -1,0 +1,90 @@
+@page "/person/viewperson/{id}"
+@inject IPersonService PersonService
+@inject NavigationManager navManager
+@inject Blazorcrud.Client.Shared.PageHistoryState PageHistoryState
+
+<h1>View Person</h1>
+<br/>
+
+<table class="table col-md-6">
+    <tbody>
+        <tr>
+            <th scope="row">Id</th>
+            <td>@person.PersonId</td>
+        </tr>
+        <tr>
+            <th scope="row">First Name</th>
+            <td>@person.FirstName</td>
+        </tr>
+        <tr>
+            <th scope="row">Last Name</th>
+            <td>@person.LastName</td>
+        </tr>
+        <tr>
+            <th scope="row">Gender</th>
+            <td>@person.Gender</td>
+        </tr>
+        <tr>
+            <th scope="row">Phone Number</th>
+            <td>@person.PhoneNumber</td>
+        </tr>
+    </tbody>
+</table>
+
+<hr />
+    <h3>Addresses</h3>
+<hr />
+
+<table class="table">
+    <thead class="thead-light"> 
+        <tr >
+            <th>Id</th>
+            <th>Street</th>
+            <th>City</th>
+            <th>State</th>
+            <th>ZipCode</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var address in person.Addresses)
+        {
+            <tr>
+                <td>@address.AddressId</td>
+                <td>@address.Street</td>
+                <td>@address.City</td>
+                <td>@address.State</td>
+                <td>@address.ZipCode</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="form-group">
+    @if (PageHistoryState.CanGoBack()){
+        <NavLink href="@PageHistoryState.GetGoBackPage()" class="btn btn-link">Back</NavLink>
+    }
+    else{
+        <NavLink href="/person/1" class="btn btn-link">Back</NavLink>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    Person person = new Person
+    {
+        FirstName = "",
+        LastName = "",
+        Gender = Gender.Other,
+        PhoneNumber = "",
+        Addresses = new List<Address>
+        {
+            new Address {Street="", City="", State="", ZipCode=""}   
+        }
+    };
+    
+    protected async override Task OnParametersSetAsync()
+    {
+       person = await PersonService.GetPerson(int.Parse(Id));
+    }
+}

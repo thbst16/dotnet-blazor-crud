@@ -1,0 +1,13 @@
+/* Pagination Style */
+.pagination .btn {
+    background-color: darkgray;
+}
+
+.pagination span.btn {
+    background-color: #000;
+    color: #fff;
+}
+
+.pagination li {
+    padding: 5px;
+}

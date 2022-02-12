@@ -1,0 +1,58 @@
+@page "/person/updateperson/{id}"
+@attribute [Authorize]
+@inject IAlertService AlertService
+@inject IPersonService PersonService
+@inject NavigationManager navManager
+@inject Blazorcrud.Client.Shared.PageHistoryState PageHistoryState
+
+<h1>Edit Person</h1>
+<br/>
+
+<Form ButtonText="Update Person" person="@person" loading="@loading"
+            OnValidSubmit="@UpdatePerson" />
+
+@code {
+    bool loading = false;
+    
+    [Parameter]
+    public string Id { get; set; }
+
+    Person person = new Person
+    {
+        FirstName = "",
+        LastName = "",
+        Gender = Gender.Other,
+        PhoneNumber = "",
+        Addresses = new List<Address>
+        {
+            new Address {Street="", City="", State="", ZipCode=""}   
+        }
+    };
+    
+    protected async override Task OnParametersSetAsync()
+    {
+       person = await PersonService.GetPerson(int.Parse(Id));
+    }
+
+    async Task UpdatePerson()
+    {
+        loading = true;
+        try
+        {
+            await PersonService.UpdatePerson(person);
+            AlertService.Success("Person updated successfully", keepAfterRouteChange: true);
+            if (PageHistoryState.CanGoBack()){
+                navManager.NavigateTo(PageHistoryState.GetGoBackPage());
+            }
+            else{
+                navManager.NavigateTo("/person/1");
+            } 
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}

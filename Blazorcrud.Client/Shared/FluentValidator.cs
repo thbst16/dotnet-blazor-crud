@@ -1,9 +1,8 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
-using System;
 
-namespace BlazorCrud.Client.Shared
+namespace Blazorcrud.Client.Shared
 {
     public class FluentValidator<TValidator> : ComponentBase where TValidator : IValidator, new()
     {
@@ -18,6 +17,7 @@ namespace BlazorCrud.Client.Shared
             var messages = new ValidationMessageStore(EditContext);
 
             // Validate on field changes only after initial submission
+            // Check Saintly use of eventArgs.FieldIdentifier and ValidateField method
             EditContext.OnFieldChanged += (sender, eventArgs)
                 => ValidateModel((EditContext)sender, messages);
 

@@ -1,0 +1,49 @@
+@page "/person/createperson"
+@attribute [Authorize]
+@inject IAlertService AlertService
+@inject IPersonService PersonService
+@inject NavigationManager navManager
+@inject Blazorcrud.Client.Shared.PageHistoryState PageHistoryState
+
+<h1>Create Person</h1>
+<br/>
+
+<Form ButtonText="Create Person" person="@person" loading="@loading"
+            OnValidSubmit="@CreatePerson" />
+
+@code {
+    bool loading = false;
+    
+    Person person = new Person
+    {
+        FirstName = "",
+        LastName = "",
+        Gender = Gender.Other,
+        PhoneNumber = "",
+        Addresses = new List<Address>
+        {
+            new Address {Street="", City="", State="", ZipCode=""}   
+        }
+    };
+    async Task CreatePerson()
+    {
+        loading = true;
+        try
+        {
+            await PersonService.AddPerson(person);
+            AlertService.Success("Person added successfully", keepAfterRouteChange: true);
+            if (PageHistoryState.CanGoBack()){
+                navManager.NavigateTo(PageHistoryState.GetGoBackPage());
+            }
+            else{
+                navManager.NavigateTo("/person/1");
+            } 
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}

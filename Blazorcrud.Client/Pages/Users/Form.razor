@@ -1,0 +1,61 @@
+@inject Blazorcrud.Client.Shared.PageHistoryState PageHistoryState
+
+<EditForm Model="@user" OnValidSubmit="@OnValidSubmit">
+    <FluentValidator TValidator="UserValidator" />
+    <div class="form-group">
+        <label>First Name :</label>
+        <div>
+            <InputText @bind-Value="@user.FirstName" class="form-control col-sm-3" />
+            <ValidationMessage For="@(() => user.FirstName)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Last Name :</label>
+        <div>
+            <InputText @bind-Value="@user.LastName" class="form-control col-sm-3" />
+            <ValidationMessage For="@(() => user.LastName)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>User Name :</label>
+        <div>
+            <InputText @bind-Value="@user.Username" class="form-control col-sm-3" />
+            <ValidationMessage For="@(() => user.Username)" />
+        </div>
+    </div>
+    <div class="form-group">
+        <label>Password :</label>
+        <div>
+            <InputText @bind-Value="@user.Password" type="password" class="form-control col-sm-3" />
+            <ValidationMessage For="@(() => user.Password)" />
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button disabled="@loading" class="btn btn-primary">
+            @if (loading) 
+            {
+                <span class="spinner-border spinner-border-sm mr-1"></span>
+            }
+            @ButtonText
+        </button>
+        @if (PageHistoryState.CanGoBack()){
+            <NavLink href="@PageHistoryState.GetGoBackPage()" class="btn btn-link">Cancel</NavLink>
+        }
+        else{
+            <NavLink href="/user/1" class="btn btn-link">Back</NavLink>
+        }
+    </div>
+
+</EditForm>
+
+@code {
+    [Parameter]
+    public User user { get; set; }
+    [Parameter]
+    public string ButtonText { get; set; } = "Save";
+    [Parameter]
+    public bool loading {get; set;} = false;
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+}

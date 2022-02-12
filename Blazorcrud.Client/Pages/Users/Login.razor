@@ -1,0 +1,69 @@
+@page "/user/login"
+@inject Services.IUserService UserService
+@inject IAlertService AlertService
+@inject NavigationManager navManager
+@inject Blazorcrud.Client.Shared.PageHistoryState PageHistoryState
+
+<div class="col-md-6 offset-md-3 mt-5">
+    <div class="card">
+        <h4 class="card-header">Login</h4>
+        <div class="card-body">
+            <EditForm Model="@loginModel" OnValidSubmit="OnValidSubmit">
+                <DataAnnotationsValidator />
+                <div class="form-group">
+                    <label>Username</label>
+                    <InputText @bind-Value="loginModel.Username" class="form-control" />
+                    <ValidationMessage For="@(() => loginModel.Username)" />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <InputText @bind-Value="loginModel.Password" type="password" class="form-control" />
+                    <ValidationMessage For="@(() => loginModel.Password)" />
+                </div>
+                <button disabled="@loading" class="btn btn-primary">
+                    @if (loading) 
+                    {
+                        <span class="spinner-border spinner-border-sm mr-1"></span>
+                    }
+                    Login
+                </button>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+@code {
+    private Blazorcrud.Client.Shared.Login loginModel = new Blazorcrud.Client.Shared.Login();
+    private bool loading;
+
+    private async void OnValidSubmit()
+    {
+        // reset alerts on submit
+        AlertService.Clear();
+
+        loading = true;
+        try
+        {
+            await UserService.Login(loginModel);
+            var returnUrl = navManager.QueryString("returnUrl") ?? "";
+            if (returnUrl != string.Empty)
+            {
+                navManager.NavigateTo(returnUrl);
+            }
+                else{
+                if (PageHistoryState.CanGoBack()){
+                    navManager.NavigateTo(PageHistoryState.GetGoBackPage());
+                }
+                else{
+                    navManager.NavigateTo("/user/1");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            AlertService.Error(ex.Message);
+            loading = false;
+            StateHasChanged();
+        }
+    }
+}

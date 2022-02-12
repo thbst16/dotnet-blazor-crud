@@ -1,0 +1,60 @@
+@page "/upload/viewupload/{id}"
+@inject IUploadService UploadService
+@inject NavigationManager navManager
+@inject IJSRuntime JSRuntime
+@inject Blazorcrud.Client.Shared.PageHistoryState PageHistoryState
+
+<h1>View Upload</h1>
+<br/>
+
+<table class="table col-md-6">
+    <tbody>
+        <tr>
+            <th scope="row">Id</th>
+            <td>@upload.Id</td>
+        </tr>
+        <tr>
+            <th scope="row">Uploaded At</th>
+            <td>@upload.UploadTimestamp</td>
+        </tr>
+        <tr>
+            <th scope="row">Processed At</th>
+            <td>@upload.ProcessedTimestamp</td>
+        </tr>
+        <tr>
+            <th scope="row">File</th>
+            <td>
+                <button @onclick="DownloadFile">Download</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="form-group">
+    @if (PageHistoryState.CanGoBack()){
+        <NavLink href="@PageHistoryState.GetGoBackPage()" class="btn btn-link">Back</NavLink>
+    }
+    else{
+        <NavLink href="/upload/1" class="btn btn-link">Back</NavLink>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    Upload upload = new Upload();
+    
+    protected async override Task OnParametersSetAsync()
+    {
+       upload = await UploadService.GetUpload(int.Parse(Id));
+    }
+
+    void DownloadFile()
+    {        
+        JSRuntime.InvokeAsync<object>(
+            "saveAsFile",
+            upload.FileName,
+            upload.FileContent);
+    }
+}
