@@ -21,7 +21,7 @@ stages:
       displayName: Build the docker image
       inputs:
         command: build
-        containerRegistry: dockerHub
+        containerRegistry: dockerhub-connection
         repository: thbst16/blazor-crud
         tags: |
           $(Build.BuildId)
@@ -30,7 +30,7 @@ stages:
       displayName: Push the image to Dockerhub
       inputs:
        command: push
-       containerRegistry: dockerHub
+       containerRegistry: dockerhub-connection
        repository: thbst16/blazor-crud
        tags: |
          $(Build.BuildId)
