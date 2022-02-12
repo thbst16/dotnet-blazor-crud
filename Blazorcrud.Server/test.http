@@ -1,0 +1,123 @@
+@host = https://localhost:5001/api
+@contentType = application/json
+
+GET {{host}}/person?name=wilford HTTP/1.1
+Content-Type: {{contentType}}
+
+###
+
+GET {{host}}/person?page=3 HTTP/1.1
+Content-Type: {{contentType}}
+
+###
+
+GET {{host}}/person/1 HTTP/1.1
+Content-Type: {{contentType}}
+
+###
+
+POST {{host}}/person HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "firstName": "Tim",
+  "lastName": "Bucktooth",
+  "gender": 1,
+  "phoneNumber": "717-211-3211",
+  "addresses": [
+    {
+      "street": "415 McKee Place",
+      "city": "Pittsburgh",
+      "state": "Pennsylvania",
+      "zipCode": "15140"
+    },
+    {
+      "street": "315 Gunpowder Road",
+      "city": "Mechanicsburg",
+      "state": "Pennsylvania",
+      "zipCode": "17101"
+    }
+  ]
+}
+
+###
+
+PUT {{host}}/person HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "personId": 1,
+  "firstName": "Alfred",
+  "lastName": "Newman",
+  "gender": 1,
+  "phoneNumber": "631-732-1900",
+  "addresses": [
+    {
+      "addressId": 1,
+      "street": "13342 Zackery Plains",
+      "city": "Selden",
+      "state": "New York",
+      "zipCode": "11784"
+    },
+    {
+      "addressId": 2,
+      "street": "9224 Bell Isle",
+      "city": "Coram",
+      "state": "New York",
+      "zipCode": "17201"
+    }
+  ]
+}
+
+###
+
+DELETE {{host}}/person/13 HTTP/1.1
+Content-Type: {{contentType}}
+
+###
+
+GET {{host}}/upload?name=sample HTTP/1.1
+Content-Type: {{contentType}}
+
+###
+
+GET {{host}}/upload?page=2 HTTP/1.1
+Content-Type: {{contentType}}
+
+###
+
+GET {{host}}/upload/1 HTTP/1.1
+Content-Type: {{contentType}}
+
+###
+
+GET {{host}}/user?page=1 HTTP/1.1
+Content-Type: {{contentType}}
+
+###
+
+GET {{host}}/user/1 HTTP/1.1
+Content-Type: {{contentType}}
+
+###
+
+POST {{host}}/user/authenticate HTTP/1.1
+Content-Type: {{contentType}}
+
+{
+  "username": "admin",
+  "password": "admin"
+}
+
+###
+
+POST {{host}}/user HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer xxxx
+
+{
+  "firstName": "Timothy",
+  "lastName": "Hackorama",
+  "username": "thackaraama",
+  "password": "password123"
+}
