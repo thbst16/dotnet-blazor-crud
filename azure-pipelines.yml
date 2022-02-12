@@ -1,6 +1,6 @@
 name : dotnet-blazor-crud
 trigger:
-- main
+- master
 
 pool:
   vmImage: 'ubuntu-latest'
