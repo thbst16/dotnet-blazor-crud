@@ -1,17 +1,37 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
+name : dotnet-blazor-crud
 trigger:
-- master
+- main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'ubuntu-latest'
 
 variables:
-  buildConfiguration: 'Release'
+  tag: '$(Build.BuildId)'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/'
 
-steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+
+  - job: Build
+    displayName: Build and push docker image
+    steps:
+    - task: Docker@2
+      displayName: Build the docker image
+      inputs:
+        command: build
+        containerRegistry: dockerHub
+        repository: thbst16/blazor-crud
+        tags: |
+          $(Build.BuildId)
+          latest
+    - task: Docker@2
+      displayName: Push the image to Dockerhub
+      inputs:
+       command: push
+       containerRegistry: dockerHub
+       repository: thbst16/blazor-crud
+       tags: |
+         $(Build.BuildId)
+         latest
