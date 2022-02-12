@@ -1,0 +1,15 @@
+@inject NavigationManager NavigationManager
+
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <AppRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        @{
+            // redirect to homepage if not found
+            NavigationManager.NavigateTo("/");
+        }
+    </NotFound>
+</Router>
+
