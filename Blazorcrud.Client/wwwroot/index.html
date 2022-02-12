@@ -1,28 +1,23 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>BlazorCrud</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Blazor CRUD</title>
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
-
-    <link href="_content/BlazorStrap/css/submenu.css" rel="stylesheet" />
-    <link href="_content/Sotsera.Blazor.Toaster/toastr.min.css" rel="stylesheet" />
-    <link href="_content/ChartJs.Blazor/ChartJSBlazor.css" rel="stylesheet" />
+    <link href="Blazorcrud.Client.styles.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/d9383b1f5d.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
     <div id="app">
-        <app class="grid">
-            <div>
-                <h2>Loading...</h2>
-                <h3>Please wait.</h3>
-            </div>
-            <div class="spinner"> </div>
-        </app>
+        <div style="position: absolute; top:30vh; width: 100%; text-align: center">
+            <h1>Blazor CRUD</h1>
+            <p><i class="fas fa-spin fa-spinner"></i> The application is loading...</p>
+        </div>
     </div>
 
     <div id="blazor-error-ui">
@@ -33,13 +28,6 @@
     <script src="_framework/blazor.webassembly.js"></script>
     <!-- Site.js custom JS file-->
     <script src="site.js"></script>
-    <!-- Blazorstrap JS Files -->
-    <script src="_content/BlazorStrap/blazorStrap.js"></script>
-    <script src="_content/BlazorStrap/popper.min.js"></script>
-    <!-- ChartJS.Blazor Files -->
-    <script src="_content/ChartJs.Blazor/moment-with-locales.min.js" type="text/javascript" language="javascript"></script>
-    <script src="_content/ChartJs.Blazor/Chart.min.js" type="text/javascript" language="javascript"></script>
-    <script src="_content/ChartJs.Blazor/ChartJsBlazorInterop.js" type="text/javascript" language="javascript"></script>
 </body>
 
 </html>
