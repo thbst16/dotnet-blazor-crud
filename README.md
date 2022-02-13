@@ -12,6 +12,17 @@ Blazor CRUD uses the following DevOps environment and tools to support a CI / CD
 * [Azure DevOps for CI/CD](https://beckshome.visualstudio.com/BlazorCRUD/_build) - Azure DevOps is used for continunous integration and continuous delivery (CI/CD). Builds and deployments are initiated with every cheackin to the main brach of the solution in GitHub.
 * [DockerHub for Container Storage](https://hub.docker.com/r/thbst16/blazor-crud) - DockerHub is where BlazorCrud tagged Docker images are stored after being created in the CI/CD pipeline. The can also be pulled and run locally by using the command "docker pull thbst16/blazor-crud".
 
+# Screens
+
+### Home page with BlazorCRUD features
+![BlazorCrud Home Page](https://s3.amazonaws.com/s3.beckshome.com/20220213-blazorcrud-home.jpg)
+### Login page
+![BlazorCrud Login Page](https://s3.amazonaws.com/s3.beckshome.com/20220213-blazorcrud-login.jpg)
+### Paginated results and search
+![BlazorCrud Search Page](https://s3.amazonaws.com/s3.beckshome.com/20220213-blazorcrud-search.jpg)
+### Edit page for complex objects with validations
+![BlazorCrud Data Edit](https://s3.amazonaws.com/s3.beckshome.com/20220213-blazorcrud-edit.jpg)
+
 # Features
 
 * Online demo site to explore the application
@@ -26,14 +37,14 @@ Blazor CRUD uses the following DevOps environment and tools to support a CI / CD
 * Javascript Web Token (JWT) authentication
 * Data generation to pre-populate thousdands of entity records
 
-# Open Source Used
+# Motivation and Credits
 
-* [AutoMapper](https://github.com/AutoMapper/AutoMapper) for object-object mappings.
-* [Azure Fluent Management](https://github.com/Azure/azure-libraries-for-net) for Azure automation from C#.
-* [BlazorStorage](https://github.com/cloudcrate/BlazorStorage) for local and session storage in the browser.
-* [BlazorStrap](https://github.com/chanan/BlazorStrap) Bootstrap 4 components for Blazor.
-* [Blazor.Toastr](https://github.com/sotsera/sotsera.blazor.toaster) for Toastr-style notifications.
-* [Bogus](https://github.com/bchavez/Bogus) for data generation.
-* [ChartJs.Blazor](https://github.com/mariusmuntean/ChartJs.Blazor) Blazor component that wraps ChartJs widgets for dashboard.
-* [FluentValidation](https://github.com/JeremySkinner/FluentValidation) For entity validation, including complex object graph validations. 
-* [Swashbuckle](https://github.com/domaindrivendev/Swashbuckle) for Swagger document generation.
+I would not have got this project completed without the vast knowledge of experienced peers at my disposal. Referenced below are items that were specifically helpful with specific functional attributes of the solution.
+
+* [Blazor Navigation - Go Back](https://stackoverflow.com/questions/62561926/blazor-navigation-manager-go-back)
+* [Blazor Server Crud in VS Code](https://dev.to/rineshpk/blazor-server-crud-app-using-visual-studio-code-2b2g)
+* [Blazor Web Assembly - User Registration and Login](https://jasonwatmore.com/post/2020/11/09/blazor-webassembly-user-registration-and-login-example-tutorial#main-layout-razor)
+* [Building a Blazor Paging Component](https://gunnarpeipman.com/blazor-pager-component/)
+* [Integration Fluent Validation with Blazor](https://blog.stevensanderson.com/2019/09/04/blazor-fluentvalidation/)
+* [Lifelike Test Data Generation with Bogus](http://dontcodetired.com/blog/post/Lifelike-Test-Data-Generation-with-Bogus)
+* [User Registration and Login with Example API](https://jasonwatmore.com/post/2022/01/07/net-6-user-registration-and-login-tutorial-with-example-api#users-controller-cs)
