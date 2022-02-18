@@ -53,7 +53,7 @@ else
                     <td>@user.Username</td>
                     <td style="white-space: nowrap">
                         <NavLink href="@($"/user/viewuser/{user.Id}")" class="oi oi-eye text-primary mr-3 nounderline"></NavLink>
-                        @if (LoggedIn)
+                        @if (LoggedIn && user.Username != "admin")
                         {
                             <NavLink href="@($"/user/updateuser/{user.Id}")" class="oi oi-pencil text-warning mr-2 nounderline"></NavLink>
                             

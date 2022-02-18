@@ -89,6 +89,10 @@ namespace Blazorcrud.Server.Models
         {
             var result = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id==user.Id);
 
+            // cannot update admin
+            if (result.Username == "admin")
+                throw new AppException("Admin may not be updated");
+
             // validate unique
             if (user.Username != result.Username && _appDbContext.Users.Any(u => u.Username == user.Username))
                 throw new AppException("Username '" + user.Username + "' is already taken");
@@ -116,6 +120,11 @@ namespace Blazorcrud.Server.Models
         public async Task<User?> DeleteUser(int Id)
         {
             var result = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id==Id);
+
+            // cannot delete admin
+            if (result.Username == "admin")
+                throw new AppException("Admin may not be deleted");
+                
             if (result!=null)
             {
                 _appDbContext.Users.Remove(result);
