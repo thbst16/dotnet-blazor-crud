@@ -3,7 +3,7 @@
 ![Docker Image Version (latest by date)](https://img.shields.io/docker/v/thbst16/blazor-crud?logo=docker)
 ![Uptime Robot ratio (7 days)](https://img.shields.io/uptimerobot/ratio/7/m784732895-fc1b844a033d7645bb9eefe9?logo=http)
 
-Blazor CRUD is a demo application built with [Blazor](https://blazor.net) framework using the client-side hosting model with WebAssembly in the browser invoking .NET Core REST APIs secured by a JWT service. To browse the two components of the application, follow the links below. For authenticated pages and APIs, use the credentials (admin / admin).
+Blazor CRUD is a demo application built with the [Blazor](https://blazor.net) framework using the client-side hosting model with WebAssembly in the browser invoking .NET Core REST APIs secured by a JWT service. To browse the two components of the application, follow the links below. For authenticated pages and APIs, use the credentials (admin / admin).
 * [Blazor CRUD Application](https://becksblazor.azurewebsites.net/) - A client side hosted WASM application built using Blazor. The application highlights CRUD data entry for entities, data pagination, client-side validation using Data Annotations, and authentication and authorization using JWT tokens.
 * [Blazor CRUD REST API](https://becksblazor.azurewebsites.net/swagger/index.html) - A REST API for CRUD with non-read API calls secured with JWT. The API includes a call to authenticate users and receive a JWT bearer token.
 
