@@ -51,6 +51,6 @@ stages:
     - task: AzureWebAppContainer@1
       displayName: Deploy the docker image
       inputs:
-        azureSubscription: Subscription-1 (a96d1be0-8bbf-4b78-bf76-fe18462f59b8)
+        azureSubscription: beckshome-connection
         appName: becksblazor
         multicontainerConfigFile: $(workingDirectory)/docker-compose.yml
