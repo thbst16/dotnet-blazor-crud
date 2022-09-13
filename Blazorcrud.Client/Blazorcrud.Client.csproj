@@ -8,10 +8,10 @@
 		<ProjectReference Include="..\Blazorcrud.Shared\Blazorcrud.Shared.csproj"/>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="FluentValidation" Version="11.1.0"/>
+		<PackageReference Include="FluentValidation" Version="11.2.2"/>
 		<PackageReference Include="Microsoft.AspNetCore.Blazor.HttpClient" Version="3.2.0-preview3.20168.3"/>
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.6"/>
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.6" PrivateAssets="all"/>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.8"/>
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.8" PrivateAssets="all"/>
 		<PackageReference Include="System.Net.Http.Json" Version="6.0.0"/>
 	</ItemGroup>
 </Project>
