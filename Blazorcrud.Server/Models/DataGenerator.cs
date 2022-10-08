@@ -8,6 +8,8 @@ namespace Blazorcrud.Server.Models
         public static void Initialize(AppDbContext appDbContext)
         {
             Randomizer.Seed = new Random(32321);
+            appDbContext.Database.EnsureDeleted();
+            appDbContext.Database.EnsureCreated();
             if (!(appDbContext.People.Any()))
                 {
                     //Create test addresses

@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("BlazorServerCRUD"));
+builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlite("Filename=./BlazorServerCRUD.sqlite"));
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IUploadRepository, UploadRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
