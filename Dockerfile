@@ -1,5 +1,5 @@
 ### PREPARE
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
 WORKDIR /src
 
 ### Copy csproj and sln and restore as distinct layers
@@ -15,7 +15,7 @@ COPY . .
 RUN dotnet publish "Blazorcrud.sln" -c Release -o /app
 
 ### RUNTIME IMAGE
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime-env
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime-env
 WORKDIR /app
 COPY --from=publish-env /app .
 ENV ASPNETCORE_URLS=http://+:80
