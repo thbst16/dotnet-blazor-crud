@@ -42,9 +42,9 @@ namespace Blazorcrud.Server.Models
             if (name != null)
             {
                 return _appDbContext.Users
-                    .Where(u => u.FirstName.Contains(name, StringComparison.CurrentCultureIgnoreCase) ||
-                        u.LastName.Contains(name, StringComparison.CurrentCultureIgnoreCase) || 
-                        u.Username.Contains(name, StringComparison.CurrentCultureIgnoreCase))
+                    .Where(u => u.FirstName.Contains(name) ||
+                        u.LastName.Contains(name) || 
+                        u.Username.Contains(name))
                     .OrderBy(u => u.Username)
                     .GetPaged(page, pageSize);
             }
