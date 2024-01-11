@@ -1,0 +1,94 @@
+﻿@implements IDisposable
+
+@inject NavigationManager NavigationManager
+
+<RadzenHeader Style="position: static;">
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" Gap="0">
+        <RadzenSidebarToggle Click="@(() => sidebarExpanded = !sidebarExpanded)"/>
+        <h3>@GetTitleForRoute()</h3>
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.End" Style="height: 4.5rem;">
+            <RadzenIcon
+                class="top-bar-link rz-mr-3"
+                Title="Admin"
+                Icon="shield">
+            </RadzenIcon>
+            <RadzenIcon
+                class="top-bar-link rz-mr-3"
+                Title="Help"
+                Icon="help">
+            </RadzenIcon>
+            <RadzenIcon
+                class="top-bar-link rz-mr-3"
+                Title="Notifications"
+                Icon="mail">
+            </RadzenIcon>
+            <RadzenIcon
+                class="top-bar-link rz-mr-3"
+                Title="Settings"
+                Icon="settings">
+            </RadzenIcon>
+            <RadzenProfileMenu Style="padding: 0; margin-right: 1rem; margin-top: 0.25rem;">
+                <Template>
+                    <RadzenIcon Icon="person"></RadzenIcon>
+                </Template>
+                <ChildContent>
+                    <RadzenProfileMenuItem Text="Manage" Path="Account/Manage" Icon="person">
+                        <NavLink class="nav-link" href="Account/Manage">
+                            <span class="bi bi-person-fill-nav-menu" aria-hidden="true"></span>Manage
+                        </NavLink>
+                    </RadzenProfileMenuItem>
+                    <form method="post" action="Account/Logout">
+                        <AntiforgeryToken/>
+                        <input type="hidden" name="ReturnUrl" value="@currentUrl"/>
+                        <RadzenButton ButtonStyle="ButtonStyle.Light" ButtonType="ButtonType.Submit" Icon="logout" Text="Log Out"/>
+                    </form>
+                </ChildContent>
+            </RadzenProfileMenu>
+        </RadzenStack>
+    </RadzenStack>
+</RadzenHeader>
+<RadzenSidebar @bind-Expanded="@sidebarExpanded" Style="width: auto;">
+    <div class="rz-p-4">
+        <Sidebar/>
+    </div>
+</RadzenSidebar>
+
+@code {
+
+    private string? currentUrl;
+
+    bool sidebarExpanded = true;
+
+    private string GetTitleForRoute()
+    {
+        return currentUrl switch
+        {
+            not null when currentUrl.Contains("Account/Manage") => "Account Management",
+            not null when currentUrl.Contains("Review") => "Review Plan",
+            not null when currentUrl.Contains("Reports") => "Reports",
+            not null when currentUrl.Contains("Plan") => "Plan Elements",
+            not null when currentUrl.Contains("Documents") => "Documents",
+            not null when currentUrl.Contains("Team") => "Team Members",
+            not null when currentUrl.Contains("Meetings") => "Create Meeting",
+            not null when currentUrl.Contains("Login") => "",
+            _ => "Home"
+        };
+    }
+
+    protected override void OnInitialized()
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
+        NavigationManager.LocationChanged += OnLocationChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        NavigationManager.LocationChanged -= OnLocationChanged;
+    }
+}
