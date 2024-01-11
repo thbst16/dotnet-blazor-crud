@@ -1,0 +1,44 @@
+@inherits LayoutComponentBase
+@inject IUserService UserService
+
+<nav class="navbar navbar-expand navbar-dark bg-dark">
+    <a class="navbar-brand" href="/">Beacon</a>
+    <div class="navbar-nav">
+        <NavLink href="/" Match="NavLinkMatch.All" class="nav-item nav-link">Home</NavLink>
+        <NavLink href="/person/1" class="nav-item nav-link">Data Entry</NavLink>
+        <NavLink href="/upload/1" class="nav-item nav-link">File Management</NavLink>
+        <NavLink href="/user/1" class="nav-item nav-link">Users</NavLink>
+        <NavLink href="/swagger/index.html" class="nav-item nav-link" target="_blank">API</NavLink>
+    </div>
+    <div class="navbar-nav ml-auto">
+        @if (LoggedIn)
+        {
+            <NavLink href="/user/logout" class="nav-item nav-link">Logout</NavLink>
+        }
+        else
+        {
+            <NavLink href="/user/login" class="nav-item nav-link">Login</NavLink>
+        }
+    </div>
+</nav>
+
+<div class="app-container">
+    <div class="p-4">
+        <div class="container">
+            <Alert />
+            @Body
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container text-center">
+            <span class="text-muted">&copy; Beckshome.com 2022</span>
+        </div>
+    </footer>
+</div>
+
+@code {
+    public bool LoggedIn
+    {
+        get {return UserService.User != null;}
+    }
+}
