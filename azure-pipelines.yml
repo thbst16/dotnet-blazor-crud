@@ -1,8 +1,10 @@
 name: dotnet-blazor-crud
 
 trigger:
-- main
-
+  branches:
+    include:
+    - main
+    
 pool:
   vmImage: 'ubuntu-latest'
 
