@@ -93,6 +93,7 @@
     private void Edit(int id)
     {
         person = people.FirstOrDefault(p => p.Id == id) ?? new Person();
+        success = true;
     }
     private void Delete(int id)
     {
