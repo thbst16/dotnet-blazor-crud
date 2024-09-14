@@ -1,0 +1,102 @@
+@page "/crud"
+@using BlazorCrud.Data
+@using System.ComponentModel.DataAnnotations
+@inject Services.IPersonService personService
+
+<PageTitle>CRUD</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">CRUD</MudText>
+
+<MudText Class="mb-8">Access to database create, read, update, and delete (CRUD) functions using an in-memory SQL Server database.</MudText>
+
+<MudGrid>
+    <MudItem xs="12" sm="12">
+        <MudPaper Class="pa-4">
+            <MudForm @ref="form" @bind-IsValid="@success">
+                <MudText Typo="Typo.h6">Add / Edit Customers</MudText>
+                <MudTextField @bind-Value="person.FirstName" Label="First Name" Variant="Variant.Text" Margin="Margin.Normal"
+                    Required="true" RequiredError="First name is required!" 
+                    Validation="@(new LengthAttribute(2,25) {ErrorMessage = "First name must be between 2 and 25 characters"})"></MudTextField>
+                <MudTextField @bind-Value="person.LastName" Label="Last Name" Variant="Variant.Text" Margin="Margin.Normal"
+                    Required="true" RequiredError="Last name is required!" 
+                    Validation="@(new LengthAttribute(2,25) {ErrorMessage = "Last name must be between 2 and 25 characters"})"></MudTextField>
+                <MudTextField @bind-Value="person.PhoneNumber" Label="Phone Number" Mask="@(new PatternMask("(000) 000-0000"))" HelperText="Ex. (212) 867-5309" Variant="Variant.Text" Margin="Margin.Normal"
+                    Required="true" RequiredError="Phone number is required!" 
+                    Validation="@(new PhoneAttribute() {ErrorMessage = "Must be a valid phone number"})"></MudTextField>
+                <div class="d-flex pt-4">
+                    <MudButton Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Save"
+                        Color="Color.Success" Disabled="@(!success)" Class="ml-auto" OnClick="Save">Save</MudButton>
+                </div>
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+<br />
+<MudTable Items="GetPeople()" Filter="new Func<Person, bool>(Search)" @bind-person="person">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">People</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search for People..." Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>First Name</MudTh>
+        <MudTh>Last Name</MudTh>
+        <MudTh>Phone Number</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Id">@context.Id</MudTd>
+        <MudTd DataLabel="FirstName">@context.FirstName</MudTd>
+        <MudTd DataLabel="LastName">@context.LastName</MudTd>
+        <MudTd DataLabel="PhoneNumber">@context.PhoneNumber</MudTd>
+        <MudTd DataLabel="">
+            <MudFab @onclick="@(()=>Edit(@context.Id))" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Edit" Size="Size.Small" IconSize="Size.Small" />
+            <MudFab @onclick="@(()=>Delete(@context.Id))" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Delete" Size="Size.Small" IconSize="Size.Small" />
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code{
+    bool success;
+    MudForm form = new MudForm();
+    private string searchString = "";
+    private Person person = new Person();
+    private List<Person> people = new List<Person>();
+    protected override void OnInitialized()
+    {
+        GetPeople();
+    }
+    private List<Person> GetPeople()
+    {
+        people = personService.GetPeople();
+        return people;
+    }
+    private bool Search(Person person)
+    {
+        if (string.IsNullOrWhiteSpace(searchString)) return true;
+        if (person.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+            || person.LastName.Contains(searchString, StringComparison.OrdinalIgnoreCase)
+            || person.PhoneNumber.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+        return false;
+    }
+    private void Save()
+    {
+        personService.SavePerson(person);
+        person = new Person();
+        form.ResetAsync();
+        GetPeople();
+    }
+    private void Edit(int id)
+    {
+        person = people.FirstOrDefault(p => p.Id == id) ?? new Person();
+    }
+    private void Delete(int id)
+    {
+        personService.DeletePerson(id);
+        GetPeople();
+    }
+}

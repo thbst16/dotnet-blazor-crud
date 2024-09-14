@@ -1,0 +1,45 @@
+name: dotnet-blazor-crud
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  tag: '$(Build.BuildId)'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+
+  - job: Build
+    displayName: Build and push docker image
+    steps:
+    - task: Docker@2
+      displayName: Build and push the docker image
+      inputs:
+        command: buildAndPush
+        containerRegistry: dockerHub
+        repository: thbst16/dotnet-blazor-crud
+        tags: |
+          $(Build.BuildId)
+          latest
+
+- stage: Deploy
+  displayName: Deploy docker container
+  dependsOn: Build
+  jobs:
+
+  - job: Deploy
+    displayName: Deploy the container to Azure Container Apps
+    steps:
+    - task: AzureContainerApps@1
+      displayName: Deploy the docker image
+      inputs:
+        azureSubscription: becksAzureRM
+        containerAppName: dotnet-blazor-crud
+        resourceGroup: beckshome-container-apps-rg
+        imageToDeploy: thbst16/dotnet-blazor-crud:$(Build.BuildId)
