@@ -10,6 +10,8 @@ This project is currently under re-construction. The legacy repository has been 
 
 * Pagination
 * Data Generation
+  - Format of data not right from Bogus
+  - Binding to table overrides edits
 * Modal Forms
 * Nested Data
 
