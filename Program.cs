@@ -19,6 +19,21 @@ builder.Services.AddRazorComponents()
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    
+    try
+    {
+        var appDbContext = services.GetRequiredService<ApplicationDbContext>();
+        DataGenerator.Initialize(appDbContext);
+    }
+    catch
+    {
+        Console.WriteLine("An error occured creating the database");
+    }
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

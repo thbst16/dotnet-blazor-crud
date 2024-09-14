@@ -8,7 +8,6 @@ This project is currently under re-construction. The legacy repository has been 
 
 * https://dotnet-blazor-crud.wittycoast-850643a6.eastus.azurecontainerapps.io/crud
 
-* Validations
 * Pagination
 * Data Generation
 * Modal Forms
@@ -16,3 +15,5 @@ This project is currently under re-construction. The legacy repository has been 
 
 # Motivation and Credits
 * [.Blazor CRUD Using MudBlazor](https://codewithmukesh.com/blog/blazor-crud-using-mudblazor/)
+* [Lifelike Test Data Generation with Bogus](http://dontcodetired.com/blog/post/Lifelike-Test-Data-Generation-with-Bogus)
+* [MudBlazor Form Validation](https://mudblazor.com/components/form#simple-form-validation)
