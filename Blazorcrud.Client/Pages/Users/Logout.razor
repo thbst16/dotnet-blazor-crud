@@ -1,9 +1,0 @@
-@page "/user/logout"
-@inject IUserService UserService
-
-@code {
-    protected override async void OnInitialized()
-    {
-        await UserService.Logout();
-    }
-}
