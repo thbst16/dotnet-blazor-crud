@@ -10,7 +10,7 @@ namespace Blazorcrud.Client.Services
         Task Initialize();
         Task Login(Login model);
         Task Logout();
-        Task<PagedResult<User>> GetUsers(string? name, string page);
+        Task<PagedResult<User>> GetUsers(string name, string page);
         Task<User> GetUser(int id);
         Task DeleteUser(int id);
         Task AddUser(User user);

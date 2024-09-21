@@ -39,7 +39,7 @@ namespace Blazorcrud.Client.Services
             _navigationManager.NavigateTo("/user/login");
         }
 
-        public async Task<PagedResult<User>> GetUsers(string? name, string page)
+        public async Task<PagedResult<User>> GetUsers(string name, string page)
         {
             return await _httpService.Get<PagedResult<User>>("api/user" + "?page=" + page + "&name=" + name);
         }
