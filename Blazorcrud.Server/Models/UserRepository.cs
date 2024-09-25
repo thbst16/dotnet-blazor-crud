@@ -90,7 +90,7 @@ namespace Blazorcrud.Server.Models
             var result = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id==user.Id);
 
             // cannot update admin
-            if (result.Username == "admin")
+            if (result == null || result.Username == "admin")
                 throw new AppException("Admin may not be updated");
 
             // validate unique
@@ -122,7 +122,7 @@ namespace Blazorcrud.Server.Models
             var result = await _appDbContext.Users.FirstOrDefaultAsync(u => u.Id==Id);
 
             // cannot delete admin
-            if (result.Username == "admin")
+            if (result == null || result.Username == "admin")
                 throw new AppException("Admin may not be deleted");
                 
             if (result!=null)
