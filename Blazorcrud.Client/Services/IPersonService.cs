@@ -5,7 +5,7 @@ namespace Blazorcrud.Client.Services
 {
     public interface IPersonService
     {
-        Task<PagedResult<Person>> GetPeople(string? name, string page);
+        Task<PagedResult<Person>> GetPeople(string name, string page);
         Task<Person> GetPerson(int id);
 
         Task DeletePerson(int id);

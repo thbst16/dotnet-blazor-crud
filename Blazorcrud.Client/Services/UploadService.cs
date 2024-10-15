@@ -13,7 +13,7 @@ namespace Blazorcrud.Client.Services
             _httpService=httpService;
         }
 
-        public async Task<PagedResult<Upload>> GetUploads(string? name, string page)
+        public async Task<PagedResult<Upload>> GetUploads(string name, string page)
         {
             return await _httpService.Get<PagedResult<Upload>>("api/upload" + "?page=" + page + "&name=" + name);
         }
