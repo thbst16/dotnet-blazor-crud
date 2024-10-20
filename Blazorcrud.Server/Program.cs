@@ -36,7 +36,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddQuartz(q =>
 {
-    q.UseMicrosoftDependencyInjectionJobFactory();
+    // q.UseMicrosoftDependencyInjectionJobFactory();
     q.AddJobAndTrigger<UploadProcessorJob>(builder.Configuration);
 });
 builder.Services.AddQuartzHostedService(
