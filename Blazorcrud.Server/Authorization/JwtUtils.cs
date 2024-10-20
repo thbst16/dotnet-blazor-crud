@@ -71,5 +71,5 @@ public class JwtUtils : IJwtUtils
 
 public class AppSettings
 {
-    public string Secret { get; set; }
+    public string Secret { get; set; } = null!;
 }
