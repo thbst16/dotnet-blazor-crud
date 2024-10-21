@@ -27,22 +27,3 @@ stages:
         tags: |
           $(Build.BuildId)
           latest
-
-- stage: Deploy
-  displayName: Deploy docker container
-  dependsOn: Build
-  jobs:
-
-  - job: Deploy
-    displayName: Deploy the container to Azure Web App using Docker Compose
-    steps:
-    - task: CmdLine@2
-      inputs:
-        script: dir
-        workingDirectory: $(workingDirectory) 
-    - task: AzureWebAppContainer@1
-      displayName: Deploy the docker image
-      inputs:
-        azureSubscription: beckshome-connection
-        appName: becksblazor
-        multicontainerConfigFile: $(workingDirectory)/docker-compose.yml
