@@ -1,4 +1,5 @@
 name : dotnet-blazor-crud
+
 trigger:
 - master
 
@@ -18,23 +19,14 @@ stages:
     displayName: Build and push docker image
     steps:
     - task: Docker@2
-      displayName: Build the docker image
+      displayName: Build and push the docker image
       inputs:
-        command: build
-        containerRegistry: dockerhub-connection
+        command: buildAndPush
+        containerRegistry: dockerHub
         repository: thbst16/blazor-crud
         tags: |
           $(Build.BuildId)
           latest
-    - task: Docker@2
-      displayName: Push the image to Dockerhub
-      inputs:
-       command: push
-       containerRegistry: dockerhub-connection
-       repository: thbst16/blazor-crud
-       tags: |
-         $(Build.BuildId)
-         latest
 
 - stage: Deploy
   displayName: Deploy docker container
