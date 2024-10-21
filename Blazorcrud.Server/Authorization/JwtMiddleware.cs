@@ -13,7 +13,7 @@ public class JwtMiddleware
     public async Task Invoke(HttpContext context, IUserRepository userRepository, IJwtUtils jwtUtils)
     {
         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-        var userId = jwtUtils.ValidateToken(token);
+        var userId = jwtUtils.ValidateToken(token ?? throw new ArgumentNullException(nameof(token), "Token cannot be null."));
         if (userId != null)
         {
             // attach user to context on successful jwt validation
