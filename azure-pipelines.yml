@@ -27,3 +27,19 @@ stages:
         tags: |
           $(Build.BuildId)
           latest
+
+- stage: Deploy
+  displayName: Deploy docker container
+  dependsOn: Build
+  jobs:
+
+  - job: Deploy
+    displayName: Deploy the container to Azure Container Apps
+    steps:
+    - task: AzureContainerApps@1
+      displayName: Deploy the docker image
+      inputs:
+        azureSubscription: becksAzureRM
+        containerAppName: dotnet-blazor-crud
+        resourceGroup: beckshome-container-apps-rg
+        imageToDeploy: thbst16/dotnet-blazor-crud:$(Build.BuildId)
