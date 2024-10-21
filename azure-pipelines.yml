@@ -23,7 +23,7 @@ stages:
       inputs:
         command: buildAndPush
         containerRegistry: dockerHub
-        repository: thbst16/blazor-crud
+        repository: thbst16/dotnet-blazor-crud
         tags: |
           $(Build.BuildId)
           latest
