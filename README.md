@@ -3,13 +3,13 @@
 ![Docker Image Version (latest by date)](https://img.shields.io/docker/v/thbst16/dotnet-blazor-crud?logo=docker)
 
 Blazor CRUD is a demo application built with the [Blazor](https://blazor.net) framework using the client-side hosting model with WebAssembly in the browser invoking .NET Core REST APIs secured by a JWT service. To browse the two components of the application, follow the links below. For authenticated pages and APIs, use the credentials (admin / admin).
-* [Blazor CRUD Application](https://becksblazor.azurewebsites.net/) - A client side hosted WASM application built using Blazor. The application highlights CRUD data entry for entities, data pagination, client-side validation using Data Annotations, and authentication and authorization using JWT tokens.
-* [Blazor CRUD REST API](https://becksblazor.azurewebsites.net/swagger/index.html) - A REST API for CRUD with non-read API calls secured with JWT. The API includes a call to authenticate users and receive a JWT bearer token.
+* [Blazor CRUD Application](https://dotnet-blazor-crud.wittycoast-850643a6.eastus.azurecontainerapps.io) - A client side hosted WASM application built using Blazor. The application highlights CRUD data entry for entities, data pagination, client-side validation using Data Annotations, and authentication and authorization using JWT tokens.
+* [Blazor CRUD REST API](https://dotnet-blazor-crud.wittycoast-850643a6.eastus.azurecontainerapps.io/swagger/index.html) - A REST API for CRUD with non-read API calls secured with JWT. The API includes a call to authenticate users and receive a JWT bearer token.
 
 Blazor CRUD uses the following DevOps environment and tools to support a CI / CD process:
-* [GitHub Source Code Repository](https://github.com/thbst16/BlazorCrud) - All source code is stored in the GitHub repository, which is where you currently find yourself.
-* [Azure DevOps for CI/CD](https://beckshome.visualstudio.com/BlazorCRUD/_build) - Azure DevOps is used for continunous integration and continuous delivery (CI/CD). Builds and deployments are initiated with every cheackin to the main brach of the solution in GitHub.
-* [DockerHub for Container Storage](https://hub.docker.com/r/thbst16/blazor-crud) - DockerHub is where BlazorCrud tagged Docker images are stored after being created in the CI/CD pipeline. The can also be pulled and run locally by using the command "docker pull thbst16/blazor-crud".
+* [GitHub Source Code Repository](https://github.com/thbst16/dotnet-blazor-crud) - All source code is stored in the GitHub repository, which is where you currently find yourself.
+* [Azure DevOps for CI/CD](https://beckshome.visualstudio.com/dotnet-blazor-crud/_build) - Azure DevOps is used for continunous integration and continuous delivery (CI/CD). Builds and deployments are initiated with every cheackin to the main brach of the solution in GitHub.
+* [DockerHub for Container Storage](https://hub.docker.com/repository/docker/thbst16/dotnet-blazor-crud/general) - DockerHub is where BlazorCrud tagged Docker images are stored after being created in the CI/CD pipeline. The can also be pulled and run locally by using the command "docker pull thbst16/blazor-crud".
 
 # Screens
 
